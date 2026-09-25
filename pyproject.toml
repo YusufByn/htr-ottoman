@@ -1,0 +1,7 @@
+[project]
+name = "htr-ottoman"
+version = "0.1.0"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+    "kraken==7.1.1",
+]
