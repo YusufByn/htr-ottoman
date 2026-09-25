@@ -23,6 +23,7 @@ Affiner le modèle kraken ottoman imprimé d'OpenITI sur la partie ottomane de M
 ## Reproductibilité
 - Tout entraînement ou évaluation est consigné dans EXPERIMENTS.md.
 - Tout traitement passe par un script dans src/, aucune manipulation manuelle non tracée.
+- src/ contient les traitements de données, scripts/ les utilitaires (vérification d'environnement, etc.).
 
 ## Données et licences
 - data/ et models/ hors git. data/raw/ ne doit jamais être modifié ni supprimé.

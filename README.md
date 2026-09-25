@@ -5,12 +5,12 @@ Reconnaissance d'écriture manuscrite (HTR) sur des manuscrits ottomans avec [kr
 ## Environnement
 
 - macOS / Apple Silicon (backend PyTorch MPS)
-- Environnement virtuel géré avec `uv` (`.venv/`)
+- Python 3.13, dépendances gérées par `uv` (`pyproject.toml` + `uv.lock`)
 
 ```bash
-source .venv/bin/activate
-kraken --version
-python scripts/check_mps.py
+uv sync                              # recrée .venv/ à partir de uv.lock
+uv run kraken --version
+uv run python scripts/check_mps.py   # vérifie le backend MPS
 ```
 
 ## Arborescence
