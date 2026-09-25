@@ -1,0 +1,31 @@
+doc_id,title,n_pages,scripts,languages,dataset_source,category,transcribed_lines,total_lines,n_pages_model_layer
+82,Dāsitān-i Kesik Baş,8,naskh,Ottoman Turkish,Research,clean; once vetted,109,109,0
+83,Dāsitān-i Kesik Baş,9,naskh,Ottoman Turkish,Research,clean; once vetted,112,115,9
+86,Dāsitān-i Kesik Baş,11,naskh,Ottoman Turkish,Research,clean; once vetted,136,138,0
+89,Dāsitān-i Kesik Baş,8,naskh,Ottoman Turkish,Research,clean; once vetted,98,98,0
+102,Kitāb-i Ṭavā’if-i ‘aşere,1,taliq,Ottoman Turkish,ACDC-Evaluation,clean; once vetted,19,19,0
+131,Dāsitān-i Kesik Baş,7,naskh,Ottoman Turkish,Research,clean; once vetted,111,113,0
+793,Menāqib-i Emīr Sulṭān,17,naskh,Ottoman Turkish,Research,clean; once vetted,230,237,0
+2891,Manāqib Yaḥya al-Mawṣulī,2,naskh,Ottoman Turkish,Research,clean; once vetted,43,43,0
+2937,Manāfi' al-nās fī al-ṭibb,8,naskh,Ottoman Turkish,Research,clean; once vetted,188,200,0
+2939,Manāfi' al-nās fī al-ṭibb,11,naskh,Ottoman Turkish,Research,clean; once vetted,248,323,0
+3161,Envarü'l-Âşikîn,2,naskh,Ottoman Turkish,Research,clean; once vetted,35,35,0
+3178,[Majmū'a],1,naskh_varied,"Arabic, Ottoman Turkish, Persian",ACDC-Evaluation,clean; twice vetted,15,15,0
+3179,Şemsiyye,1,naskh_shikaste_mixed,Ottoman Turkish,ACDC-Evaluation,clean; once vetted,13,13,0
+3184,Şemsiyye,2,naskh,Ottoman Turkish,ACDC-Evaluation,clean; once vetted,30,30,0
+3185,Kitab-i Baleybelen,2,nastaliq,"Ottoman Turkish, Baleybelen",ACDC-Evaluation,clean; once vetted,34,34,0
+3186,Aʻjab al-ʻujāb,2,naskh,Ottoman Turkish,ACDC-Evaluation,clean; twice vetted,42,42,0
+3208,Vilāyetnāme-i Ḥācı Bektaş-i Velī,2,naskh,Ottoman Turkish,ACDC-Evaluation,clean; twice vetted,30,30,0
+3212,Nüsḫatü'l-kübrā fī velādeti Ḫayri'l-verā,2,naskh,Ottoman Turkish,ACDC-Evaluation,clean; twice vetted,30,30,0
+3213,Iskendernāmah,1,naskh,Ottoman Turkish,ACDC-Evaluation,clean; twice vetted,15,15,0
+3215,Behcet el-fetāvā,4,taliq,Ottoman Turkish,ACDC-Evaluation,clean; twice vetted,141,141,0
+3228,Tarīh-i Kaminçe,1,riqa,Ottoman Turkish,ACDC-Evaluation,clean; twice vetted,18,18,0
+3230,Kitab-ı Şerh-i Hafız,1,nastaliq,"Ottoman Turkish, Persian",ACDC-Evaluation,clean; twice vetted,33,33,0
+3237,Kitāb sih zabān,3,naskh,"Ottoman Turkish, Arabic, Persian",ACDC-Evaluation,clean; twice vetted,26,26,0
+3262,Revnaḳ-ı Būstān,10,naskh,Ottoman Turkish,Research,clean; once vetted,212,213,0
+3263,Revnaḳ-ı Būstān,116,naskh,Ottoman Turkish,Research,clean; once vetted,1543,1546,0
+3383,Kitâb-i Muʿâlecât,2,divani,Ottoman Turkish,ACDC-Evaluation,clean; once vetted,34,34,0
+3386,Kitāb-ı ṣarf-ı türkī,2,divani,Ottoman Turkish,ACDC-Evaluation,clean; once vetted,27,27,0
+3388,Teẕkiret eš-šuʿarā,1,divani,Ottoman Turkish,ACDC-Evaluation,clean; once vetted,16,16,0
+3601,Kitāb-ı Tārīẖ Dār üs-Selām Baġdāduñ başına gelen aḥvālleri,2,naskh,Ottoman Turkish,ACDC-Evaluation,clean; once vetted,32,32,0
+6398,Şerḥ-i Vaṣiyyetnâme-i Birgivî,9,naskh,Ottoman Turkish,Research,clean; once vetted,142,143,9

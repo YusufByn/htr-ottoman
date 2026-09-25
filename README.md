@@ -29,4 +29,6 @@ Fichiers de la version 2026.1.2 (MD5 fournis par Zenodo) :
 
 - `data/` : images et transcriptions (non versionné)
 - `models/` : modèles kraken téléchargés ou entraînés (non versionné)
-- `scripts/` : scripts utilitaires
+- `src/` : traitements de données
+- `scripts/` : utilitaires (vérification d'environnement, etc.)
+- `reports/` : métadonnées dérivées de MAKHZAN (inventaires, statistiques), sous licence CC BY-NC-SA 4.0 comme la source
