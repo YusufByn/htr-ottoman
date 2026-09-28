@@ -107,6 +107,6 @@ Le CER de kraken (16,35 %) et celui de `evaluate` coïncident à 0,03 point prè
 
 ## 8. Prochaines étapes
 
-Voir [ROADMAP.md](ROADMAP.md). Ticket suivant : F7 (baseline), dont toutes les dépendances sont remplies (F4, F5, F6).
+Voir [ROADMAP.md](ROADMAP.md). Ticket en cours : F9 (évaluation interne du modèle affiné), analyse pré-enregistrée (décision 37) avant toute prédiction sur le test interne.
 
 Journal des décisions : [DECISIONS.md](DECISIONS.md).

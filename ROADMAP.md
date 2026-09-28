@@ -16,7 +16,7 @@ Statuts : à faire, en cours, fait. Dernière mise à jour : 2026-09-28.
 | F6 | Modèle de départ | F1, F2 | fait |
 | F7 | Baseline | F4, F5, F6 | fait |
 | F8 | Premier fine-tuning | F7 | fait |
-| F9 | Évaluation interne du modèle affiné | F5, F8 | à faire |
+| F9 | Évaluation interne du modèle affiné | F5, F8 | en cours |
 | F10 | Akis | F1, F5 | à faire |
 | F11 | Évaluation externe sur Akis | F7, F9, F10 | à faire |
 | F12 | Expériences complémentaires | F9 | à faire |
@@ -276,7 +276,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
 - **Points de décision** :
   - Si le résultat est décevant, ne pas régler sur le test interne : revenir à la validation (F8) et consigner la décision.
 - **Concept à expliquer** : généralisation dans le domaine contre hors domaine, et pourquoi on ne regarde le test qu'une fois.
-- **Statut** : à faire.
+- **Statut** : en cours (2026-09-28). Pré-enregistrement consigné (décision 37) ; aucune prédiction sur le test interne sans l'accord de l'utilisateur.
 
 ---
 
