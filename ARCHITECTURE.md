@@ -66,7 +66,7 @@ htr-ottoman/
 │   ├── final_eval.py     évaluation pré-enregistrée sur un jeu réservé, avec contrôles bloquants
 │   └── train.py          fine-tuning kraken piloté par une config de configs/
 ├── tests/                tests automatiques (pytest)
-└── pyproject.toml, uv.lock, README.md, CLAUDE.md, DECISIONS.md, EXPERIMENTS.md, ARCHITECTURE.md, PROJECT.md
+└── pyproject.toml, uv.lock, README.md, CLAUDE.md, DECISIONS.md, EXPERIMENTS.md, ARCHITECTURE.md, PROJECT.md, DATASETS.md
 ```
 
 ## 3. Flux des données

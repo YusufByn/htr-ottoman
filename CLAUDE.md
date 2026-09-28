@@ -1,7 +1,7 @@
 # Projet HTR ottoman
 
 ## Objectif
-Affiner le modèle kraken ottoman imprimé d'OpenITI sur la partie ottomane de MAKHZAN, puis mesurer sa généralisation sur un jeu de test externe de manuscrits, en cours de choix (F10). Akis est écarté : transcriptions en alphabet latin, imprimé (décision 40). Projet de recherche et portfolio.
+Affiner le modèle kraken ottoman imprimé d'OpenITI sur la partie ottomane de MAKHZAN, puis mesurer sa généralisation. Le test interne (ACDC-Evaluation de MAKHZAN, F9) est le résultat principal de généralisation : aucun jeu externe ne remplit les critères à ce jour (décision 41, DATASETS.md) ; Akis est écarté (décision 40). F11 (test externe) est en attente de réponses. Projet de recherche et portfolio.
 
 ## Façon de travailler
 - L'utilisateur débute en ML : expliquer brièvement chaque concept et chaque commande avant de l'exécuter.
@@ -21,7 +21,7 @@ Affiner le modèle kraken ottoman imprimé d'OpenITI sur la partie ottomane de M
 
 ## Règles méthodologiques (non négociables)
 - Découpage train/val/test par manuscrit, jamais par page. Le split est figé dans des fichiers versionnés (splits/) avec une seed.
-- Le jeu de test externe ne sert qu'à l'évaluation finale, jamais au réglage. Un jeu retenu comme test ne pourra plus jamais servir à l'entraînement (F15 compris).
+- Un jeu de test externe ne sert qu'à l'évaluation finale, jamais au réglage, et n'est ouvert qu'avec un pré-enregistrement committé avant toute prédiction (décision 41). Un jeu retenu comme test ne pourra plus jamais servir à l'entraînement (F15 compris).
 - Exclure de l'entraînement les lignes sans transcription.
 - Toute normalisation de texte passe par une seule fonction (src/htr_ottoman/normalize.py), appliquée de la même façon à la vérité terrain et aux prédictions. Chaque règle est documentée.
 - Conserver pour chaque page sa catégorie de relecture (relue une ou deux fois) et son écriture (naskh, ta'liq, etc.).
@@ -40,5 +40,6 @@ Affiner le modèle kraken ottoman imprimé d'OpenITI sur la partie ottomane de M
 - data/ et models/ hors git. data/raw/ ne doit jamais être modifié ni supprimé.
 - MAKHZAN : CC BY-NC-SA, tout modèle dérivé sous la même licence.
 - Akis : Apache 2.0, citer Tasdemir et al., DAS 2024. Téléchargé et inventorié en F10, écarté comme test (décision 40).
+- État des données ouvertes pour l'HTR ottoman manuscrit (recherche du 2026-09-28) : DATASETS.md. RASAM et TariMa sont réservés à l'entraînement de F15.
 - Modèle de départ : OpenITI ottoman imprimé, DOI 10.5281/zenodo.7050342, CC0, vérité terrain en NFD.
 - Demander avant tout téléchargement de plus de 1 Go ou tout entraînement long.

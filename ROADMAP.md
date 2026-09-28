@@ -1,7 +1,7 @@
 # Feuille de route
 
 Liste des tickets du projet. Pour lancer un ticket : « fais Fx ».
-Statuts : à faire, en cours, fait. Dernière mise à jour : 2026-09-28.
+Statuts : à faire, en cours, en attente, fait. Dernière mise à jour : 2026-09-28.
 
 ## Vue d'ensemble
 
@@ -17,11 +17,11 @@ Statuts : à faire, en cours, fait. Dernière mise à jour : 2026-09-28.
 | F7 | Baseline | F4, F5, F6 | fait |
 | F8 | Premier fine-tuning | F7 | fait |
 | F9 | Évaluation interne du modèle affiné | F5, F8 | fait |
-| F10 | Jeu de test externe (Akis écarté, décision 40) | F1, F5 | en cours |
-| F11 | Évaluation externe | F7, F9, F10 | à faire |
+| F10 | Jeu de test externe (aucun retenu, décisions 40 et 41) | F1, F5 | fait |
+| F11 | Évaluation externe | F7, F9, F10 | en attente |
 | F12 | Expériences complémentaires | F9 | à faire |
 | F13 | Analyse d'erreurs | F9 | à faire |
-| F14 | Publication | F11 | à faire |
+| F14 | Publication | F9 (F11 s'il est rouvert) | à faire |
 | F15 | v1.0 : modèle naskh utilisable | F14 | à faire |
 
 Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), généralisation externe (F10, F11), approfondissement et publication (F12 à F14), v1.0 (F15, pas avant F14).
@@ -300,7 +300,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
   - Découpe : lignes de base et polygones (même extracteur que MAKHZAN) ou lignes déjà découpées.
   - Lignes à exclure (vides, annotations, texte non ottoman) : règle et effectifs avant application.
 - **Concept à expliquer** : git LFS (fait), le décalage de domaine (*domain shift*), et pourquoi des conventions de transcription différentes gonflent artificiellement le CER.
-- **Statut** : en cours. Akis écarté (décision 40) ; recherche d'un autre jeu.
+- **Statut** : fait (2026-09-28). Akis écarté (décision 40). Recherche des candidats : aucun jeu ne remplit les critères (décision 41) ; critères, candidats, raisons des exclusions et sources dans [DATASETS.md](DATASETS.md). Les deux plus proches (Osmanlica.com rik'a, CHURRO Osman Ağa) sont interrogés. Si une réponse permet un test propre, la préparation du jeu (tâches ci-dessus) se fera à la réouverture de F11.
 
 ---
 
@@ -309,6 +309,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
 - **Objectif** : mesurer la généralisation sur le jeu externe choisi en F10, pour le modèle de départ et le modèle affiné.
 - **Dépend de** : F7, F9, F10.
 - **Tâches** :
+  - Pré-enregistrer l'analyse et la committer avant toute prédiction, comme en F9 (décisions 37, 38 et 41).
   - CER de la baseline et du modèle affiné sur le jeu externe, avec `normalize` et la conversion propre au jeu définie en F10.
   - Ventilation par écriture si le jeu fournit l'information.
   - Comparaison avec des résultats publiés sur ce jeu, s'il en existe et si le protocole est comparable.
@@ -318,7 +319,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
   - Comparaison avec les résultats publiés, s'il y en a, en précisant les différences de protocole.
 - **Points de décision** : aucun réglage ne doit dépendre de ces résultats (évaluation finale uniquement).
 - **Concept à expliquer** : validité externe, et comment comparer honnêtement avec des résultats publiés.
-- **Statut** : à faire.
+- **Statut** : en attente (décision 41). Aucun jeu externe ne remplit les critères ; le test interne (F9) est le résultat principal de généralisation. Réponses attendues d'Osmanlica.com (jeu rik'a : licence, droit de publier des scores, origine de la vérité terrain, provenance des documents) et des auteurs de CHURRO (licence du sous-ensemble ottoman, transcription alignée par ligne). À rouvrir avec un pré-enregistrement si une réponse permet un test propre.
 
 ---
 
@@ -331,7 +332,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
   - taux d'apprentissage et programme (F8 : la validation progressait encore après 86 époques à 1e-4 constant ; essayer un taux plus élevé, `cosine` ou `reduceonplateau`) ;
   - ancien ou nouvel extracteur de polygones (décisions 25 et 36 : écart de 0,05 point sur le modèle F8, de 0,8 point sur l'essai).
 - **Dépend de** : F9.
-- **Tâches, critères, points de décision** : à préciser selon les résultats. Chaque expérience ne change qu'un facteur à la fois et est consignée dans EXPERIMENTS.md. Mesure sur la validation, puis sur le jeu externe (F11) ; jamais sur le test interne, clos (décision 39).
+- **Tâches, critères, points de décision** : à préciser selon les résultats. Chaque expérience ne change qu'un facteur à la fois et est consignée dans EXPERIMENTS.md. Mesure sur la validation, et sur le jeu externe seulement si F11 est rouvert (décision 41) ; jamais sur le test interne, clos (décision 39).
 - **Concept à expliquer** : l'étude d'ablation (ne changer qu'un facteur à la fois).
 - **Statut** : à faire.
 
@@ -357,7 +358,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
   - carte du modèle (*model card*) ;
   - dépôt du modèle sous CC BY-NC-SA (hérité de MAKHZAN), avec le drapeau `use_legacy_polygons` corrigé (décision 36) ;
   - référencement sur HTR-United.
-- **Dépend de** : F11.
+- **Dépend de** : F9 ; F11 s'il est rouvert (décision 41).
 - **Tâches, critères, points de décision** : à préciser selon les résultats. Il faudra au moins choisir le lieu du dépôt (Zenodo, par exemple) et la licence du code.
 - **Concept à expliquer** : ce que contient une carte de modèle, et comment les licences des données se transmettent au modèle.
 - **Statut** : à faire.
