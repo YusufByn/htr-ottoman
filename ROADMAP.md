@@ -276,7 +276,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
 - **Points de décision** :
   - Si le résultat est décevant, ne pas régler sur le test interne : revenir à la validation (F8) et consigner la décision.
 - **Concept à expliquer** : généralisation dans le domaine contre hors domaine, et pourquoi on ne regarde le test qu'une fois.
-- **Statut** : en cours (2026-09-28). Pré-enregistrement consigné (décision 37) ; aucune prédiction sur le test interne sans l'accord de l'utilisateur.
+- **Statut** : en cours (2026-09-28). Pré-enregistrement : décisions 37 et 38. Code prêt et testé : `compare` (bootstrap apparié), `final_eval` (contrôles bloquants), `configs/f9_test_interne.yml`. Tableaux de `evaluate` recalculés sur les prédictions existantes (naskh contre autres ajouté, tableau gen2 retiré, autres CSV identiques). Aucune prédiction sur le test interne : contrôles bloquants et prédiction du modèle F8 en attente de l'accord de l'utilisateur.
 
 ---
 

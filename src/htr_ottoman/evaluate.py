@@ -7,6 +7,8 @@
 - Intervalle de confiance à 95 % par bootstrap sur les manuscrits (tirage avec
   remise de manuscrits entiers), seulement pour les groupes d'au moins 3
   manuscrits (décision 30).
+- Écritures regroupées : naskh (la seule écriture codée `naskh`) contre toutes
+  les autres, écritures mixtes comprises (décision 38).
 - Ce calcul fait référence ; `ketos test` sert de contrôle (décision 29).
 - Convention des erreurs : substitution ; suppression = caractère de la vérité
   terrain absent de la prédiction ; insertion = caractère en trop dans la
@@ -28,6 +30,8 @@ from htr_ottoman.splits import SEED, load_split
 N_BOOTSTRAP = 1000
 CI_LEVEL = 0.95
 MIN_DOCS_FOR_CI = 3
+NASKH = "naskh"
+OTHER_SCRIPTS = "autres"
 
 
 @dataclass(frozen=True)
@@ -79,13 +83,19 @@ def score_lines(lines: pd.DataFrame, ref_col: str = "text", hyp_col: str = "pred
     return out
 
 
+def bootstrap_draws(n_docs: int) -> np.ndarray:
+    """Tirages bootstrap (seed fixée) : N_BOOTSTRAP lignes de n_docs indices de manuscrits,
+    tirés avec remise. Partagés avec la comparaison appariée (htr_ottoman.compare)."""
+    rng = np.random.default_rng(SEED)
+    return rng.integers(0, n_docs, size=(N_BOOTSTRAP, n_docs))
+
+
 def bootstrap_ci(scored: pd.DataFrame) -> tuple[float, float]:
     """Intervalle à 95 % du CER micro, en tirant des manuscrits entiers avec remise."""
     per_doc = scored.groupby("doc_id")[["errors", "ref_chars"]].sum()
     if len(per_doc) < MIN_DOCS_FOR_CI:
         return float("nan"), float("nan")
-    rng = np.random.default_rng(SEED)
-    idx = rng.integers(0, len(per_doc), size=(N_BOOTSTRAP, len(per_doc)))
+    idx = bootstrap_draws(len(per_doc))
     errors, chars = per_doc["errors"].to_numpy()[idx].sum(axis=1), per_doc["ref_chars"].to_numpy()[idx].sum(axis=1)
     cers = errors / chars
     alpha = (1 - CI_LEVEL) / 2
@@ -117,6 +127,12 @@ def summarize(scored: pd.DataFrame, by: str | None = None) -> pd.DataFrame:
     return pd.DataFrame.from_dict(rows, orient="index").rename_axis(by)
 
 
+def script_groups(scripts: pd.Series) -> pd.Series:
+    """naskh pour la seule écriture codée `naskh`, autres pour toutes les autres,
+    écritures mixtes comprises (décision 38)."""
+    return scripts.where(scripts == NASKH, OTHER_SCRIPTS)
+
+
 def attach_metadata(predictions: pd.DataFrame, split: str) -> pd.DataFrame:
     """Joint aux prédictions la vérité terrain et les métadonnées des lignes du jeu.
     Toutes les lignes compilées du jeu doivent avoir une prédiction, et réciproquement."""
@@ -132,6 +148,7 @@ def attach_metadata(predictions: pd.DataFrame, split: str) -> pd.DataFrame:
         raise ValueError(f"Prédictions et lignes du jeu {split} ne correspondent pas : {counts}")
     merged = merged.drop(columns="_merge")
     merged["is_multilingual"] = merged["part_id"].map(multi)
+    merged["script_group"] = script_groups(merged["script"])
     return merged
 
 
@@ -140,14 +157,34 @@ def report(scored: pd.DataFrame) -> dict[str, pd.DataFrame]:
         "global": summarize(scored),
         "par_ecriture": summarize(scored, "script"),
         "par_relecture": summarize(scored, "category"),
-        "par_couche_modele": summarize(scored, "is_model_layer"),
         "par_manuscrit": summarize(scored, "doc_id"),
     }
+    # Tableaux à un seul groupe omis : ni page gen2 ni autre écriture que le naskh (décision 38)
+    if scored["is_model_layer"].any():
+        tables["par_couche_modele"] = summarize(scored, "is_model_layer")
+    if (scored["script_group"] == OTHER_SCRIPTS).any():
+        tables["par_groupe_ecriture"] = summarize(scored, "script_group")
     if scored["is_multilingual"].any():
         tables["sans_multilingue"] = summarize(scored[~scored["is_multilingual"]])
         tables["par_multilinguisme"] = summarize(scored, "is_multilingual")
     works = scored.groupby("doc_id")["work"].first()
     tables["par_manuscrit"].insert(0, "oeuvre", tables["par_manuscrit"].index.map(works))
+    return tables
+
+
+def evaluate(predictions: pd.DataFrame, split: str, output_dir: Path) -> dict[str, pd.DataFrame]:
+    """Calcule et écrit lignes.parquet et un CSV par tableau dans `output_dir`."""
+    scored = score_lines(attach_metadata(predictions, split))
+    tables = report(scored)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    scored.to_parquet(output_dir / "lignes.parquet", index=False)
+    for name, table in tables.items():
+        table.to_csv(output_dir / f"{name}.csv", lineterminator="\n", float_format="%.6f")
+    pd.set_option("display.width", 200)
+    for name in ["global", "sans_multilingue", "par_groupe_ecriture", "par_ecriture", "par_relecture", "par_couche_modele"]:
+        if name in tables:
+            print(f"== {name}\n{tables[name].to_string(float_format=lambda x: f'{x:.4f}')}\n")
+    print(f"-> {output_dir}")
     return tables
 
 
@@ -158,17 +195,7 @@ def main() -> None:
     parser.add_argument("--output-dir", type=Path, required=True)
     args = parser.parse_args()
 
-    scored = score_lines(attach_metadata(pd.read_parquet(args.predictions), args.split))
-    tables = report(scored)
-    args.output_dir.mkdir(parents=True, exist_ok=True)
-    scored.to_parquet(args.output_dir / "lignes.parquet", index=False)
-    for name, table in tables.items():
-        table.to_csv(args.output_dir / f"{name}.csv", lineterminator="\n", float_format="%.6f")
-    pd.set_option("display.width", 200)
-    for name in ["global", "sans_multilingue", "par_ecriture", "par_relecture", "par_couche_modele"]:
-        if name in tables:
-            print(f"== {name}\n{tables[name].to_string(float_format=lambda x: f'{x:.4f}')}\n")
-    print(f"-> {args.output_dir}")
+    evaluate(pd.read_parquet(args.predictions), args.split, args.output_dir)
 
 
 if __name__ == "__main__":

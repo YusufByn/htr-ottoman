@@ -1,0 +1,23 @@
+# F9 : évaluation interne du modèle affiné, pré-enregistrée (DECISIONS.md, décisions 37 et 38).
+# Lancement : uv run python -m htr_ottoman.final_eval configs/f9_test_interne.yml [--controls-only]
+# Chemins relatifs à la racine du projet. Toutes les valeurs sont fixées avant la prédiction du modèle.
+
+split: test_interne
+
+model:                    # modèle retenu en F8 (époque 86, décision 35)
+  path: models/f8_finetune/best_0.8365.safetensors
+  sha256: 3709c4f3b5600db2399ebd2260feba7c5fcf8999afaf71a9cb9a0bab9847f8dd
+  reports: reports/f8_finetune/test_interne   # prédictions et tableaux de evaluate
+
+reference:                # baseline F7 : modèle de départ sans affinage (décision 32)
+  path: models/openiti_ottoman_print/ottoman_best.mlmodel
+  sha256: 1b60d34d758ed9cddd14289d708be8ce584e74a170d0db252eab1ab8cf48e93b
+  reports: reports/baseline/test_interne
+  predictions_sha256: 49bd33e3d32fcbac1eeb08a5289141035c9e29b2062d56010ed055cb9c990dd9   # à retrouver à l'octet près (décision 38)
+
+expected:                 # effectifs du jeu : lignes transcrites, caractères après normalize (décision 37)
+  manuscripts: 17
+  lines: 544
+  reference_chars: 21211
+
+comparison: reports/comparaisons/f8_finetune_baseline/test_interne   # bootstrap apparié (htr_ottoman.compare)
