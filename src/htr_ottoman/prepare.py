@@ -2,7 +2,8 @@
 
 Pour chaque jeu de splits/ :
 1. sélection des lignes utilisables : transcrites (règle de CLAUDE.md) et sans
-   annotation de transcripteur (décision 15) ;
+   annotation de transcripteur (décision 15) ; pour le train seulement, sans
+   caractère absent du codec du modèle de départ (décision 33) ;
 2. un ALTO normalisé par page dans data/processed/makhzan/alto/<DocID>/ : lignes
    exclues retirées, texte passé par `normalize` (unique normalisation du
    projet), image désignée par un chemin relatif vers data/interim/ ;
@@ -26,6 +27,7 @@ import xml.etree.ElementTree as ET
 import pandas as pd
 import pyarrow as pa
 
+from htr_ottoman.base_model import codec_chars
 from htr_ottoman.config import MAKHZAN_LINES, MAKHZAN_PROCESSED, REPORTS, ROOT
 from htr_ottoman.data.annotations import has_annotation
 from htr_ottoman.normalize import normalize
@@ -54,6 +56,11 @@ def select_lines() -> pd.DataFrame:
     lines.loc[lines["is_empty"], "exclusion"] = "vide"
     lines["norm"] = lines["text"].map(normalize)
     lines.loc[lines["exclusion"].isna() & (lines["norm"] == ""), "exclusion"] = "vide après normalisation"
+    # Train seulement : le codec reste celui du modèle de départ (décision 33).
+    # Validation et test gardent ces lignes : un caractère inconnu y est une erreur réelle (décision 24).
+    codec = codec_chars()
+    outside = lines["norm"].map(lambda t: not set(t) <= codec)
+    lines.loc[lines["exclusion"].isna() & (lines["split"] == "train") & outside, "exclusion"] = "hors codec"
     return lines
 
 
@@ -180,6 +187,7 @@ def main() -> None:
             "exclues_vides": int(excl.get("vide", 0)),
             "exclues_annotation": int(excl.get("annotation", 0)),
             "exclues_vides_apres_normalisation": int(excl.get("vide après normalisation", 0)),
+            "exclues_hors_codec": int(excl.get("hors codec", 0)),
             "lignes_compilees": len(kept),
             "caracteres": int(kept["norm"].str.len().sum()),
             "caracteres_distincts": len(charset),

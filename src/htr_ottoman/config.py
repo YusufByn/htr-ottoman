@@ -11,10 +11,12 @@ DATA_PROCESSED = DATA / "processed"
 
 MODELS = ROOT / "models"
 CONFIGS = ROOT / "configs"
+EXPERIMENTS_LOG = ROOT / "EXPERIMENTS.md"  # journal des expériences, une ligne ajoutée à chaque lancement
 SPLITS = ROOT / "splits"
 REPORTS = ROOT / "reports"
 FIGURES = REPORTS / "figures"
 BASELINE_REPORTS = REPORTS / "baseline"  # F7 : prédictions et CER du modèle de départ, un dossier par jeu
+TRAINING_REPORTS = REPORTS / "training"  # F8 : métriques par époque de chaque entraînement retenu
 
 # MAKHZAN, version 2026.1.2 (voir README)
 MAKHZAN_RAW = DATA_RAW / "makhzan"

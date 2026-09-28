@@ -18,7 +18,7 @@ data/raw/makhzan/  (zip + TSV, lecture seule)
                                           v
                                    data/processed/  (jeux prêts pour kraken, par split)
                                           │
-                        train (à venir) ──> models/  (modèles affinés)
+        train (configs/*.yml) ──> models/  (modèles affinés) + reports/training/, reports/figures/
                                           │
             predict + evaluate ──> reports/ + EXPERIMENTS.md  (CER ; baseline : reports/baseline/)
 ```
@@ -29,7 +29,7 @@ Le pipeline part toujours de `data/raw/`, qui n'est jamais modifié. Chaque éta
 
 ```
 htr-ottoman/
-├── configs/              paramètres d'une expérience (YAML), un fichier par expérience
+├── configs/              une expérience d'entraînement par fichier YAML (f8_finetune.yml)
 ├── data/                 hors git
 │   ├── raw/              sources telles que téléchargées, en lecture seule (chmod a-w)
 │   ├── interim/          zips décompressés, ALTO bruts, avant normalisation
@@ -38,6 +38,7 @@ htr-ottoman/
 ├── notebooks/            exploration visuelle uniquement, aucun code du pipeline n'en dépend
 ├── reports/              inventaires, métriques (versionné, CC BY-NC-SA)
 │   ├── baseline/         F7 : prédictions et CER du modèle de départ, un dossier par jeu (val/, test_interne/)
+│   ├── training/         métriques par époque de chaque entraînement retenu (<config>.csv)
 │   └── figures/          graphiques générés par les modules d'analyse
 ├── scripts/              utilitaires (vérification d'environnement)
 ├── splits/               listes train/val/test figées, avec la seed (versionné)
@@ -51,7 +52,7 @@ htr-ottoman/
 │   ├── prepare.py        ALTO normalisés, compilation Arrow pour kraken, vérifications
 │   ├── predict.py        prédictions ligne par ligne (API kraken, BiDi)
 │   ├── evaluate.py       CER micro global et ventilé, bootstrap par manuscrit
-│   └── train.py          (à venir) fine-tuning kraken piloté par une config
+│   └── train.py          fine-tuning kraken piloté par une config de configs/
 ├── tests/                tests automatiques (pytest)
 └── pyproject.toml, uv.lock, README.md, CLAUDE.md, DECISIONS.md, EXPERIMENTS.md, ARCHITECTURE.md, PROJECT.md
 ```
@@ -69,8 +70,8 @@ htr-ottoman/
 | Modèle de départ | `base_model` | API Zenodo, record 7050342 | `models/openiti_ottoman_print/` (MD5 vérifiés, lecture seule) | fait |
 | Couverture du codec | `analysis.codec_coverage` | table des lignes, `splits/`, modèle de départ | `reports/codec_coverage.csv` | fait |
 | Découpage | `splits` | TSV, décisions 1, 3, 6, 7, 19, 20 | `splits/train.csv`, `val.csv`, `test_interne.csv` | fait |
-| Préparation pour kraken | `prepare` (avec `normalize`, `data.annotations`) | table des lignes, `splits/`, images de `data/interim/` | `data/processed/makhzan/` (248 ALTO normalisés, `train.arrow` 2 763 lignes, `val.arrow` 412, `test_interne.arrow` 544, manifestes `.lst`), `reports/processed_datasets.csv` | fait |
-| Entraînement | `train` (à venir) | `data/processed/`, `configs/`, modèle de départ | `models/` | à venir |
+| Préparation pour kraken | `prepare` (avec `normalize`, `data.annotations`) | table des lignes, `splits/`, images de `data/interim/` | `data/processed/makhzan/` (248 ALTO normalisés, `train.arrow` 2 757 lignes, `val.arrow` 412, `test_interne.arrow` 544, manifestes `.lst`), `reports/processed_datasets.csv` | fait |
+| Entraînement | `train` | `configs/<config>.yml`, `data/processed/makhzan/{train,val}.lst`, modèle de départ | `models/<config>/` (checkpoints, `best_<score>.safetensors`, `commande.txt`, `ketos.log`, `run.json`, journal TensorBoard), `reports/training/<config>.csv`, `reports/figures/<config>_courbes.png`, ligne dans `EXPERIMENTS.md` ; essai : tout dans `models/<config>_essai/` | module fait, entraînement à lancer |
 | Prédiction | `predict` | modèle, ALTO normalisés d'un jeu (`data/processed/makhzan/alto/`, segmentation de la vérité terrain, décision 31) | parquet (part_id, line_id, pred) ; baseline : `reports/baseline/<jeu>/predictions.parquet` | fait |
 | Évaluation | `evaluate` | prédictions, table des lignes, `splits/` | dossier de CSV (global, par écriture, relecture, couche modèle, manuscrit, multilinguisme) + `lignes.parquet` ; baseline : `reports/baseline/<jeu>/` ; résultat consigné dans `EXPERIMENTS.md` | fait |
 
@@ -86,18 +87,18 @@ htr-ottoman/
 | `data.alto` | `read_alto(xml)` : `Page` (image, taille) et ses `Line` (id, bloc, texte brut, ligne de base, polygone, `is_empty`). | aucun | fait |
 | `data.makhzan` | Constantes MAKHZAN (version, `LANGUAGE`, `MODEL_LAYERS`, `KNOWN_LAYERS`) ; `download`, `extract` (dossier temporaire puis renommage, noms de fichiers contrôlés), `build_lines`, `check_lines` (effectifs par page égaux au TSV). | `uv run python -m htr_ottoman.data.makhzan` | fait |
 | `normalize` | `normalize(text)` : applique dans l'ordre les règles de `RULES` (1 NFD, 2 marques de direction, 3 voyelles, 4 ک→ك, 5 ی selon la position, 8 séparateurs de vers → ".", 9 ڛ→س, 6 ZWNJ répétés, 7 espaces), puis NFD. Sortie toujours NFD, idempotente. Une fonction par règle, docstring et décision associées (5, 9 à 14, 21, 22). Le numéro d'une règle est un identifiant, pas son rang. | import `from htr_ottoman.normalize import normalize` | fait |
-| `base_model` | `download` (Zenodo, `ensure_file`), `load` (kraken `load_models`, lit l'ancien `.mlmodel` ; avertissements bénins de coremltools masqués), `codec_labels`. Modèle : lignes de 120 px, niveaux de gris, lignes de base, anciens polygones, NFD. | `uv run python -m htr_ottoman.base_model` | fait |
+| `base_model` | `download` (Zenodo, `ensure_file`), `load` (kraken `load_models`, lit l'ancien `.mlmodel` ; avertissements bénins de coremltools masqués), `codec_labels`, `codec_chars` (ensemble des caractères du codec, chargé une fois). Modèle : lignes de 120 px, niveaux de gris, lignes de base, anciens polygones, NFD. | `uv run python -m htr_ottoman.base_model` | fait |
 | `analysis.codec_coverage` | Caractères des lignes transcrites après `normalize`, par jeu, comparés au codec ; lignes annotées comptées à part. | `uv run python -m htr_ottoman.analysis.codec_coverage` | fait |
 | `data.annotations` | `has_annotation(text)` : accolades et `(؟)` (décision 15), utilisé par la couverture du codec et par F4. | aucun | fait |
-| `prepare` | `select_lines` (exclut vides et annotées), `write_page_alto` (texte passé par `normalize`, lignes exclues retirées, image désignée par chemin relatif), `compile_split` (`build_binary_dataset`, anciens polygones, un seul processus), `check_split` (nombre de lignes, NFD, texte attendu, statut des polygones), `verify_with_kraken` (lecture par la classe de jeu de l'entraînement, aucune ligne remplacée). Constantes `LEGACY_POLYGONS`, `KRAKEN_TEXT_OPTIONS` (réutilisées par F7 et F8). | `uv run python -m htr_ottoman.prepare` | fait |
+| `prepare` | `select_lines` (exclut vides et annotées ; pour le train, lignes hors codec du modèle de départ, décision 33), `write_page_alto` (texte passé par `normalize`, lignes exclues retirées, image désignée par chemin relatif), `compile_split` (`build_binary_dataset`, anciens polygones, un seul processus), `check_split` (nombre de lignes, NFD, texte attendu, statut des polygones), `verify_with_kraken` (lecture par la classe de jeu de l'entraînement, aucune ligne remplacée). Constantes `LEGACY_POLYGONS`, `KRAKEN_TEXT_OPTIONS` (réutilisées par F7 et F8). | `uv run python -m htr_ottoman.prepare` | fait |
 | `splits` | `assign` (règles fixes : ACDC-Evaluation → test_interne, *Manāfi' al-nās* → val, reste de Research → train), `validate` (chaque page une fois, aucune œuvre, Doc ID ni cote partagés, Doc 86 et 89 ensemble), `render` (en-tête sans date : fichiers identiques octet pour octet), `load_split` pour les étapes suivantes. `SEED = 42`. | `uv run python -m htr_ottoman.splits` | fait |
-| `train` | Fine-tuning kraken à partir d'un fichier de `configs/`. | à venir | à venir |
+| `train` | `load_config`, `check` (réglages de texte de la décision 26, validation imposée, jamais le test interne ni dans la config ni dans les manifestes, seed 42), `to_args` (clés = noms longs des options de ketos, clé inconnue refusée), `build_command` (ajoute `-v`, `--output`, journal TensorBoard ; essai = 1 époque), `validate_with_ketos` (analyse des options sans lancement), `git_commit` (refuse de lancer si du travail n'est pas committé, hors EXPERIMENTS.md), `experiment_row` (ligne « en cours » d'EXPERIMENTS.md au lancement), `read_metrics` (perte, précision de validation kraken et durées par époque, depuis TensorBoard), `plot_curves`. Compte les lignes remplacées par kraken et les avertissements du mode déterministe. | `uv run python -m htr_ottoman.train configs/<config>.yml [--trial]` | fait |
 | `predict` | `predict_split(modèle, jeu)` : `RecognitionTaskModel.predict` page par page sur les ALTO normalisés, `bidi_reordering` du projet (ordre logique), découpe selon le drapeau du modèle. | `uv run python -m htr_ottoman.predict --model … --split … --output …` | fait |
 | `evaluate` | `edit_counts` (Levenshtein détaillé S/D/I), `score_lines` (`normalize` des deux côtés), `summarize` (CER micro, effectifs, bootstrap par manuscrit si au moins 3), `attach_metadata` (vérifie une prédiction par ligne compilée), `report` (global, écriture, relecture, couche modèle, manuscrit, avec et sans multilingue). | `uv run python -m htr_ottoman.evaluate PRED.parquet --split … --output-dir …` | fait |
 
 ## 5. Configurations
 
-À venir. Un fichier YAML par expérience dans `configs/`, lu par `train` et `evaluate`.
+Un fichier YAML par expérience d'entraînement dans `configs/`, lu par `train`. Deux sections : `ketos` (options globales, avant `train`) et `train` (options de `ketos train`). Les clés sont les noms longs des options de ketos sans les tirets (`lrate`, `batch-size`, `reorder`), les chemins sont relatifs à la racine. Le format natif de ketos (`--config`) n'est pas utilisé : il ignore une clé inconnue avec un simple avertissement. `train` ajoute lui-même la sortie, le journal TensorBoard et `-v`. Premier fichier : `configs/f8_finetune.yml` (décisions 33 à 35).
 
 ## 6. Conventions
 
@@ -110,6 +111,7 @@ htr-ottoman/
 - **kraken** : toujours lire la skill `.claude/skills/kraken/` avant de l'utiliser. Réglages de texte : `prepare.KRAKEN_TEXT_OPTIONS` ; découpe : anciens polygones ; prédictions via l'API Python ou `ketos test`, pas `kraken ocr` ; tout code qui lance kraken tourne dans un module avec `if __name__ == "__main__":` (processus parallèles).
 - **Fichiers générés versionnés** (`splits/`, `reports/`) : jamais de date ni d'élément variable dans leur contenu, pour que la régénération soit vérifiable par comparaison.
 - **Lancement** : `uv run python -m htr_ottoman.<module>`.
+- **Dépendances** (`pyproject.toml`) : kraken 7.1.1, pandas, tensorboard (journal des métriques d'entraînement, lu par `train`), matplotlib (courbes).
 
 ## 7. Tests
 
@@ -121,8 +123,9 @@ htr-ottoman/
 | `tests/test_splits.py` | Fichiers identiques à une régénération, étanchéité (œuvre, Doc ID, cote), Doc 86 et 89 ensemble, chaque page une fois, effectifs, pages multilingues, `validate` détecte une fuite. | fait (16 tests) |
 | `tests/test_annotations.py` | `has_annotation` sur des cas réels (illisible, restitution, note, incertitude) et des lignes ordinaires. | fait (8 tests) |
 | `tests/test_base_model.py` | MD5 du modèle, chargement, entrée (120 px, niveaux de gris, lignes de base, NFD), codec de 196 caractères (sauté si le modèle est absent). | fait (3 tests) |
-| `tests/test_prepare.py` | Effectifs compilés et exclusions, texte des `.arrow` (NFD, sans annotation, anciens polygones), réglages de texte de kraken sans effet, ALTO normalisés relus par kraken, lecture d'un échantillon par kraken, réglages identiques au modèle de départ (sauté si les jeux sont absents). | fait (15 tests) |
+| `tests/test_prepare.py` | Effectifs compilés et exclusions (dont 6 lignes hors codec du train), train entièrement couvert par le codec, texte des `.arrow` (NFD, sans annotation, anciens polygones), réglages de texte de kraken sans effet, ALTO normalisés relus par kraken, lecture d'un échantillon par kraken, réglages identiques au modèle de départ (sauté si les jeux sont absents). | fait (15 tests) |
 | `tests/test_evaluate.py` | Cas calculés à la main (identiques, S, D, I, vides, kitten/sitting), retournement, NFC/NFD, normalize des deux côtés, espaces, agrégation micro, concordance torchmetrics, bootstrap (reproductible, rien sous 3 manuscrits), bout en bout sur la validation (CER nul, prédiction manquante détectée), tableaux de la baseline redonnés à partir des prédictions versionnées (val, test interne). | fait (23 tests) |
+| `tests/test_train.py` | Noms longs et booléens, clés inconnues ou réservées refusées, config F8 valide et acceptée par ketos, essai (1 époque) et dossiers séparés, garde-fous (réglages de texte, seed, test interne, validation manquante), valeur refusée par ketos, fichiers non committés hors journal, ligne d'EXPERIMENTS.md, métriques et durées lues dans un journal TensorBoard synthétique, graphique. | fait (17 tests) |
 | `tests/test_config.py` | Le package s'importe, `ROOT` est la racine du projet, les chemins sont dans le projet. | fait |
 | `tests/test_normalize.py` | Un test par règle (exemples réels آ, أ, ئ, ی selon la position, séparateurs de vers, ڛ), sortie NFD, idempotence ; et sur les 3 868 lignes ottomanes réelles (sauté si le zip MAKHZAN est absent). | fait (43 tests) |
 
@@ -146,6 +149,7 @@ uv run python -m htr_ottoman.predict --model models/openiti_ottoman_print/ottoma
 uv run python -m htr_ottoman.evaluate reports/baseline/val/predictions.parquet --split val --output-dir reports/baseline/val
 uv run python -m htr_ottoman.predict --model models/openiti_ottoman_print/ottoman_best.mlmodel --split test_interne --output reports/baseline/test_interne/predictions.parquet
 uv run python -m htr_ottoman.evaluate reports/baseline/test_interne/predictions.parquet --split test_interne --output-dir reports/baseline/test_interne
-# entraînement : à venir
+uv run python -m htr_ottoman.train configs/f8_finetune.yml --trial  # essai court, 1 époque, models/f8_finetune_essai/
+uv run python -m htr_ottoman.train configs/f8_finetune.yml          # entraînement complet (45 à 75 min, MPS)
 uv run pytest
 ```

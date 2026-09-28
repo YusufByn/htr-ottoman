@@ -15,7 +15,7 @@ Statuts : à faire, en cours, fait. Dernière mise à jour : 2026-09-28.
 | F5 | Évaluation (CER) | F1 | fait |
 | F6 | Modèle de départ | F1, F2 | fait |
 | F7 | Baseline | F4, F5, F6 | fait |
-| F8 | Premier fine-tuning | F7 | à faire |
+| F8 | Premier fine-tuning | F7 | en cours |
 | F9 | Évaluation interne du modèle affiné | F5, F8 | à faire |
 | F10 | Akis | F1, F5 | à faire |
 | F11 | Évaluation externe sur Akis | F7, F9, F10 | à faire |
@@ -256,7 +256,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
   - Validation des hyperparamètres et du mode de gestion du codec avant le lancement : 7 caractères du train sont absents du codec (4 `#`, 2 ZWNJ, 1 ٮ, décision 23). Étendre le codec, ou écarter ces 6 lignes.
   - Accord avant tout entraînement long (CLAUDE.md).
 - **Concept à expliquer** : fine-tuning contre entraînement depuis zéro, époque, taux d'apprentissage, surapprentissage et arrêt anticipé, rôle de la validation dans le choix du meilleur modèle.
-- **Statut** : à faire.
+- **Statut** : en cours.
 
 ---
 

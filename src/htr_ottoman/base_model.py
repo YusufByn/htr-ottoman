@@ -7,6 +7,7 @@
 
 Usage : uv run python -m htr_ottoman.base_model
 """
+import functools
 import json
 import urllib.request
 import warnings
@@ -50,6 +51,15 @@ def load():
 def codec_labels(model) -> dict[str, list[int]]:
     """Codec : chaque entrée (un caractère ou une suite) et ses numéros de classe."""
     return dict(model.codec.c2l)
+
+
+@functools.cache
+def codec_chars() -> frozenset[str]:
+    """Caractères du codec du modèle de départ (modèle chargé une seule fois par processus)."""
+    labels = codec_labels(load())
+    if any(len(k) != 1 for k in labels):
+        raise ValueError("Le codec contient des suites de plusieurs caractères")
+    return frozenset(labels)
 
 
 def main() -> None:

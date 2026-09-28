@@ -1,4 +1,4 @@
-split,manuscrits,pages,lignes_total,exclues_vides,exclues_annotation,exclues_vides_apres_normalisation,lignes_compilees,caracteres,caracteres_distincts,legacy_polygons,type,alphabet
-train,11,199,2790,19,8,0,2763,124582,49,True,kraken_recognition_baseline, #.،ءابةتثجحخدذرزسشصضطظعغفقكلمنهوىيٕٓٔ٠١٥ٮٱپچژڭگ‌
-val,2,19,523,87,24,0,412,21393,38,True,kraken_recognition_baseline, .ءابةتثجحخدذرزسشصضطظعغفقكلمنهوىيٓٔٱپچ
-test_interne,17,30,555,0,11,0,544,21211,55,True,kraken_recognition_baseline, .،ءابةتثجحخدذرزسشصضطظعغفقكلمنهوىيٓٔ٠١٢٣٤٥٦٧٨٩ٮٱپچڡڭںە‌
+split,manuscrits,pages,lignes_total,exclues_vides,exclues_annotation,exclues_vides_apres_normalisation,exclues_hors_codec,lignes_compilees,caracteres,caracteres_distincts,legacy_polygons,type,alphabet
+train,11,199,2790,19,8,0,6,2757,124327,46,True,kraken_recognition_baseline, .،ءابةتثجحخدذرزسشصضطظعغفقكلمنهوىيٕٓٔ٠١٥ٱپچژڭگ
+val,2,19,523,87,24,0,0,412,21393,38,True,kraken_recognition_baseline, .ءابةتثجحخدذرزسشصضطظعغفقكلمنهوىيٓٔٱپچ
+test_interne,17,30,555,0,11,0,0,544,21211,55,True,kraken_recognition_baseline, .،ءابةتثجحخدذرزسشصضطظعغفقكلمنهوىيٓٔ٠١٢٣٤٥٦٧٨٩ٮٱپچڡڭںە‌

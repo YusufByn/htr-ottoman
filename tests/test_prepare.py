@@ -15,7 +15,7 @@ pytestmark = pytest.mark.skipif(
     reason="jeux absents : uv run python -m htr_ottoman.prepare",
 )
 
-EXPECTED = {"train": 2763, "val": 412, "test_interne": 544}
+EXPECTED = {"train": 2757, "val": 412, "test_interne": 544}  # train : 6 lignes hors codec écartées (décision 33)
 
 
 @pytest.fixture(scope="module")
@@ -35,6 +35,14 @@ def test_exclusions():
     report = pd.read_csv(REPORT, keep_default_na=False).set_index("split")
     assert report["exclues_annotation"].sum() == 43
     assert report.loc["train", "exclues_vides"] + report.loc["val", "exclues_vides"] == 106
+    assert report["exclues_hors_codec"].to_dict() == {"train": 6, "val": 0, "test_interne": 0}
+
+
+def test_train_inside_base_codec(arrows):
+    from htr_ottoman.base_model import codec_chars
+
+    texts, _ = arrows["train"]
+    assert set("".join(texts)) <= codec_chars()  # permet --resize fail en F8
 
 
 @pytest.mark.parametrize("name", SPLIT_NAMES)

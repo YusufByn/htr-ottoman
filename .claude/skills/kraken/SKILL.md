@@ -89,7 +89,8 @@ uv run ketos -d auto -s 42 train --load models/.../modele.mlmodel \
 - Taux d'apprentissage : `-r` (défaut 1e-3), `--schedule` (défaut `constant` ; aussi `cosine` avec `--cos-max`, `--cos-min-lr`, `reduceonplateau`, `1cycle`...), `--warmup` (nombre de pas d'optimisation pour monter progressivement jusqu'à `-r`).
 - Autres : `-B` taille de lot (défaut 1), `--augment`, `--optimizer` (défaut AdamW), `--pad` (défaut 16), `--weights-format`.
 - Options globales (avant la sous-commande) : `-d` appareil (défaut `auto`), `--precision` (défaut `32-true`), `--workers`, `--threads`, `-s` seed, `-r/--deterministic`.
-- Hyperparamètres du modèle de départ : Adam, lr 1e-3, cosine, lot 16, 23 époques.
+- Hyperparamètres du modèle de départ : Adam, lr 1e-3, cosine (`cos_t_max` 40), warmup 200 pas, lot 16, pad 16, `lag` 5, `min_epochs` 5, 23 époques effectuées.
+- **`-s` et `-r` changent de sens selon leur place** : avant `train`, `-s` = seed et `-r` = `--deterministic` ; après `train`, `-s` = spec VGSL et `-r` = taux d'apprentissage. Toujours écrire les noms longs (`--seed`, `--deterministic`, `--lrate`).
 
 **Fichiers d'expérience YAML** : `uv run ketos --config configs/exp.yml train`. Options globales au premier niveau (`precision`, `device`, `num_workers`, `num_threads`, seed...), options de la sous-commande sous `train:`. Les clés sont les **noms Python** des options, pas les drapeaux : `training_data`, `evaluation_data`, `format_type`, `checkpoint_path` (pour `-o`), `rop_patience` (pour `--sched-patience`), `weights_format`, `normalization`, `normalize_whitespace`... (training_recognition, « Experiment Files » ; migration_6_0).
 
@@ -130,6 +131,14 @@ Options utiles de `ocr` : `--reorder/--no-reorder`, `--base-dir`, `--no-legacy-p
 - `ArrowIPCRecognitionDataset.__getitem__` **remplace en silence** une ligne illisible par une ligne au hasard (`failed_samples`) : le vérifier (`htr_ottoman.prepare.verify_with_kraken`).
 - `build_binary_dataset(num_workers>1)` écrit les lignes dans l'ordre d'achèvement (`imap_unordered`) : compilation non déterministe. Avec `num_workers=0`, deux compilations sont identiques octet pour octet (70 s pour nos 3 719 lignes, ancien extracteur).
 - Durée indicative sur MacBook Air M5, MPS : une époque de train (2 763 lignes, lots de 16, 173 pas) en 1 min 50, plus environ 7 min de chargement, validation et conversion pour la première époque.
+
+## 11. Constats vérifiés dans le code installé (F8, 2026-09-28)
+
+- `--quit early` : arrêt sur `val_accuracy` (précision caractère de kraken sur la validation, sans nos règles de `normalize` sur la prédiction), patience `--lag` évaluations ; **aucun maximum d'époques** (`max_epochs=-1`), `-N` n'est lu qu'avec `--quit fixed` (`ketos/recognition.py`, `train/vgsl.py` `configure_callbacks`).
+- **`--min-delta` est sans effet en 7.1.1** : lu dans la configuration mais jamais passé à `EarlyStopping`.
+- Checkpoints : les 10 meilleurs sur `val_metric` (= `val_accuracy`) sont gardés dans `-o` (`checkpoint_<époque>-<val_metric>.ckpt`), plus `checkpoint_abort.ckpt` en cas d'arrêt brutal.
+- `--seed N` appelle `seed_everything(N, workers=True)` ; `--deterministic` passe Lightning en mode `warn` (opérations non déterministes signalées, pas bloquées). Reproductibilité exacte non garantie sur MPS.
+- `-d mps` est accepté (`to_ptl_device`), comme `auto`.
 
 ## 9. Écarts entre la doc 7.1 et l'aide installée
 
