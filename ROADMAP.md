@@ -8,7 +8,7 @@ Statuts : à faire, en cours, fait. Dernière mise à jour : 2026-09-28.
 | ID | Titre | Dépend de | Statut |
 |----|-------|-----------|--------|
 | F0 | Mise en place du projet | | fait |
-| F1 | `normalize.py` et ses tests | | à faire |
+| F1 | `normalize.py` et ses tests | | fait |
 | F2 | Téléchargement et extraction de MAKHZAN | | à faire |
 | F3 | Splits | F2 | à faire |
 | F4 | Préparation des données pour kraken | F1, F2, F3 | à faire |
@@ -64,7 +64,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
   - Quelles règles en plus de NFD : espaces multiples, espaces en début et en fin, marques de direction (RLM, LRM), caractères de largeur nulle (ZWJ, ZWNJ), tatwīl (ـ), chiffres arabes ou persans.
   - Faut-il uniformiser des variantes que MAKHZAN transcrit de façon inégale (ى / ي, ی / ي, ك / ک) ? C'est à trancher avec la liste des caractères sous les yeux.
 - **Concept à expliquer** : les formes de normalisation Unicode (NFC, NFD, caractères combinants), et pourquoi une différence d'encodage invisible à l'œil fausse le CER si la vérité terrain et la prédiction ne sont pas traitées de la même façon.
-- **Statut** : à faire.
+- **Statut** : fait (2026-09-28). Règles : NFD, marques de direction, voyelles, ک→ك, ی selon la position, ZWNJ répétés, espaces (décisions 9 à 14). Inventaire : `reports/ottoman_characters.csv`. 39 tests, dont un sur les 3 868 lignes réelles.
 
 ---
 
@@ -144,6 +144,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
   - Vérifier dans la documentation de la version installée (kraken 7.1.1) le format d'entraînement attendu et la commande de compilation (`ketos compile`, format binaire Arrow).
   - Appliquer `normalize` au texte des lignes.
   - Exclure les lignes vides de l'entraînement (règle de CLAUDE.md).
+  - Exclure de l'entraînement et de l'évaluation les lignes avec annotations de transcripteur (`{...}`, `(؟)`), et consigner leur nombre (décision 15).
   - Garder la trace des pages en couche gen2 (décision 4).
   - Compiler un jeu par split, et enregistrer le nombre de lignes et la liste des caractères de chaque jeu.
   - Contrôler visuellement quelques images de lignes extraites (dans un notebook, pour l'exploration seulement).

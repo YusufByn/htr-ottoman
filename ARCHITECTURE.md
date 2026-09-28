@@ -14,7 +14,7 @@ data/raw/makhzan/  (zip + TSV, lecture seule)
                                           │
               splits (à venir) ──> splits/│  (listes train / val / test figées)
                                           │
-                   normalize (NFD, à venir)
+       normalize (NFD + 6 règles), appliqué en F4
                                           v
                                    data/processed/  (jeux prêts pour kraken, par split)
                                           │
@@ -44,7 +44,7 @@ htr-ottoman/
 │   ├── config.py         chemins du projet, définis une seule fois
 │   ├── data/             téléchargement, extraction, lecture ALTO et métadonnées
 │   ├── analysis/         inventaires et comparaisons descriptives
-│   ├── normalize.py      (à venir) l'unique fonction de normalisation
+│   ├── normalize.py      l'unique fonction de normalisation (NFD + règles documentées)
 │   ├── splits.py         (à venir) création des splits par œuvre
 │   ├── train.py          (à venir) fine-tuning kraken piloté par une config
 │   └── evaluate.py       (à venir) CER global, par écriture et par relecture
@@ -59,9 +59,10 @@ htr-ottoman/
 | Téléchargement | `data` (à venir) | Zenodo, DOI 10.5281/zenodo.19861912 | `data/raw/makhzan/` + vérification MD5 | fait à la main le 2026-09-25 (voir README), module à venir |
 | Inventaire | `analysis.inventory_ottoman` | TSV de métadonnées | `reports/ottoman_inventory.csv` | fait |
 | Comparaison des sources | `analysis.compare_ottoman_sources` | TSV de métadonnées | sortie console | fait |
+| Inventaire des caractères | `analysis.char_inventory` | zip MAKHZAN (ALTO lus dans le zip, lecture seule), TSV | `reports/ottoman_characters.csv` | fait |
 | Extraction | `data` (à venir) | zip MAKHZAN, TSV | `data/interim/` | à venir |
 | Découpage | `splits` (à venir) | TSV, décisions 1, 3, 6, 7 | `splits/` | à venir |
-| Normalisation | `normalize` (à venir) | `data/interim/` | `data/processed/` | à venir |
+| Normalisation | `normalize` (fonction faite, appliquée aux données en F4) | `data/interim/` | `data/processed/` | à venir (F4) |
 | Entraînement | `train` (à venir) | `data/processed/`, `configs/`, modèle de départ | `models/` | à venir |
 | Évaluation | `evaluate` (à venir) | modèle, jeux val / test | `reports/`, `EXPERIMENTS.md` | à venir |
 
@@ -72,8 +73,9 @@ htr-ottoman/
 | `config` | Chemins du projet (`ROOT`, `DATA_RAW`, `SPLITS`, `REPORTS`, fichiers MAKHZAN). Tous les modules les importent d'ici. | aucun | fait |
 | `analysis.inventory_ottoman` | Une ligne par manuscrit ottoman : titre, pages, écritures, langues, source, relecture, lignes, pages en couche modèle. S'arrête si une couche de transcription inconnue apparaît. | `uv run python -m htr_ottoman.analysis.inventory_ottoman` | fait |
 | `analysis.compare_ottoman_sources` | Research contre ACDC-Evaluation : pages, lignes, écritures, relecture ; lignes par manuscrit et par œuvre. | `uv run python -m htr_ottoman.analysis.compare_ottoman_sources` | fait |
+| `analysis.char_inventory` | Une ligne par caractère des lignes ottomanes : point de code, nom et catégorie Unicode, occurrences, lignes, manuscrits, Research / ACDC-Evaluation. Signale les anomalies d'espacement. Fournit aussi `iter_lines`, utilisé par les tests. | `uv run python -m htr_ottoman.analysis.char_inventory` | fait |
 | `data` | Téléchargement avec vérification MD5, extraction, lecture ALTO. | à venir | à venir |
-| `normalize` | Normalisation NFD et règles documentées, appliquée à la vérité terrain et aux prédictions. | à venir | à venir |
+| `normalize` | `normalize(text)` : applique dans l'ordre les règles de `RULES` (1 NFD, 2 marques de direction, 3 voyelles, 4 ک→ك, 5 ی selon la position, 6 ZWNJ répétés, 7 espaces), puis NFD. Sortie toujours NFD, idempotente. Une fonction par règle, docstring et décision associées (5, 9 à 14). | import `from htr_ottoman.normalize import normalize` | fait |
 | `splits` | Découpage par œuvre avec seed, écrit dans `splits/`. | à venir | à venir |
 | `train` | Fine-tuning kraken à partir d'un fichier de `configs/`. | à venir | à venir |
 | `evaluate` | CER global, par écriture et par catégorie de relecture. | à venir | à venir |
@@ -87,7 +89,7 @@ htr-ottoman/
 - **Chemins** : toujours importés de `htr_ottoman.config`, jamais écrits en dur dans un module.
 - **Données brutes** : `data/raw/` est en lecture seule (`chmod a-w`) ; aucun module n'y écrit.
 - **Identifiants** : les fichiers MAKHZAN sont nommés `<DocID>_<DocPartID>.jpg` / `.xml` ; un Doc ID est un document eScriptorium, une œuvre est identifiée par `Title of Text` (décision 6).
-- **Normalisation** : appliquée en un seul point, par `normalize`, à la vérité terrain et aux prédictions (décisions 5 et 8).
+- **Normalisation** : appliquée en un seul point, par `normalize`, à la vérité terrain et aux prédictions (décisions 5 et 8). Toute nouvelle règle : une fonction dans `RULES`, une docstring, un test, une décision. Les annotations de transcripteur ne sont pas normalisées mais filtrées en F4 (décision 15).
 - **Valeurs multiples** dans les CSV de `reports/` : séparées par ` | `.
 - **Seeds** : à venir, fixées dans les configs et dans les fichiers de `splits/`.
 - **Lancement** : `uv run python -m htr_ottoman.<module>`.
@@ -97,7 +99,7 @@ htr-ottoman/
 | Fichier | Ce qui est testé | État |
 |---------|------------------|------|
 | `tests/test_config.py` | Le package s'importe, `ROOT` est la racine du projet, les chemins sont dans le projet. | fait |
-| `tests/test_normalize.py` | Règles de normalisation. | à venir (premier test à écrire avec `normalize`) |
+| `tests/test_normalize.py` | Un test par règle (exemples réels آ, أ, ئ, ی selon la position), sortie NFD, idempotence ; et sur les 3 868 lignes ottomanes réelles (sauté si le zip MAKHZAN est absent). | fait (39 tests) |
 
 Lancement : `uv run pytest`.
 
@@ -109,6 +111,7 @@ uv run python scripts/check_mps.py                             # backend MPS
 # téléchargement de MAKHZAN : à venir (module data) ; en attendant, voir README (URL et MD5)
 uv run python -m htr_ottoman.analysis.inventory_ottoman
 uv run python -m htr_ottoman.analysis.compare_ottoman_sources
-# extraction, splits, normalisation, entraînement, évaluation : à venir
+uv run python -m htr_ottoman.analysis.char_inventory
+# extraction, splits, application de la normalisation, entraînement, évaluation : à venir
 uv run pytest
 ```
