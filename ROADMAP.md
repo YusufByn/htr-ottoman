@@ -10,7 +10,7 @@ Statuts : à faire, en cours, fait. Dernière mise à jour : 2026-09-28.
 | F0 | Mise en place du projet | | fait |
 | F1 | `normalize.py` et ses tests | | fait |
 | F2 | Téléchargement et extraction de MAKHZAN | | fait |
-| F3 | Splits | F2 | à faire |
+| F3 | Splits | F2 | fait |
 | F4 | Préparation des données pour kraken | F1, F2, F3 | à faire |
 | F5 | Évaluation (CER) | F1 | à faire |
 | F6 | Modèle de départ | F1, F2 | à faire |
@@ -132,7 +132,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
   - Granularité des fichiers : liste de Doc ID, de pages ou de lignes.
   - Les 7 pages multilingues du test interne (ottoman avec arabe, persan ou baleybelen) : les garder dans le test interne ou les rapporter à part.
 - **Concept à expliquer** : le rôle de chaque jeu (train, validation, test), la fuite de données (*data leakage*), le découpage par groupe, et à quoi sert une seed.
-- **Statut** : à faire.
+- **Statut** : fait (2026-09-28). `uv run python -m htr_ottoman.splits` : `splits/train.csv`, `val.csv`, `test_interne.csv` (une ligne par page, seed 42), étanchéité vérifiée (œuvre, Doc ID, cote), fichiers identiques octet pour octet à chaque génération, 16 tests. Décisions 19 et 20.
 
 ---
 
@@ -171,6 +171,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
 - **Tâches** :
   - `src/htr_ottoman/evaluate.py` : CER calculé sur des textes normalisés par `normalize`.
   - Ventilations : global, par écriture, par catégorie de relecture, couche gen2 ou non, par manuscrit.
+  - CER du test interne avec et sans les 7 pages multilingues (`is_multilingual`, décision 19).
   - Rapporter pour chaque groupe le nombre de lignes et de caractères, pour juger de la taille de l'échantillon.
   - Tests sur des cas calculés à la main : chaînes identiques (CER 0), une substitution, une insertion, une suppression, une chaîne vide, un exemple arabe en NFC contre NFD.
 - **Critères d'acceptation** :

@@ -28,14 +28,15 @@ Tout modèle dérivé de MAKHZAN est sous CC BY-NC-SA. Détails et MD5 : [README
 |-----|---------|-----------:|------:|-------------------:|-----------|
 | Entraînement | Research, sauf l'œuvre de validation (6 œuvres) | 11 | 199 | 2 771 | 2, 3, 6 |
 | Validation | *Manāfi' al-nās fī al-ṭibb* (Doc 2937, 2939) | 2 | 19 | 436 | 7 |
-| Test interne | ACDC-Evaluation ottoman, jamais utilisé pour le réglage | 17 | 30 | 555 | 1 |
+| Test interne | ACDC-Evaluation ottoman, jamais utilisé pour le réglage ; 7 pages multilingues marquées | 17 | 30 | 555 | 1, 19 |
 | Test final | Akis, évaluation finale uniquement | à venir | à venir | à venir | CLAUDE.md |
 
 - Découpage par œuvre : toutes les copies d'une œuvre sont dans le même jeu (décision 6).
 - Les lignes sans transcription sont exclues de l'entraînement.
 - Les lignes contenant des annotations de transcripteur (`{...}`, `(؟)`, environ 43) sont exclues de l'entraînement et de l'évaluation (décision 15). Les effectifs du tableau seront ajustés en F3 et F4.
 - **Métrique** : CER (taux d'erreur par caractère), calculé sur vérité terrain et prédictions passées par la même fonction `normalize` : NFD, voyelles supprimées, ک et ی unifiés, espaces et invisibles nettoyés (décisions 5, 9 à 14). Rapporté au global, par écriture et par catégorie de relecture.
-- Les fichiers de `splits/` sont à venir.
+- Découpage figé dans `splits/train.csv`, `val.csv`, `test_interne.csv` (une ligne par page, seed 42), étanchéité vérifiée par les tests (décision 20).
+- CER du test interne rapporté avec et sans les pages multilingues (décision 19).
 
 ## 4. Fonctionnalités
 
@@ -48,7 +49,7 @@ Tout modèle dérivé de MAKHZAN est sous CC BY-NC-SA. Détails et MD5 : [README
 | Extraction des 30 manuscrits ottomans et table des lignes (Parquet, 3 868 lignes) : `data.makhzan` | fait |
 | Inventaire des caractères des lignes ottomanes : `analysis.char_inventory` | fait |
 | Normalisation (NFD + 6 règles) et 39 tests : `normalize` | fait |
-| Création des splits | à venir |
+| Création des splits, contrôle d'étanchéité : `splits` | fait |
 | Évaluation (CER par écriture et relecture) | à venir |
 | Fine-tuning kraken | à venir |
 
@@ -75,6 +76,6 @@ Voir [ROADMAP.md](ROADMAP.md) : liste des tickets F0 à F14, avec leurs dépenda
 
 ## 8. Prochaines étapes
 
-Voir [ROADMAP.md](ROADMAP.md). Tickets dont les dépendances sont remplies : F3, F5 et F6.
+Voir [ROADMAP.md](ROADMAP.md). Tickets dont les dépendances sont remplies : F4, F5 et F6.
 
 Journal des décisions : [DECISIONS.md](DECISIONS.md).

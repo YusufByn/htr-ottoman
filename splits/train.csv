@@ -1,0 +1,205 @@
+# Jeu : train
+# Source : OpenITI MAKHZAN 2026.1.2, Zenodo record 19861912, pages ottomanes
+# Règles : DECISIONS.md, décisions 1, 3, 6, 7, 19 ; groupe de découpage = œuvre (Title of Text)
+# Seed : 42
+# Généré par : uv run python -m htr_ottoman.splits
+doc_id,part_id,work,script,dataset_source,is_multilingual
+82,11179,Dāsitān-i Kesik Baş,naskh,Research,False
+82,11180,Dāsitān-i Kesik Baş,naskh,Research,False
+82,11181,Dāsitān-i Kesik Baş,naskh,Research,False
+82,11182,Dāsitān-i Kesik Baş,naskh,Research,False
+82,11183,Dāsitān-i Kesik Baş,naskh,Research,False
+82,11184,Dāsitān-i Kesik Baş,naskh,Research,False
+82,11185,Dāsitān-i Kesik Baş,naskh,Research,False
+82,11186,Dāsitān-i Kesik Baş,naskh,Research,False
+83,11196,Dāsitān-i Kesik Baş,naskh,Research,False
+83,11197,Dāsitān-i Kesik Baş,naskh,Research,False
+83,11198,Dāsitān-i Kesik Baş,naskh,Research,False
+83,11199,Dāsitān-i Kesik Baş,naskh,Research,False
+83,11200,Dāsitān-i Kesik Baş,naskh,Research,False
+83,11201,Dāsitān-i Kesik Baş,naskh,Research,False
+83,11202,Dāsitān-i Kesik Baş,naskh,Research,False
+83,11203,Dāsitān-i Kesik Baş,naskh,Research,False
+83,11204,Dāsitān-i Kesik Baş,naskh,Research,False
+86,11350,Dāsitān-i Kesik Baş,naskh,Research,False
+86,11351,Dāsitān-i Kesik Baş,naskh,Research,False
+86,11352,Dāsitān-i Kesik Baş,naskh,Research,False
+86,11354,Dāsitān-i Kesik Baş,naskh,Research,False
+86,11355,Dāsitān-i Kesik Baş,naskh,Research,False
+86,11356,Dāsitān-i Kesik Baş,naskh,Research,False
+86,11357,Dāsitān-i Kesik Baş,naskh,Research,False
+86,11358,Dāsitān-i Kesik Baş,naskh,Research,False
+86,11359,Dāsitān-i Kesik Baş,naskh,Research,False
+86,11360,Dāsitān-i Kesik Baş,naskh,Research,False
+86,11361,Dāsitān-i Kesik Baş,naskh,Research,False
+89,12037,Dāsitān-i Kesik Baş,naskh,Research,False
+89,12038,Dāsitān-i Kesik Baş,naskh,Research,False
+89,12039,Dāsitān-i Kesik Baş,naskh,Research,False
+89,12040,Dāsitān-i Kesik Baş,naskh,Research,False
+89,12042,Dāsitān-i Kesik Baş,naskh,Research,False
+89,12043,Dāsitān-i Kesik Baş,naskh,Research,False
+89,12044,Dāsitān-i Kesik Baş,naskh,Research,False
+89,12045,Dāsitān-i Kesik Baş,naskh,Research,False
+131,20724,Dāsitān-i Kesik Baş,naskh,Research,False
+131,20725,Dāsitān-i Kesik Baş,naskh,Research,False
+131,20726,Dāsitān-i Kesik Baş,naskh,Research,False
+131,20727,Dāsitān-i Kesik Baş,naskh,Research,False
+131,20728,Dāsitān-i Kesik Baş,naskh,Research,False
+131,20729,Dāsitān-i Kesik Baş,naskh,Research,False
+131,20730,Dāsitān-i Kesik Baş,naskh,Research,False
+793,69394,Menāqib-i Emīr Sulṭān,naskh,Research,False
+793,69395,Menāqib-i Emīr Sulṭān,naskh,Research,False
+793,69396,Menāqib-i Emīr Sulṭān,naskh,Research,False
+793,69397,Menāqib-i Emīr Sulṭān,naskh,Research,False
+793,69398,Menāqib-i Emīr Sulṭān,naskh,Research,False
+793,69399,Menāqib-i Emīr Sulṭān,naskh,Research,False
+793,69400,Menāqib-i Emīr Sulṭān,naskh,Research,False
+793,69401,Menāqib-i Emīr Sulṭān,naskh,Research,False
+793,69402,Menāqib-i Emīr Sulṭān,naskh,Research,False
+793,69403,Menāqib-i Emīr Sulṭān,naskh,Research,False
+793,69404,Menāqib-i Emīr Sulṭān,naskh,Research,False
+793,69405,Menāqib-i Emīr Sulṭān,naskh,Research,False
+793,69406,Menāqib-i Emīr Sulṭān,naskh,Research,False
+793,69407,Menāqib-i Emīr Sulṭān,naskh,Research,False
+793,69408,Menāqib-i Emīr Sulṭān,naskh,Research,False
+793,69409,Menāqib-i Emīr Sulṭān,naskh,Research,False
+793,69410,Menāqib-i Emīr Sulṭān,naskh,Research,False
+2891,582951,Manāqib Yaḥya al-Mawṣulī,naskh,Research,False
+2891,582952,Manāqib Yaḥya al-Mawṣulī,naskh,Research,False
+3161,738400,Envarü'l-Âşikîn,naskh,Research,False
+3161,738401,Envarü'l-Âşikîn,naskh,Research,False
+3262,759523,Revnaḳ-ı Būstān,naskh,Research,False
+3262,759525,Revnaḳ-ı Būstān,naskh,Research,False
+3262,759527,Revnaḳ-ı Būstān,naskh,Research,False
+3262,759529,Revnaḳ-ı Būstān,naskh,Research,False
+3262,759531,Revnaḳ-ı Būstān,naskh,Research,False
+3262,759533,Revnaḳ-ı Būstān,naskh,Research,False
+3262,759535,Revnaḳ-ı Būstān,naskh,Research,False
+3262,759537,Revnaḳ-ı Būstān,naskh,Research,False
+3262,759539,Revnaḳ-ı Būstān,naskh,Research,False
+3262,759541,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759616,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759617,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759618,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759619,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759620,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759621,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759622,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759623,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759624,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759625,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759626,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759627,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759628,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759629,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759630,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759631,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759632,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759633,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759634,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759635,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759636,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759637,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759638,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759639,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759640,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759641,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759642,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759643,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759644,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759645,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759646,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759647,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759648,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759649,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759650,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759651,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759652,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759653,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759654,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759655,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759656,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759657,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759658,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759659,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759660,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759661,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759662,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759663,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759664,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759665,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759666,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759667,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759668,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759669,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759670,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759671,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759672,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759673,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759674,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759675,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759676,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759677,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759678,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759679,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759680,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759681,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759682,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759683,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759684,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759685,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759686,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759687,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759689,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759691,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759693,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759695,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759697,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759699,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759700,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759702,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759704,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759706,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759708,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759710,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759713,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759715,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759719,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759722,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759726,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759729,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759733,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759736,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759740,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759743,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759746,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759749,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759753,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759756,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759760,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759763,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759766,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759769,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759772,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759776,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759780,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759783,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759787,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759790,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759793,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759796,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759800,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759803,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759807,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759810,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759814,Revnaḳ-ı Būstān,naskh,Research,False
+3263,759816,Revnaḳ-ı Būstān,naskh,Research,False
+6398,1457737,Şerḥ-i Vaṣiyyetnâme-i Birgivî,naskh,Research,False
+6398,1457747,Şerḥ-i Vaṣiyyetnâme-i Birgivî,naskh,Research,False
+6398,1457752,Şerḥ-i Vaṣiyyetnâme-i Birgivî,naskh,Research,False
+6398,1457753,Şerḥ-i Vaṣiyyetnâme-i Birgivî,naskh,Research,False
+6398,1457754,Şerḥ-i Vaṣiyyetnâme-i Birgivî,naskh,Research,False
+6398,1457755,Şerḥ-i Vaṣiyyetnâme-i Birgivî,naskh,Research,False
+6398,1457756,Şerḥ-i Vaṣiyyetnâme-i Birgivî,naskh,Research,False
+6398,1457757,Şerḥ-i Vaṣiyyetnâme-i Birgivî,naskh,Research,False
+6398,1457758,Şerḥ-i Vaṣiyyetnâme-i Birgivî,naskh,Research,False

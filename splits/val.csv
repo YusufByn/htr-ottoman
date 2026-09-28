@@ -1,0 +1,25 @@
+# Jeu : val
+# Source : OpenITI MAKHZAN 2026.1.2, Zenodo record 19861912, pages ottomanes
+# Règles : DECISIONS.md, décisions 1, 3, 6, 7, 19 ; groupe de découpage = œuvre (Title of Text)
+# Seed : 42
+# Généré par : uv run python -m htr_ottoman.splits
+doc_id,part_id,work,script,dataset_source,is_multilingual
+2937,597929,Manāfi' al-nās fī al-ṭibb,naskh,Research,False
+2937,597930,Manāfi' al-nās fī al-ṭibb,naskh,Research,False
+2937,597931,Manāfi' al-nās fī al-ṭibb,naskh,Research,False
+2937,597932,Manāfi' al-nās fī al-ṭibb,naskh,Research,False
+2937,597933,Manāfi' al-nās fī al-ṭibb,naskh,Research,False
+2937,597934,Manāfi' al-nās fī al-ṭibb,naskh,Research,False
+2937,597935,Manāfi' al-nās fī al-ṭibb,naskh,Research,False
+2937,597936,Manāfi' al-nās fī al-ṭibb,naskh,Research,False
+2939,598100,Manāfi' al-nās fī al-ṭibb,naskh,Research,False
+2939,598101,Manāfi' al-nās fī al-ṭibb,naskh,Research,False
+2939,598102,Manāfi' al-nās fī al-ṭibb,naskh,Research,False
+2939,598103,Manāfi' al-nās fī al-ṭibb,naskh,Research,False
+2939,598104,Manāfi' al-nās fī al-ṭibb,naskh,Research,False
+2939,598105,Manāfi' al-nās fī al-ṭibb,naskh,Research,False
+2939,598106,Manāfi' al-nās fī al-ṭibb,naskh,Research,False
+2939,598107,Manāfi' al-nās fī al-ṭibb,naskh,Research,False
+2939,598108,Manāfi' al-nās fī al-ṭibb,naskh,Research,False
+2939,598109,Manāfi' al-nās fī al-ṭibb,naskh,Research,False
+2939,598110,Manāfi' al-nās fī al-ṭibb,naskh,Research,False

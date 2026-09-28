@@ -1,0 +1,36 @@
+# Jeu : test_interne
+# Source : OpenITI MAKHZAN 2026.1.2, Zenodo record 19861912, pages ottomanes
+# Règles : DECISIONS.md, décisions 1, 3, 6, 7, 19 ; groupe de découpage = œuvre (Title of Text)
+# Seed : 42
+# Généré par : uv run python -m htr_ottoman.splits
+doc_id,part_id,work,script,dataset_source,is_multilingual
+102,14122,Kitāb-i Ṭavā’if-i ‘aşere,taliq,ACDC-Evaluation,False
+3178,748159,[Majmū'a],naskh_varied,ACDC-Evaluation,True
+3179,748171,Şemsiyye,naskh_shikaste_mixed,ACDC-Evaluation,False
+3184,748802,Şemsiyye,naskh,ACDC-Evaluation,False
+3184,748803,Şemsiyye,naskh,ACDC-Evaluation,False
+3185,749037,Kitab-i Baleybelen,nastaliq,ACDC-Evaluation,True
+3185,749039,Kitab-i Baleybelen,nastaliq,ACDC-Evaluation,True
+3186,749548,Aʻjab al-ʻujāb,naskh,ACDC-Evaluation,False
+3186,749549,Aʻjab al-ʻujāb,naskh,ACDC-Evaluation,False
+3208,752585,Vilāyetnāme-i Ḥācı Bektaş-i Velī,naskh,ACDC-Evaluation,False
+3208,752586,Vilāyetnāme-i Ḥācı Bektaş-i Velī,naskh,ACDC-Evaluation,False
+3212,752879,Nüsḫatü'l-kübrā fī velādeti Ḫayri'l-verā,naskh,ACDC-Evaluation,False
+3212,752880,Nüsḫatü'l-kübrā fī velādeti Ḫayri'l-verā,naskh,ACDC-Evaluation,False
+3213,753313,Iskendernāmah,naskh,ACDC-Evaluation,False
+3215,754491,Behcet el-fetāvā,taliq,ACDC-Evaluation,False
+3215,754507,Behcet el-fetāvā,taliq,ACDC-Evaluation,False
+3215,754508,Behcet el-fetāvā,taliq,ACDC-Evaluation,False
+3215,754509,Behcet el-fetāvā,taliq,ACDC-Evaluation,False
+3228,756304,Tarīh-i Kaminçe,riqa,ACDC-Evaluation,False
+3230,756676,Kitab-ı Şerh-i Hafız,nastaliq,ACDC-Evaluation,True
+3237,758264,Kitāb sih zabān,naskh,ACDC-Evaluation,True
+3237,758267,Kitāb sih zabān,naskh,ACDC-Evaluation,True
+3237,758268,Kitāb sih zabān,naskh,ACDC-Evaluation,True
+3383,778800,Kitâb-i Muʿâlecât,divani,ACDC-Evaluation,False
+3383,778801,Kitâb-i Muʿâlecât,divani,ACDC-Evaluation,False
+3386,779195,Kitāb-ı ṣarf-ı türkī,divani,ACDC-Evaluation,False
+3386,779196,Kitāb-ı ṣarf-ı türkī,divani,ACDC-Evaluation,False
+3388,779254,Teẕkiret eš-šuʿarā,divani,ACDC-Evaluation,False
+3601,812051,Kitāb-ı Tārīẖ Dār üs-Selām Baġdāduñ başına gelen aḥvālleri,naskh,ACDC-Evaluation,False
+3601,812052,Kitāb-ı Tārīẖ Dār üs-Selām Baġdāduñ başına gelen aḥvālleri,naskh,ACDC-Evaluation,False
