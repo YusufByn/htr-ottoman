@@ -9,7 +9,7 @@ Statuts : à faire, en cours, fait. Dernière mise à jour : 2026-09-28.
 |----|-------|-----------|--------|
 | F0 | Mise en place du projet | | fait |
 | F1 | `normalize.py` et ses tests | | fait |
-| F2 | Téléchargement et extraction de MAKHZAN | | à faire |
+| F2 | Téléchargement et extraction de MAKHZAN | | fait |
 | F3 | Splits | F2 | à faire |
 | F4 | Préparation des données pour kraken | F1, F2, F3 | à faire |
 | F5 | Évaluation (CER) | F1 | à faire |
@@ -102,7 +102,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
   - sommes de contrôle (MD5) et idempotence (relancer sans effet de bord) ;
   - structure d'un fichier ALTO (page, bloc, ligne, ligne de base, polygone) ;
   - pourquoi une table « une ligne par ligne de texte » simplifie tout le reste.
-- **Statut** : à faire.
+- **Statut** : fait (2026-09-28). `uv run python -m htr_ottoman.data.makhzan` : MD5 vérifiés, 30 manuscrits extraits (873 Mo), table Parquet de 3 868 lignes identique au TSV page par page, deuxième exécution sans effet. Décisions 17 et 18.
 
 ---
 

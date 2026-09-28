@@ -19,3 +19,5 @@ FIGURES = REPORTS / "figures"
 MAKHZAN_RAW = DATA_RAW / "makhzan"
 MAKHZAN_METADATA = MAKHZAN_RAW / "OpenITI-Makhzan_Metadata_2026-1-2.tsv"
 MAKHZAN_ZIP = MAKHZAN_RAW / "OpenITI-Makhzan_Data_2026-1-2.zip"
+MAKHZAN_INTERIM = DATA_INTERIM / "makhzan"  # un dossier par manuscrit ottoman (<DocID>/)
+MAKHZAN_LINES = MAKHZAN_INTERIM / "ottoman_lines.parquet"  # une ligne par TextLine

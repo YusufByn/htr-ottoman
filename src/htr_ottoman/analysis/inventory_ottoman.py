@@ -9,16 +9,9 @@ import pandas as pd
 
 from htr_ottoman.config import MAKHZAN_METADATA as METADATA
 from htr_ottoman.config import REPORTS, ROOT
+from htr_ottoman.data.makhzan import KNOWN_LAYERS, LANGUAGE, MODEL_LAYERS
 
 OUTPUT = REPORTS / "ottoman_inventory.csv"
-
-# Une page est ottomane si "Ottoman Turkish" figure dans sa langue,
-# y compris les pages multilingues ("Ottoman Turkish, Persian", etc.).
-LANGUAGE = "Ottoman Turkish"
-
-# Couches de transcription nommées d'après un modèle kraken, et non "manual"
-# ni "METS Import | export". Liste relevée dans la version 2026.1.2.
-MODEL_LAYERS = {"gen2-print-n7m5-union-ft_best", "kraken:39_from_pretrain_2_best"}
 
 SEP = " | "  # séparateur des valeurs multiples ("clean; once vetted" contient déjà ";")
 
@@ -29,7 +22,7 @@ def distinct(values: pd.Series) -> str:
 
 def main() -> None:
     df = pd.read_csv(METADATA, sep="\t", dtype=str, keep_default_na=False)
-    unknown = set(df["Transcription Layer Name"]) - MODEL_LAYERS - {"manual", "METS Import | export"}
+    unknown = set(df["Transcription Layer Name"]) - KNOWN_LAYERS
     if unknown:
         raise ValueError(f"Couches de transcription inconnues : {unknown}")
 

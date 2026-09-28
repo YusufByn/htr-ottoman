@@ -29,6 +29,12 @@ Documentation du projet : [PROJECT.md](PROJECT.md) (résumé, protocole), [ROADM
 |-----|---------|--------|---------|-------------|
 | OpenITI MAKHZAN | 2026.1.2 (publiée le 2026-04-28) | Zenodo, DOI [10.5281/zenodo.19861912](https://doi.org/10.5281/zenodo.19861912) (concept DOI 10.5281/zenodo.16410105) | CC BY-NC-SA 4.0 | `data/raw/makhzan/` |
 
+Téléchargement, extraction de la partie ottomane et table des lignes (idempotent, MD5 vérifiés) :
+
+```bash
+uv run python -m htr_ottoman.data.makhzan
+```
+
 Fichiers de la version 2026.1.2 (MD5 fournis par Zenodo) :
 
 - `OpenITI-Makhzan_Data_2026-1-2.zip` (6,1 Go) : `347a06a5714091665b7292775840a0f0`

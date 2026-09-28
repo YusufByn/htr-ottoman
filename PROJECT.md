@@ -44,8 +44,8 @@ Tout modèle dérivé de MAKHZAN est sous CC BY-NC-SA. Détails et MD5 : [README
 | Vérification de l'environnement (kraken, MPS) : `scripts/check_mps.py` | fait |
 | Inventaire des manuscrits ottomans : `analysis.inventory_ottoman` | fait |
 | Comparaison Research / ACDC-Evaluation, par manuscrit et par œuvre : `analysis.compare_ottoman_sources` | fait |
-| Téléchargement de MAKHZAN avec vérification MD5 (module) | à venir |
-| Extraction des pages et des ALTO | à venir |
+| Téléchargement de MAKHZAN avec vérification MD5, idempotent : `data.makhzan` | fait |
+| Extraction des 30 manuscrits ottomans et table des lignes (Parquet, 3 868 lignes) : `data.makhzan` | fait |
 | Inventaire des caractères des lignes ottomanes : `analysis.char_inventory` | fait |
 | Normalisation (NFD + 6 règles) et 39 tests : `normalize` | fait |
 | Création des splits | à venir |
@@ -75,6 +75,6 @@ Voir [ROADMAP.md](ROADMAP.md) : liste des tickets F0 à F14, avec leurs dépenda
 
 ## 8. Prochaines étapes
 
-Voir [ROADMAP.md](ROADMAP.md). Tickets dont les dépendances sont remplies : F2 et F5.
+Voir [ROADMAP.md](ROADMAP.md). Tickets dont les dépendances sont remplies : F3, F5 et F6.
 
 Journal des décisions : [DECISIONS.md](DECISIONS.md).

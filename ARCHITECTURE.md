@@ -10,7 +10,7 @@ data/raw/makhzan/  (zip + TSV, lecture seule)
    │
    ├──> analysis ───────────────────────────────> reports/  (inventaires, comparaisons)
    │
-   └──> data (extraction, à venir) ──> data/interim/  (images + ALTO par manuscrit)
+   └──> data.makhzan ──> data/interim/makhzan/  (images + ALTO par manuscrit, table des lignes)
                                           │
               splits (à venir) ──> splits/│  (listes train / val / test figées)
                                           │
@@ -42,7 +42,7 @@ htr-ottoman/
 ├── splits/               listes train/val/test figées, avec la seed (versionné)
 ├── src/htr_ottoman/      package Python du projet
 │   ├── config.py         chemins du projet, définis une seule fois
-│   ├── data/             téléchargement, extraction, lecture ALTO et métadonnées
+│   ├── data/             download.py (MD5, idempotent), alto.py (lecture ALTO), makhzan.py
 │   ├── analysis/         inventaires et comparaisons descriptives
 │   ├── normalize.py      l'unique fonction de normalisation (NFD + règles documentées)
 │   ├── splits.py         (à venir) création des splits par œuvre
@@ -56,11 +56,12 @@ htr-ottoman/
 
 | Étape | Module | Entrées | Sorties | État |
 |-------|--------|---------|---------|------|
-| Téléchargement | `data` (à venir) | Zenodo, DOI 10.5281/zenodo.19861912 | `data/raw/makhzan/` + vérification MD5 | fait à la main le 2026-09-25 (voir README), module à venir |
+| Téléchargement | `data.makhzan` (`download`) | API Zenodo, record 19861912, version 2026.1.2 | `data/raw/makhzan/` (3 fichiers, MD5 vérifiés, lecture seule) | fait |
 | Inventaire | `analysis.inventory_ottoman` | TSV de métadonnées | `reports/ottoman_inventory.csv` | fait |
 | Comparaison des sources | `analysis.compare_ottoman_sources` | TSV de métadonnées | sortie console | fait |
 | Inventaire des caractères | `analysis.char_inventory` | zip MAKHZAN (ALTO lus dans le zip, lecture seule), TSV | `reports/ottoman_characters.csv` | fait |
-| Extraction | `data` (à venir) | zip MAKHZAN, TSV | `data/interim/` | à venir |
+| Extraction | `data.makhzan` (`extract`) | zip MAKHZAN, TSV | `data/interim/makhzan/<DocID>/` (30 manuscrits ottomans) | fait |
+| Table des lignes | `data.makhzan` (`build_lines`, `check_lines`) | `data/interim/makhzan/`, TSV | `data/interim/makhzan/ottoman_lines.parquet` (3 868 lignes) | fait |
 | Découpage | `splits` (à venir) | TSV, décisions 1, 3, 6, 7 | `splits/` | à venir |
 | Normalisation | `normalize` (fonction faite, appliquée aux données en F4) | `data/interim/` | `data/processed/` | à venir (F4) |
 | Entraînement | `train` (à venir) | `data/processed/`, `configs/`, modèle de départ | `models/` | à venir |
@@ -74,7 +75,9 @@ htr-ottoman/
 | `analysis.inventory_ottoman` | Une ligne par manuscrit ottoman : titre, pages, écritures, langues, source, relecture, lignes, pages en couche modèle. S'arrête si une couche de transcription inconnue apparaît. | `uv run python -m htr_ottoman.analysis.inventory_ottoman` | fait |
 | `analysis.compare_ottoman_sources` | Research contre ACDC-Evaluation : pages, lignes, écritures, relecture ; lignes par manuscrit et par œuvre. | `uv run python -m htr_ottoman.analysis.compare_ottoman_sources` | fait |
 | `analysis.char_inventory` | Une ligne par caractère des lignes ottomanes : point de code, nom et catégorie Unicode, occurrences, lignes, manuscrits, Research / ACDC-Evaluation. Signale les anomalies d'espacement. Fournit aussi `iter_lines`, utilisé par les tests. | `uv run python -m htr_ottoman.analysis.char_inventory` | fait |
-| `data` | Téléchargement avec vérification MD5, extraction, lecture ALTO. | à venir | à venir |
+| `data.download` | `ensure_file(url, dest, md5)` : fichier présent et valide, rien n'est fait ; MD5 faux, erreur sans rien supprimer ; absent, téléchargement via `.part`, vérification, lecture seule. `data/raw/` rendu modifiable le temps d'écrire, puis restauré. | aucun (utilisé par `data.makhzan`) | fait |
+| `data.alto` | `read_alto(xml)` : `Page` (image, taille) et ses `Line` (id, bloc, texte brut, ligne de base, polygone, `is_empty`). | aucun | fait |
+| `data.makhzan` | Constantes MAKHZAN (version, `LANGUAGE`, `MODEL_LAYERS`, `KNOWN_LAYERS`) ; `download`, `extract` (dossier temporaire puis renommage, noms de fichiers contrôlés), `build_lines`, `check_lines` (effectifs par page égaux au TSV). | `uv run python -m htr_ottoman.data.makhzan` | fait |
 | `normalize` | `normalize(text)` : applique dans l'ordre les règles de `RULES` (1 NFD, 2 marques de direction, 3 voyelles, 4 ک→ك, 5 ی selon la position, 6 ZWNJ répétés, 7 espaces), puis NFD. Sortie toujours NFD, idempotente. Une fonction par règle, docstring et décision associées (5, 9 à 14). | import `from htr_ottoman.normalize import normalize` | fait |
 | `splits` | Découpage par œuvre avec seed, écrit dans `splits/`. | à venir | à venir |
 | `train` | Fine-tuning kraken à partir d'un fichier de `configs/`. | à venir | à venir |
@@ -98,6 +101,9 @@ htr-ottoman/
 
 | Fichier | Ce qui est testé | État |
 |---------|------------------|------|
+| `tests/test_alto.py` | Lecture d'un ALTO minimal écrit à la main : texte, ligne vide, ligne de base, polygone. | fait (3 tests) |
+| `tests/test_download.py` | Les quatre cas du téléchargement et le dossier en lecture seule restauré, sans réseau (URL `file://`). | fait (5 tests) |
+| `tests/test_makhzan.py` | Table des lignes : 248 pages, 30 manuscrits, effectifs identiques au TSV, `check_lines` détecte une incohérence, 18 pages en couche modèle, aucune métadonnée vide (sauté si la table est absente). | fait (4 tests) |
 | `tests/test_config.py` | Le package s'importe, `ROOT` est la racine du projet, les chemins sont dans le projet. | fait |
 | `tests/test_normalize.py` | Un test par règle (exemples réels آ, أ, ئ, ی selon la position), sortie NFD, idempotence ; et sur les 3 868 lignes ottomanes réelles (sauté si le zip MAKHZAN est absent). | fait (39 tests) |
 
@@ -108,10 +114,10 @@ Lancement : `uv run pytest`.
 ```bash
 uv sync                                                        # environnement
 uv run python scripts/check_mps.py                             # backend MPS
-# téléchargement de MAKHZAN : à venir (module data) ; en attendant, voir README (URL et MD5)
+uv run python -m htr_ottoman.data.makhzan                      # téléchargement, extraction, table des lignes
 uv run python -m htr_ottoman.analysis.inventory_ottoman
 uv run python -m htr_ottoman.analysis.compare_ottoman_sources
 uv run python -m htr_ottoman.analysis.char_inventory
-# extraction, splits, application de la normalisation, entraînement, évaluation : à venir
+# splits, application de la normalisation, entraînement, évaluation : à venir
 uv run pytest
 ```
