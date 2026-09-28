@@ -3,15 +3,14 @@
 Lit uniquement le fichier de métadonnées (data/raw/ n'est jamais modifié) et
 écrit reports/ottoman_inventory.csv.
 
-Usage : uv run python src/inventory_ottoman.py
+Usage : uv run python -m htr_ottoman.analysis.inventory_ottoman
 """
-from pathlib import Path
-
 import pandas as pd
 
-ROOT = Path(__file__).resolve().parent.parent
-METADATA = ROOT / "data/raw/makhzan/OpenITI-Makhzan_Metadata_2026-1-2.tsv"
-OUTPUT = ROOT / "reports/ottoman_inventory.csv"
+from htr_ottoman.config import MAKHZAN_METADATA as METADATA
+from htr_ottoman.config import REPORTS, ROOT
+
+OUTPUT = REPORTS / "ottoman_inventory.csv"
 
 # Une page est ottomane si "Ottoman Turkish" figure dans sa langue,
 # y compris les pages multilingues ("Ottoman Turkish, Persian", etc.).

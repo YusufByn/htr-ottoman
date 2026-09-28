@@ -4,14 +4,12 @@ Lit uniquement le fichier de métadonnées et affiche : pages, lignes
 transcrites / total, écritures, catégories de relecture, et la répartition
 des lignes par manuscrit dans Research. Ne crée aucun split.
 
-Usage : uv run python src/compare_ottoman_sources.py
+Usage : uv run python -m htr_ottoman.analysis.compare_ottoman_sources
 """
-from pathlib import Path
-
 import pandas as pd
 
-ROOT = Path(__file__).resolve().parent.parent
-METADATA = ROOT / "data/raw/makhzan/OpenITI-Makhzan_Metadata_2026-1-2.tsv"
+from htr_ottoman.config import MAKHZAN_METADATA as METADATA
+
 LANGUAGE = "Ottoman Turkish"
 SOURCES = ["Research", "ACDC-Evaluation"]
 

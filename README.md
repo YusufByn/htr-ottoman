@@ -11,7 +11,17 @@ Reconnaissance d'écriture manuscrite (HTR) sur des manuscrits ottomans avec [kr
 uv sync                              # recrée .venv/ à partir de uv.lock
 uv run kraken --version
 uv run python scripts/check_mps.py   # vérifie le backend MPS
+uv run pytest                        # lance les tests
 ```
+
+Les traitements sont des modules du package `htr_ottoman` :
+
+```bash
+uv run python -m htr_ottoman.analysis.inventory_ottoman        # -> reports/ottoman_inventory.csv
+uv run python -m htr_ottoman.analysis.compare_ottoman_sources  # Research vs ACDC-Evaluation
+```
+
+Documentation du projet : [PROJECT.md](PROJECT.md) (résumé, avancement), [ARCHITECTURE.md](ARCHITECTURE.md) (code, flux des données), [DECISIONS.md](DECISIONS.md) (décisions méthodologiques), [EXPERIMENTS.md](EXPERIMENTS.md) (expériences).
 
 ## Données
 
@@ -27,8 +37,14 @@ Fichiers de la version 2026.1.2 (MD5 fournis par Zenodo) :
 
 ## Arborescence
 
-- `data/` : images et transcriptions (non versionné)
+Détail dans [ARCHITECTURE.md](ARCHITECTURE.md).
+
+- `configs/` : paramètres des expériences
+- `data/` : données (non versionné) ; `raw/` en lecture seule, `interim/`, `processed/`
 - `models/` : modèles kraken téléchargés ou entraînés (non versionné)
-- `src/` : traitements de données
+- `splits/` : découpages train/val/test figés
+- `src/htr_ottoman/` : package Python, traitements de données
 - `scripts/` : utilitaires (vérification d'environnement, etc.)
+- `notebooks/` : exploration visuelle uniquement
+- `tests/` : tests automatiques
 - `reports/` : métadonnées dérivées de MAKHZAN (inventaires, statistiques), sous licence CC BY-NC-SA 4.0 comme la source

@@ -17,14 +17,18 @@ Affiner le modèle kraken ottoman imprimé d'OpenITI sur la partie ottomane de M
 - Découpage train/val/test par manuscrit, jamais par page. Le split est figé dans des fichiers versionnés (splits/) avec une seed.
 - Le jeu de test Akis ne sert qu'à l'évaluation finale, jamais au réglage.
 - Exclure de l'entraînement les lignes sans transcription.
-- Toute normalisation de texte passe par une seule fonction (src/normalize.py), appliquée de la même façon à la vérité terrain et aux prédictions. Chaque règle est documentée.
+- Toute normalisation de texte passe par une seule fonction (src/htr_ottoman/normalize.py), appliquée de la même façon à la vérité terrain et aux prédictions. Chaque règle est documentée.
 - Conserver pour chaque page sa catégorie de relecture (relue une ou deux fois) et son écriture (naskh, ta'liq, etc.).
 
 ## Reproductibilité
 - Tout entraînement ou évaluation est consigné dans EXPERIMENTS.md.
 - Toute décision méthodologique est consignée dans DECISIONS.md (date, décision, justification).
-- Tout traitement passe par un script dans src/, aucune manipulation manuelle non tracée.
-- src/ contient les traitements de données, scripts/ les utilitaires (vérification d'environnement, etc.).
+- ARCHITECTURE.md et PROJECT.md sont mis à jour à chaque étape terminée.
+- Tout traitement passe par un module du package src/htr_ottoman/, aucune manipulation manuelle non tracée. Lancement : `uv run python -m htr_ottoman.<module>`.
+- src/htr_ottoman/ contient les traitements de données, scripts/ les utilitaires (vérification d'environnement, etc.).
+- notebooks/ sert uniquement à l'exploration visuelle : aucun code du pipeline n'en dépend.
+- Les chemins du projet sont définis une seule fois dans src/htr_ottoman/config.py.
+- Tests dans tests/, lancés avec `uv run pytest`.
 
 ## Données et licences
 - data/ et models/ hors git. data/raw/ ne doit jamais être modifié ni supprimé.
