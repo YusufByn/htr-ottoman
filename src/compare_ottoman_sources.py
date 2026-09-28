@@ -71,6 +71,24 @@ def research_by_doc(pages: pd.DataFrame) -> pd.DataFrame:
     return d
 
 
+def research_by_work(pages: pd.DataFrame) -> pd.DataFrame:
+    """Une ligne par œuvre (Title of Text), l'unité de découpage de la validation."""
+    p = pages[pages["Dataset Source"] == "Research"]
+    w = (
+        p.groupby("Title of Text")
+        .agg(
+            manuscrits=("Doc ID", lambda s: " ".join(str(d) for d in sorted(set(s)))),
+            n_ms=("Doc ID", "nunique"),
+            pages=("Doc Part ID", "size"),
+            lignes=("transcribed", "sum"),
+            pages_couche_modele=("Transcription Layer Name", lambda s: (s != "manual").sum()),
+        )
+        .sort_values("lignes", ascending=False)
+    )
+    w["% lignes"] = (100 * w["lignes"] / w["lignes"].sum()).round(1)
+    return w
+
+
 def main() -> None:
     pd.set_option("display.width", 200)
     pages = load_pages()
@@ -81,7 +99,9 @@ def main() -> None:
     print("== Catégorie de relecture (pages / manuscrits)\n")
     print(by_column(pages, "Category").to_string(), "\n")
     print("== Research : lignes transcrites par manuscrit\n")
-    print(research_by_doc(pages).to_string())
+    print(research_by_doc(pages).to_string(), "\n")
+    print("== Research : lignes transcrites par œuvre\n")
+    print(research_by_work(pages).to_string())
 
 
 if __name__ == "__main__":
