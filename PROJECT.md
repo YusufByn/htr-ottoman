@@ -8,7 +8,7 @@ Dernière mise à jour : 2026-09-28.
 Reconnaissance automatique d'écriture manuscrite (HTR) sur des manuscrits en turc ottoman, avec kraken.
 On part d'un modèle entraîné sur de l'**imprimé** ottoman (OpenITI) et on l'affine sur les manuscrits ottomans de MAKHZAN.
 
-**Question de recherche** : dans quelle mesure ce modèle affiné généralise-t-il à des manuscrits jamais vus, d'abord sur le test interne (ACDC-Evaluation), puis sur un jeu externe (Akis) ?
+**Question de recherche** : dans quelle mesure ce modèle affiné généralise-t-il à des manuscrits jamais vus, d'abord sur le test interne (ACDC-Evaluation), puis sur un jeu externe de manuscrits, en cours de choix (F10) ?
 
 Projet de recherche et portfolio.
 
@@ -17,7 +17,7 @@ Projet de recherche et portfolio.
 | Ressource | Version | Rôle | Licence |
 |-----------|---------|------|---------|
 | OpenITI MAKHZAN, partie ottomane | 2026.1.2, DOI 10.5281/zenodo.19861912 | entraînement, validation, test interne | CC BY-NC-SA 4.0 |
-| Akis | à venir | test final externe | Apache 2.0, citer Tasdemir et al., DAS 2024 |
+| Akis, jeu de test public | dépôt `verimsu/Akis-Ottoman-Dataset`, commit `c7a6e5b` (2024-09-14) | **écarté** comme test (décision 40) : transcriptions en alphabet latin, livres imprimés ; téléchargé et inventorié, gardé comme trace | Apache 2.0, citer Tasdemir et al., DAS 2024 |
 | Modèle OpenITI ottoman imprimé | DOI 10.5281/zenodo.7050342 (kraken, CER annoncé 4,22 %). Lignes de 120 px en niveaux de gris, lignes de base, NFD ; codec de 196 caractères | modèle de départ | CC0 |
 
 Tout modèle dérivé de MAKHZAN est sous CC BY-NC-SA. Détails et MD5 : [README](README.md).
@@ -29,7 +29,7 @@ Tout modèle dérivé de MAKHZAN est sous CC BY-NC-SA. Détails et MD5 : [README
 | Entraînement | Research, sauf l'œuvre de validation (6 œuvres) | 11 | 199 | 2 771 | 2, 3, 6 |
 | Validation | *Manāfi' al-nās fī al-ṭibb* (Doc 2937, 2939) | 2 | 19 | 436 | 7 |
 | Test interne | ACDC-Evaluation ottoman, jamais utilisé pour le réglage ; 7 pages multilingues marquées ; clos depuis F9 | 17 | 30 | 555 | 1, 19, 39 |
-| Test final | Akis, évaluation finale uniquement | à venir | à venir | à venir | CLAUDE.md |
+| Test final | Jeu externe de manuscrits, à choisir (F10) ; évaluation finale uniquement, jamais d'entraînement. Akis écarté | à venir | à venir | à venir | 40, CLAUDE.md |
 
 - Découpage par œuvre : toutes les copies d'une œuvre sont dans le même jeu (décision 6).
 - Les lignes sans transcription sont exclues de l'entraînement.
@@ -61,6 +61,7 @@ Tout modèle dérivé de MAKHZAN est sous CC BY-NC-SA. Détails et MD5 : [README
 | Fine-tuning kraken piloté par une config (`configs/`), garde-fous, courbes : `train` | fait |
 | Comparaison appariée de deux modèles (bootstrap apparié sur les manuscrits) : `compare` | fait |
 | Évaluation pré-enregistrée avec contrôles bloquants (empreintes, découpe, effectifs, baseline refaite à l'octet) : `final_eval` | fait (F9) |
+| Téléchargement d'Akis (git LFS, SHA-256 vérifié contre le pointeur), table des lignes et inventaire : `data.akis`, `analysis.akis_inventory` | fait (F10, vérification ; Akis écarté, décision 40) |
 
 ## 5. État d'avancement
 
@@ -115,16 +116,17 @@ Réduction relative : 28,9 % ; 17 manuscrits améliorés sur 17 (écart de −5,
 - **Peu de données** : 2 757 lignes d'entraînement compilées.
 - **CER de reconnaissance seule** : mesuré sur la segmentation de la vérité terrain (décision 31), il est plus bas que celui d'une chaîne complète sur une page brute.
 - **Origine du gain de F9 non établie** : une partie peut venir de l'adoption des conventions de transcription de MAKHZAN (espaces, séparateurs, choix de lettres) plutôt que d'une meilleure lecture ; le gain presque uniforme entre écritures invite à le mesurer (F13, sur les prédictions sauvegardées).
-- **Test interne clos** (décision 39) : les modèles suivants (F12, F15) ne pourront être comparés à F8 que sur la validation et sur Akis.
+- **Test interne clos** (décision 39) : les modèles suivants (F12, F15) ne pourront être comparés à F8 que sur la validation et sur le jeu externe (F11).
 - **Écart de 2 caractères** entre `ketos test` (21 209) et `evaluate` (21 211) sur le test interne, non expliqué (F13).
 - **Ventilations du test interne** : écriture et relecture se recouvrent (manuscrits différents dans chaque groupe) et la plupart des écritures n'ont que 1 ou 2 manuscrits, sans intervalle. Ces écarts sont des indications, pas des effets démontrés.
 - **Drapeau « anciens polygones »** : kraken 7.1.1 le perd en convertissant le modèle entraîné ; `predict` impose la découpe du projet, et le modèle publié devra être corrigé (décision 36, F14).
 - **Durée d'entraînement** : 4 h 38 pour F8 sur MacBook Air (MPS), dont 7 min de chargement par lancement ; les époques ont ralenti de 111 à 151 s après la première, cause non établie.
 - **Outil** : la sortie texte de `kraken ocr` 7.1.1 est inversée sur nos ALTO ; les prédictions passent par l'API Python ou `ketos test` (skill kraken).
+- **Jeu externe** : Akis, prévu depuis le début du projet, est écarté (décision 40). Ses transcriptions sont en alphabet latin (turc moderne) : aucune conversion fiable vers l'écriture arabe n'existe, une lettre latine correspondant à plusieurs lettres arabes. Il est aussi imprimé, pas manuscrit. Aucun jeu externe n'est choisi pour l'instant (F10).
 - **Modèle de départ** entraîné sur de l'imprimé, pas sur des manuscrits. Son codec couvre 99,92 à 100 % des caractères de MAKHZAN après normalisation ; restent inconnus `#` et ZWNJ (train, décision 23) et les lettres sans points de Doc 3178 (décision 24).
 
 ## 8. Prochaines étapes
 
-Voir [ROADMAP.md](ROADMAP.md). F9 terminé ; tickets dont les dépendances sont remplies : F10 (Akis), F12 (expériences complémentaires, sur la validation), F13 (analyse d'erreurs, dont les deux points notés en F9).
+Voir [ROADMAP.md](ROADMAP.md). F9 terminé ; tickets dont les dépendances sont remplies : F10 (jeu de test externe : Akis écarté, décision 40 ; recherche d'un autre jeu en cours), F12 (expériences complémentaires, sur la validation), F13 (analyse d'erreurs, dont les deux points notés en F9).
 
 Journal des décisions : [DECISIONS.md](DECISIONS.md).

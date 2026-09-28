@@ -17,8 +17,8 @@ Statuts : à faire, en cours, fait. Dernière mise à jour : 2026-09-28.
 | F7 | Baseline | F4, F5, F6 | fait |
 | F8 | Premier fine-tuning | F7 | fait |
 | F9 | Évaluation interne du modèle affiné | F5, F8 | fait |
-| F10 | Akis | F1, F5 | à faire |
-| F11 | Évaluation externe sur Akis | F7, F9, F10 | à faire |
+| F10 | Jeu de test externe (Akis écarté, décision 40) | F1, F5 | en cours |
+| F11 | Évaluation externe | F7, F9, F10 | à faire |
 | F12 | Expériences complémentaires | F9 | à faire |
 | F13 | Analyse d'erreurs | F9 | à faire |
 | F14 | Publication | F11 | à faire |
@@ -49,7 +49,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
 ## F1 · `normalize.py` et ses tests
 
 - **Objectif** : une seule fonction de normalisation du texte, appliquée identiquement à la vérité terrain et aux prédictions (décisions 5 et 8).
-- **Dépend de** : rien. Les règles pourront être complétées après F6 (codec du modèle) et F10 (conventions d'Akis), chaque ajout étant consigné dans DECISIONS.md.
+- **Dépend de** : rien. Les règles pourront être complétées après F6 (codec du modèle), chaque ajout étant consigné dans DECISIONS.md. Depuis F7, `normalize` ne change plus : les conventions d'un nouveau jeu sont traitées par une conversion propre à ce jeu (F10).
 - **Tâches** :
   - Écrire `src/htr_ottoman/normalize.py` : une fonction publique `normalize(text: str) -> str`.
   - Règle de base : forme Unicode NFD.
@@ -280,41 +280,42 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
 
 ---
 
-## F10 · Akis
+## F10 · Jeu de test externe
 
-- **Objectif** : préparer le jeu de test externe Akis dans le format du projet.
+- **Objectif** : trouver et préparer un jeu de test externe de manuscrits ottomans, pour mesurer la généralisation en F11.
 - **Dépend de** : F1, F5.
+- **Fait (2026-09-28)** : Akis téléchargé (dépôt `verimsu/Akis-Ottoman-Dataset`, commit `c7a6e5b`, SHA-256 vérifié contre le pointeur git LFS) et inventorié (`data.akis`, `analysis.akis_inventory`, `reports/akis_sources.csv`, `reports/akis_characters.csv`) : transcriptions en alphabet latin, 13 livres imprimés. **Écarté** (décision 40), gardé comme trace. Piste secondaire non planifiée : échantillon retranscrit en écriture arabe pour mesurer l'oubli de l'imprimé.
 - **Tâches** :
-  - Téléchargement via git LFS dans `data/raw/akis/`, avec version ou commit exact noté dans le README. Demander avant tout téléchargement de plus de 1 Go.
-  - Conversion au format du projet (table des lignes comme en F2).
-  - Comparer les conventions de transcription d'Akis et de MAKHZAN : alphabet, diacritiques, hamza, variantes de lettres, ponctuation.
-  - Définir des règles de normalisation communes, ajoutées à `normalize` avec leurs tests et consignées dans DECISIONS.md.
-  - Citer Tasdemir et al., DAS 2024 (licence Apache 2.0).
+  - Rechercher des candidats (HTR-United, Zenodo, RikaOCR, ottoman-rag, eScriptorium...). Critères : ottoman manuscrit ; vérité terrain en écriture arabe faite par des humains ; licence ouverte ; provenance distincte de MAKHZAN ; absent des données du modèle de départ ; au moins quelques centaines de lignes ; idéalement des pages avec lignes de base (ALTO ou PAGE), pour garder la même découpe (décisions 25 et 31). Pour chaque candidat : contenu, taille, écriture, licence, format, conventions, risque de recouvrement avec MAKHZAN.
+  - RASAM et TariMa (arabe, pas ottoman) sont exclus : ils sont réservés à l'entraînement de F15.
+  - Une fois le jeu choisi : téléchargement (empreinte vérifiée, `data/raw/<jeu>/` en lecture seule, version notée dans le README), table des lignes comme en F2, inventaire, comparaison des conventions avec MAKHZAN, rapport dans `reports/`.
 - **Critères d'acceptation** :
-  - Akis est converti.
+  - Le jeu est choisi et consigné dans DECISIONS.md, puis converti.
   - Le rapport de comparaison des conventions est dans `reports/`.
-  - Les règles communes sont testées et consignées.
-  - Seule la partie test d'Akis est utilisée.
+  - `normalize` est inchangée (sinon les résultats de F7 à F9 deviennent incomparables) : les écarts de conventions sont traités par une étape de conversion propre au jeu, testée et consignée.
+  - Le jeu n'a jamais servi à l'entraînement et n'y servira jamais (F15 compris).
 - **Points de décision** :
-  - Règles de normalisation communes : toute règle ajoutée change le CER de toutes les expériences, qu'il faudra donc recalculer.
-  - Quelle partie d'Akis sert à l'évaluation.
-- **Concept à expliquer** : git LFS, le décalage de domaine (*domain shift*), et pourquoi des conventions de transcription différentes gonflent artificiellement le CER.
-- **Statut** : à faire.
+  - Choix du jeu parmi les candidats.
+  - Conversion des conventions, sans changer `normalize`.
+  - Découpe : lignes de base et polygones (même extracteur que MAKHZAN) ou lignes déjà découpées.
+  - Lignes à exclure (vides, annotations, texte non ottoman) : règle et effectifs avant application.
+- **Concept à expliquer** : git LFS (fait), le décalage de domaine (*domain shift*), et pourquoi des conventions de transcription différentes gonflent artificiellement le CER.
+- **Statut** : en cours. Akis écarté (décision 40) ; recherche d'un autre jeu.
 
 ---
 
-## F11 · Évaluation externe sur Akis
+## F11 · Évaluation externe
 
-- **Objectif** : mesurer la généralisation sur un jeu externe, pour le modèle de départ et le modèle affiné.
+- **Objectif** : mesurer la généralisation sur le jeu externe choisi en F10, pour le modèle de départ et le modèle affiné.
 - **Dépend de** : F7, F9, F10.
 - **Tâches** :
-  - CER de la baseline et du modèle affiné sur le test Akis, avec les normalisations communes de F10.
-  - Ventilation par écriture si Akis fournit l'information.
-  - Comparaison avec les résultats publiés par Tasdemir et al., si le protocole est comparable.
+  - CER de la baseline et du modèle affiné sur le jeu externe, avec `normalize` et la conversion propre au jeu définie en F10.
+  - Ventilation par écriture si le jeu fournit l'information.
+  - Comparaison avec des résultats publiés sur ce jeu, s'il en existe et si le protocole est comparable.
   - Consigner le résultat dans EXPERIMENTS.md.
 - **Critères d'acceptation** :
   - Deux lignes dans EXPERIMENTS.md, baseline et modèle affiné.
-  - Comparaison avec l'article, en précisant les différences de protocole.
+  - Comparaison avec les résultats publiés, s'il y en a, en précisant les différences de protocole.
 - **Points de décision** : aucun réglage ne doit dépendre de ces résultats (évaluation finale uniquement).
 - **Concept à expliquer** : validité externe, et comment comparer honnêtement avec des résultats publiés.
 - **Statut** : à faire.
@@ -330,7 +331,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
   - taux d'apprentissage et programme (F8 : la validation progressait encore après 86 époques à 1e-4 constant ; essayer un taux plus élevé, `cosine` ou `reduceonplateau`) ;
   - ancien ou nouvel extracteur de polygones (décisions 25 et 36 : écart de 0,05 point sur le modèle F8, de 0,8 point sur l'essai).
 - **Dépend de** : F9.
-- **Tâches, critères, points de décision** : à préciser selon les résultats. Chaque expérience ne change qu'un facteur à la fois et est consignée dans EXPERIMENTS.md. Mesure sur la validation, puis sur Akis ; jamais sur le test interne, clos (décision 39).
+- **Tâches, critères, points de décision** : à préciser selon les résultats. Chaque expérience ne change qu'un facteur à la fois et est consignée dans EXPERIMENTS.md. Mesure sur la validation, puis sur le jeu externe (F11) ; jamais sur le test interne, clos (décision 39).
 - **Concept à expliquer** : l'étude d'ablation (ne changer qu'un facteur à la fois).
 - **Statut** : à faire.
 

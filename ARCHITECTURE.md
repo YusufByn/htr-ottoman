@@ -25,6 +25,10 @@ data/raw/makhzan/  (zip + TSV, lecture seule)
   final_eval (configs/f9_*.yml) : contrôles bloquants, predict + evaluate + compare
                                           v
                                    reports/comparaisons/  (différence de CER, bootstrap apparié)
+
+data/raw/akis/  (zip git LFS, lecture seule) ──> data.akis ──> data/interim/akis/  (lignes découpées, table des lignes)
+                                                                   │
+                                  analysis.akis_inventory ──> reports/akis_*.csv  (vérification F10 ; Akis écarté, décision 40)
 ```
 
 Le pipeline part toujours de `data/raw/`, qui n'est jamais modifié. Chaque étape lit la sortie de la précédente et écrit dans son propre dossier.
@@ -50,7 +54,7 @@ htr-ottoman/
 ├── splits/               listes train/val/test figées, avec la seed (versionné)
 ├── src/htr_ottoman/      package Python du projet
 │   ├── config.py         chemins du projet, définis une seule fois
-│   ├── data/             download.py (MD5, idempotent), alto.py (lecture ALTO), makhzan.py, annotations.py
+│   ├── data/             download.py (MD5 ou SHA-256, idempotent), alto.py (lecture ALTO), makhzan.py, annotations.py, akis.py
 │   ├── analysis/         inventaires et comparaisons descriptives
 │   ├── base_model.py     modèle de départ : téléchargement, chargement kraken, codec
 │   ├── normalize.py      l'unique fonction de normalisation (NFD + règles documentées)
@@ -83,19 +87,24 @@ htr-ottoman/
 | Prédiction | `predict` | modèle, ALTO normalisés d'un jeu (`data/processed/makhzan/alto/`, segmentation de la vérité terrain, décision 31 ; découpe « anciens polygones » imposée, décision 36) | parquet (part_id, line_id, pred) ; baseline : `reports/baseline/<jeu>/predictions.parquet` ; modèle F8 : `reports/f8_finetune/<jeu>/` | fait |
 | Évaluation | `evaluate` | prédictions, table des lignes, `splits/` | dossier de CSV (global, par écriture, naskh contre autres, relecture, couche modèle, manuscrit, multilinguisme ; tableaux à un seul groupe omis) + `lignes.parquet` ; baseline : `reports/baseline/<jeu>/` ; résultat consigné dans `EXPERIMENTS.md` | fait |
 | Comparaison appariée | `compare` | deux dossiers de `evaluate` sur le même jeu (`lignes.parquet`) | CSV de différences de CER avec IC (bootstrap apparié) et conclusion (décision 38) ; F9 : `reports/comparaisons/f8_finetune_baseline/test_interne/` | fait (F9) |
+| Téléchargement d'Akis | `data.akis` (`download`, `extract`) | pointeur git LFS du dépôt `verimsu/Akis-Ottoman-Dataset` au commit `c7a6e5b`, serveur LFS de GitHub | `data/raw/akis/` (zip, README, LICENSE, SHA-256 vérifiés, lecture seule), `data/interim/akis/` (images/, annotations/, files.txt) | fait (F10) |
+| Table des lignes d'Akis | `data.akis` (`build_lines`, `check_lines`) | `data/interim/akis/` | `data/interim/akis/akis_lines.parquet` (8 036 lignes, 13 sources) | fait (F10) |
+| Inventaire d'Akis | `analysis.akis_inventory` | table des lignes d'Akis, codec du modèle de départ | `reports/akis_sources.csv`, `reports/akis_characters.csv` | fait (F10) ; Akis écarté comme test (décision 40) |
 | Évaluation finale | `final_eval` | `configs/f9_test_interne.yml` (modèle, empreintes, effectifs attendus), modèles, prédictions de la baseline | contrôles bloquants, puis `reports/f8_finetune/test_interne/` (prédictions, CER, `ketos_test.txt`, `run.json`) et la comparaison | fait, lancé une seule fois (F9, 1,8 min) ; test interne clos (décision 39) |
 
 ## 4. Modules du package
 
 | Module | Responsabilité | Point d'entrée | État |
 |--------|----------------|----------------|------|
-| `config` | Chemins du projet (`ROOT`, `DATA_RAW`, `SPLITS`, `REPORTS`, `BASELINE_REPORTS`, fichiers MAKHZAN). Tous les modules les importent d'ici. | aucun | fait |
+| `config` | Chemins du projet (`ROOT`, `DATA_RAW`, `SPLITS`, `REPORTS`, `BASELINE_REPORTS`, fichiers MAKHZAN et Akis). Tous les modules les importent d'ici. | aucun | fait |
 | `analysis.inventory_ottoman` | Une ligne par manuscrit ottoman : titre, pages, écritures, langues, source, relecture, lignes, pages en couche modèle. S'arrête si une couche de transcription inconnue apparaît. | `uv run python -m htr_ottoman.analysis.inventory_ottoman` | fait |
 | `analysis.compare_ottoman_sources` | Research contre ACDC-Evaluation : pages, lignes, écritures, relecture ; lignes par manuscrit et par œuvre. | `uv run python -m htr_ottoman.analysis.compare_ottoman_sources` | fait |
 | `analysis.char_inventory` | Une ligne par caractère des lignes ottomanes : point de code, nom et catégorie Unicode, occurrences, lignes, manuscrits, Research / ACDC-Evaluation. Signale les anomalies d'espacement. Fournit aussi `iter_lines`, utilisé par les tests. | `uv run python -m htr_ottoman.analysis.char_inventory` | fait |
-| `data.download` | `ensure_file(url, dest, md5)` : fichier présent et valide, rien n'est fait ; MD5 faux, erreur sans rien supprimer ; absent, téléchargement via `.part`, vérification, lecture seule. `data/raw/` rendu modifiable le temps d'écrire, puis restauré. | aucun (utilisé par `data.makhzan`) | fait |
+| `data.download` | `ensure_file(url, dest, md5, algo="md5")` : empreinte MD5 par défaut, SHA-256 pour les fichiers git LFS (`algo="sha256"`) ; fichier présent et valide, rien n'est fait ; empreinte fausse, erreur sans rien supprimer ; absent, téléchargement via `.part`, vérification, lecture seule. `data/raw/` rendu modifiable le temps d'écrire, puis restauré. | aucun (utilisé par `data.makhzan`) | fait |
 | `data.alto` | `read_alto(xml)` : `Page` (image, taille) et ses `Line` (id, bloc, texte brut, ligne de base, polygone, `is_empty`). | aucun | fait |
 | `data.makhzan` | Constantes MAKHZAN (version, `LANGUAGE`, `MODEL_LAYERS`, `KNOWN_LAYERS`) ; `download`, `extract` (dossier temporaire puis renommage, noms de fichiers contrôlés), `build_lines`, `check_lines` (effectifs par page égaux au TSV). | `uv run python -m htr_ottoman.data.makhzan` | fait |
+| `data.akis` | Constantes du dépôt Akis (commit figé, SHA-256 et taille du zip, SHA-256 du README et de la licence) ; `read_pointer` (pointeur git LFS), `download` (serveur LFS de GitHub, sans git-lfs ; pointeur, SHA-256 et taille vérifiés), `extract` (dossier temporaire puis renommage), `build_lines` (une ligne par image : source, année, page, numéro de ligne, texte brut, taille et mode de l'image), `check_lines` (`files.txt` couvre exactement les deux dossiers). Akis écarté comme test (décision 40). | `uv run python -m htr_ottoman.data.akis` | fait (F10) |
+| `analysis.akis_inventory` | Par source : année, pages, lignes, caractères, formes Unicode (NFC, NFD, mixte), taille des images. Par caractère (après NFD) : écriture Unicode (arabe, latin, autre), fréquences, présence dans le codec du modèle de départ. | `uv run python -m htr_ottoman.analysis.akis_inventory` | fait (F10) |
 | `normalize` | `normalize(text)` : applique dans l'ordre les règles de `RULES` (1 NFD, 2 marques de direction, 3 voyelles, 4 ک→ك, 5 ی selon la position, 8 séparateurs de vers → ".", 9 ڛ→س, 6 ZWNJ répétés, 7 espaces), puis NFD. Sortie toujours NFD, idempotente. Une fonction par règle, docstring et décision associées (5, 9 à 14, 21, 22). Le numéro d'une règle est un identifiant, pas son rang. | import `from htr_ottoman.normalize import normalize` | fait |
 | `base_model` | `download` (Zenodo, `ensure_file`), `load` (kraken `load_models`, lit l'ancien `.mlmodel` ; avertissements bénins de coremltools masqués), `codec_labels`, `codec_chars` (ensemble des caractères du codec, chargé une fois). Modèle : lignes de 120 px, niveaux de gris, lignes de base, anciens polygones, NFD. | `uv run python -m htr_ottoman.base_model` | fait |
 | `analysis.codec_coverage` | Caractères des lignes transcrites après `normalize`, par jeu, comparés au codec ; lignes annotées comptées à part. | `uv run python -m htr_ottoman.analysis.codec_coverage` | fait |
@@ -133,7 +142,8 @@ Les évaluations finales ont aussi leur fichier, lu par `final_eval` : `configs/
 | Fichier | Ce qui est testé | État |
 |---------|------------------|------|
 | `tests/test_alto.py` | Lecture d'un ALTO minimal écrit à la main : texte, ligne vide, ligne de base, polygone. | fait (3 tests) |
-| `tests/test_download.py` | Les quatre cas du téléchargement et le dossier en lecture seule restauré, sans réseau (URL `file://`). | fait (5 tests) |
+| `tests/test_download.py` | Les quatre cas du téléchargement, le dossier en lecture seule restauré et l'empreinte SHA-256, sans réseau (URL `file://`). | fait (6 tests) |
+| `tests/test_akis.py` | Lecture des noms de lignes (pages -A / -B), formes Unicode et écritures ; table d'Akis (8 036 lignes, 13 sources, 64 px, `files.txt` cohérent), aucune lettre arabe (décision 40), inventaires versionnés redonnés (sauté si la table ou le modèle de départ sont absents). | fait (8 tests) |
 | `tests/test_makhzan.py` | Table des lignes : 248 pages, 30 manuscrits, effectifs identiques au TSV, `check_lines` détecte une incohérence, 18 pages en couche modèle, aucune métadonnée vide (sauté si la table est absente). | fait (4 tests) |
 | `tests/test_splits.py` | Fichiers identiques à une régénération, étanchéité (œuvre, Doc ID, cote), Doc 86 et 89 ensemble, chaque page une fois, effectifs, pages multilingues, `validate` détecte une fuite. | fait (16 tests) |
 | `tests/test_annotations.py` | `has_annotation` sur des cas réels (illisible, restitution, note, incertitude) et des lignes ordinaires. | fait (8 tests) |
@@ -174,5 +184,8 @@ uv run python -m htr_ottoman.evaluate reports/f8_finetune/val/predictions.parque
 # F9 : lancé une seule fois (final_eval configs/f9_test_interne.yml), qui refuse désormais de relancer ; tableaux redonnés par :
 uv run python -m htr_ottoman.evaluate reports/f8_finetune/test_interne/predictions.parquet --split test_interne --output-dir reports/f8_finetune/test_interne
 uv run python -m htr_ottoman.compare --reference reports/baseline/test_interne --model reports/f8_finetune/test_interne --output-dir reports/comparaisons/f8_finetune_baseline/test_interne
+# F10 : vérification d'Akis (584 Mo, SHA-256 vérifié), écarté comme test (décision 40)
+uv run python -m htr_ottoman.data.akis
+uv run python -m htr_ottoman.analysis.akis_inventory
 uv run pytest
 ```

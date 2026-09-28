@@ -26,6 +26,12 @@ MAKHZAN_INTERIM = DATA_INTERIM / "makhzan"  # un dossier par manuscrit ottoman (
 MAKHZAN_LINES = MAKHZAN_INTERIM / "ottoman_lines.parquet"  # une ligne par TextLine
 MAKHZAN_PROCESSED = DATA_PROCESSED / "makhzan"  # ALTO normalisés (alto/), <jeu>.arrow, <jeu>.lst
 
+# Akis, jeu de test public (github.com/verimsu/Akis-Ottoman-Dataset, Apache 2.0) : évaluation finale seulement
+AKIS_RAW = DATA_RAW / "akis"
+AKIS_ZIP = AKIS_RAW / "akis_dataset_test.zip"
+AKIS_INTERIM = DATA_INTERIM / "akis"  # contenu du zip (images/, annotations/, files.txt)
+AKIS_LINES = AKIS_INTERIM / "akis_lines.parquet"  # une ligne par image de ligne
+
 # Modèle de départ : OpenITI ottoman imprimé (DOI 10.5281/zenodo.7050342, CC0)
 BASE_MODEL_DIR = MODELS / "openiti_ottoman_print"
 BASE_MODEL = BASE_MODEL_DIR / "ottoman_best.mlmodel"

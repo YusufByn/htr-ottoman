@@ -1,9 +1,10 @@
-"""Téléchargement idempotent avec vérification MD5.
+"""Téléchargement idempotent avec vérification de l'empreinte (MD5 par défaut,
+SHA-256 pour les fichiers git LFS).
 
-- Fichier présent et MD5 valide : rien n'est fait.
-- Fichier présent mais MD5 invalide : arrêt avec une erreur, rien n'est supprimé.
+- Fichier présent et empreinte valide : rien n'est fait.
+- Fichier présent mais empreinte invalide : arrêt avec une erreur, rien n'est supprimé.
 - Fichier absent : téléchargement dans un fichier temporaire .part, vérification
-  du MD5, renommage, puis mise en lecture seule.
+  de l'empreinte, renommage, puis mise en lecture seule.
 """
 import contextlib
 import hashlib
@@ -16,15 +17,19 @@ CHUNK = 1 << 20  # 1 Mo
 
 
 class ChecksumError(RuntimeError):
-    """Le MD5 d'un fichier ne correspond pas à celui attendu."""
+    """L'empreinte d'un fichier ne correspond pas à celle attendue."""
 
 
-def md5sum(path: Path) -> str:
-    h = hashlib.md5()
+def file_hash(path: Path, algo: str = "md5") -> str:
+    h = hashlib.new(algo)
     with open(path, "rb") as f:
         while chunk := f.read(CHUNK):
             h.update(chunk)
     return h.hexdigest()
+
+
+def md5sum(path: Path) -> str:
+    return file_hash(path, "md5")
 
 
 @contextlib.contextmanager
@@ -39,12 +44,14 @@ def writable_dir(directory: Path):
         directory.chmod(mode)
 
 
-def ensure_file(url: str, dest: Path, md5: str) -> str:
-    """Garantit que `dest` existe avec le MD5 attendu. Renvoie "présent" ou "téléchargé"."""
+def ensure_file(url: str, dest: Path, md5: str, algo: str = "md5") -> str:
+    """Garantit que `dest` existe avec l'empreinte attendue (`md5`, calculée avec
+    `algo`). Renvoie "présent" ou "téléchargé"."""
+    name = algo.upper()
     if dest.exists():
-        actual = md5sum(dest)
+        actual = file_hash(dest, algo)
         if actual != md5:
-            raise ChecksumError(f"{dest} : MD5 {actual}, attendu {md5}. Fichier laissé intact.")
+            raise ChecksumError(f"{dest} : {name} {actual}, attendu {md5}. Fichier laissé intact.")
         return "présent"
 
     dest.parent.mkdir(parents=True, exist_ok=True)
@@ -53,10 +60,10 @@ def ensure_file(url: str, dest: Path, md5: str) -> str:
         with urllib.request.urlopen(url) as response, open(part, "wb") as out:
             while chunk := response.read(CHUNK):
                 out.write(chunk)
-        actual = md5sum(part)
+        actual = file_hash(part, algo)
         if actual != md5:
             part.unlink()  # fichier temporaire, jamais un fichier de data/raw/
-            raise ChecksumError(f"{url} : MD5 téléchargé {actual}, attendu {md5}.")
+            raise ChecksumError(f"{url} : {name} téléchargé {actual}, attendu {md5}.")
         os.replace(part, dest)
         dest.chmod(stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH)
     return "téléchargé"

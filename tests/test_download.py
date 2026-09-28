@@ -67,3 +67,12 @@ def test_read_only_directory_is_restored(tmp_path, source):
     finally:
         raw.chmod(0o755)
         (raw / "file.bin").chmod(0o644)
+
+
+def test_sha256_for_lfs_files(tmp_path, source):
+    dest = tmp_path / "raw" / "file.bin"
+    sha256 = hashlib.sha256(CONTENT).hexdigest()
+    with pytest.raises(ChecksumError, match="SHA256"):
+        ensure_file(source, dest, MD5, algo="sha256")  # un MD5 n'est pas un SHA-256
+    assert ensure_file(source, dest, sha256, algo="sha256") == "téléchargé"
+    assert ensure_file(source, dest, sha256, algo="sha256") == "présent"
