@@ -5,6 +5,7 @@ inversée, skill kraken section 8), avec le réglage BiDi du projet (décision 2
 les prédictions sont en ordre logique. La découpe des lignes est imposée par le
 projet (`prepare.LEGACY_POLYGONS`, décision 25), pas lue dans le modèle : kraken
 7.1.1 perd ce drapeau en convertissant un checkpoint en .safetensors (décision 36).
+Le test interne est clos depuis F9 : toute prédiction dessus est refusée (décision 39).
 
 Usage : uv run python -m htr_ottoman.predict --model CHEMIN --split val --output FICHIER.parquet
 """
@@ -16,6 +17,8 @@ import pandas as pd
 
 from htr_ottoman.prepare import ALTO_DIR, KRAKEN_TEXT_OPTIONS, LEGACY_POLYGONS
 from htr_ottoman.splits import load_split
+
+CLOSED_SPLIT = "test_interne"  # clos depuis F9 (décision 39)
 
 
 def load_model(path: Path):
@@ -33,6 +36,9 @@ def load_model(path: Path):
 
 
 def predict_split(model_path: Path, split: str) -> pd.DataFrame:
+    if split == CLOSED_SPLIT:
+        raise ValueError(f"Le jeu {CLOSED_SPLIT} est clos depuis F9 (décision 39) : plus aucune prédiction dessus. "
+                         "Prédictions sauvegardées : reports/baseline/test_interne/, reports/f8_finetune/test_interne/.")
     from kraken.configs import RecognitionInferenceConfig
     from kraken.lib.xml import XMLPage
     from PIL import Image
