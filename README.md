@@ -21,7 +21,7 @@ uv run python -m htr_ottoman.analysis.inventory_ottoman        # -> reports/otto
 uv run python -m htr_ottoman.analysis.compare_ottoman_sources  # Research vs ACDC-Evaluation
 ```
 
-Documentation du projet : [PROJECT.md](PROJECT.md) (résumé, avancement), [ARCHITECTURE.md](ARCHITECTURE.md) (code, flux des données), [DECISIONS.md](DECISIONS.md) (décisions méthodologiques), [EXPERIMENTS.md](EXPERIMENTS.md) (expériences).
+Documentation du projet : [PROJECT.md](PROJECT.md) (résumé, protocole), [ROADMAP.md](ROADMAP.md) (tickets, avancement), [ARCHITECTURE.md](ARCHITECTURE.md) (code, flux des données), [DECISIONS.md](DECISIONS.md) (décisions méthodologiques), [EXPERIMENTS.md](EXPERIMENTS.md) (expériences).
 
 ## Données
 

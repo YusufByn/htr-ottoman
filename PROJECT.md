@@ -52,20 +52,7 @@ Tout modèle dérivé de MAKHZAN est sous CC BY-NC-SA. Détails et MD5 : [README
 
 ## 5. État d'avancement
 
-| Étape | Statut | Date |
-|-------|--------|------|
-| Environnement : Python 3.13, kraken 7.1.1, MPS vérifié, dépendances figées (uv.lock) | fait | 2026-09-25 |
-| Choix du modèle de départ (OpenITI ottoman imprimé) | fait | 2026-09-25 |
-| Téléchargement de MAKHZAN 2026.1.2, MD5 vérifiés, `data/raw/` en lecture seule | fait | 2026-09-25 |
-| Exploration des métadonnées, notes de version et article JOHD | fait | 2026-09-25 |
-| Décisions de découpage : test interne, validation par œuvre, validation sur *Manāfi' al-nās* | fait | 2026-09-28 |
-| Architecture du code (package `htr_ottoman`, tests, docs) | fait | 2026-09-28 |
-| Fichiers de splits | à faire | |
-| `normalize.py` et ses tests | à faire | |
-| Extraction vers `data/interim/` et `data/processed/` | à faire | |
-| Évaluation du modèle de départ sans affinage (référence) | à faire | |
-| Fine-tuning | à faire | |
-| Téléchargement et évaluation sur Akis | à faire | |
+Voir [ROADMAP.md](ROADMAP.md) : liste des tickets F0 à F14, avec leurs dépendances et leur statut.
 
 ## 6. Résultats clés
 
@@ -85,10 +72,6 @@ Tout modèle dérivé de MAKHZAN est sous CC BY-NC-SA. Détails et MD5 : [README
 
 ## 8. Prochaines étapes
 
-1. Créer les fichiers de `splits/` à partir des décisions 1, 3, 6 et 7.
-2. Écrire `normalize.py` et `tests/test_normalize.py`.
-3. Extraire les pages et ALTO de MAKHZAN vers `data/interim/`, puis `data/processed/`.
-4. Évaluer le modèle de départ tel quel sur la validation et le test interne, comme point de référence.
-5. Premier fine-tuning (demander avant tout entraînement long).
+Voir [ROADMAP.md](ROADMAP.md). Les tickets sans dépendance restante sont F1 et F2.
 
 Journal des décisions : [DECISIONS.md](DECISIONS.md).

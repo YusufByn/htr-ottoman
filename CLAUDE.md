@@ -8,6 +8,12 @@ Affiner le modèle kraken ottoman imprimé d'OpenITI sur la partie ottomane de M
 - Une étape à la fois. En français, réponses courtes, pas de cadratins.
 - En cas d'erreur, montrer l'erreur exacte avant de corriger.
 
+## Tickets (ROADMAP.md)
+- Quand l'utilisateur dit « fais Fx » : lire le ticket Fx dans ROADMAP.md et passer son statut à « en cours ».
+- Expliquer le concept prévu dans le ticket avant de coder.
+- S'arrêter à chaque point de décision du ticket et demander à l'utilisateur.
+- À la fin : mettre à jour le statut du ticket, ARCHITECTURE.md, PROJECT.md et les journaux concernés (DECISIONS.md, EXPERIMENTS.md).
+
 ## Environnement
 - Python 3.13, dépendances gérées par uv (pyproject.toml + uv.lock). Toujours lancer les commandes via `uv run`.
 - Recréer l'environnement : `uv sync`.
