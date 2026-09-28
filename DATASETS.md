@@ -2,7 +2,7 @@
 
 État des jeux de vérité terrain disponibles pour la reconnaissance d'écriture manuscrite (HTR) en turc ottoman, établi pour choisir un jeu de test externe (ticket F10, décisions 40 et 41).
 
-- **Date de la recherche** : 2026-09-28.
+- **Date de la recherche** : 2026-09-28. Mails envoyés le même jour à Osmanlica.com et aux auteurs de CHURRO, réponses attendues (sections 3.3 et 3.4).
 - **Méthode** : catalogues et moteurs de recherche des dépôts (HTR-United, Zenodo, Hugging Face, GitHub), fiches et métadonnées des jeux, courts extraits lus par les API (quelques lignes, quelques Ko). Seul Akis a été téléchargé et inventorié. Les autres jeux n'ont pas été téléchargés : leurs chiffres sont ceux que publient leurs auteurs, sauf mention contraire.
 - **Conclusion** : à cette date, **aucun jeu ne remplit tous les critères** d'un test externe. Le seul jeu ouvert de manuscrits ottomans avec une vérité terrain par ligne en écriture arabe est OpenITI MAKHZAN, déjà utilisé par le projet pour l'entraînement, la validation et le test interne.
 
@@ -30,7 +30,7 @@ Critères : 1 manuscrit ottoman, 2 vérité terrain humaine en écriture arabe, 
 | Akis, jeu de test public | non (imprimé) | non (latin) | oui | oui | ? | oui | non | exclu (décision 40) |
 | `asparius/ottoman-ocr-8k` | non | non | ? | oui | ? | oui | non | exclu : Akis reconditionné |
 | Osmanlica.com, jeu rik'a | oui | ? | non | ? | oui | oui | non | le plus proche ; réponse attendue |
-| CHURRO, mémoires d'Osman Ağa | oui | oui | non | oui | oui | un seul manuscrit | non | le plus proche ; réponse attendue |
+| CHURRO, mémoires d'Osman Ağa | oui | texte de l'édition Kreutel (1980), fidélité à la page à confirmer | sources contradictoires | oui | oui | un seul manuscrit | non | le plus proche ; réponse attendue |
 | RikaOCR, données BOA | oui | oui | non | oui | oui | 132 lignes de test | ? | exclu : pas de licence des données |
 | OtaHTR-search | oui | non (sortie de modèle) | oui (CC0) | oui | oui | oui | oui (polygones) | exclu : pas de vérité terrain |
 | OpenITI `arabic_ms_data` | oui | non (pas de texte) | non | ? | oui | 10 pages | oui | exclu : segmentation seule |
@@ -63,20 +63,20 @@ Critères : 1 manuscrit ottoman, 2 vérité terrain humaine en écriture arabe, 
 - **Format** : images de lignes déjà découpées, sans ligne de base. **Conventions** : NFC d'après RikaOCR, le reste est inconnu.
 - **Recouvrement** : provenance des documents non indiquée, donc recouvrement avec MAKHZAN invérifiable. Il est faible a priori : les 30 manuscrits ottomans de MAKHZAN sont tous des œuvres titrées, alors que RikaOCR décrit les 85 unités comme des documents. Aucun risque avec le modèle de départ, qui est un modèle d'imprimé.
 - **Remarques** : l'écriture rik'a est absente de l'entraînement du projet (100 % naskh). RikaOCR s'en sert comme données d'entraînement.
-- **Statut** : le plus proche des critères au niveau de la ligne ; questions envoyées (licence, droit de publier des scores, origine de la vérité terrain, provenance). Décision 41.
+- **Statut** : le plus proche des critères au niveau de la ligne. Mail envoyé le 2026-09-28 à bilgi@osmanlica.com (licence, droit de publier des scores, origine de la vérité terrain, provenance des documents, citation) ; en attente de réponse. Décision 41.
 - **Autres jeux du même fournisseur**, non retenus : deux jeux imprimés naskh (21 pages, 376 lignes ; 21 pages, 436 lignes) ; un jeu de translittération (103 pages, 2 314 lignes, sans description des images).
 
 ### 3.4 CHURRO, sous-ensemble ottoman : mémoires d'Osman Ağa de Timişoara
 
 - **Source** : CHURRO-DS (Semnani, Zhang, He, Tekgürler, Lam, EMNLP 2025, arXiv 2509.19768), Hugging Face `stanford-oval/churro-dataset` ; extrait ottoman republié par `OttomanNLP/CHURRO-Ottoman-Turkish-Subset`.
-- **Contenu** : 236 pages du manuscrit des mémoires d'Osman Ağa (achevé en 1724, British Library, Or. 3213), plus une page du jeu Muharaf, en persan, à exclure. Environ 700 caractères par page d'après un échantillon.
-- **Vérité terrain** : écriture arabe, établie par les auteurs de CHURRO (Merve Tekgürler et al.).
-- **Licence** : CHURRO-DS est réservé à la recherche (« use is permitted for research purposes only », en raison des licences des jeux qu'il agrège). La copie OttomanNLP affiche CC BY 4.0, mais c'est un tiers qui a changé l'étiquette : on ne peut pas s'y fier.
+- **Contenu** : manuscrit des mémoires d'Osman Ağa (achevé en 1724, British Library, Or. 3213). L'article annonce 243 images (annexe E) ; la copie OttomanNLP en contient 236, plus une page du jeu Muharaf, en persan, à exclure. Environ 700 caractères par page d'après un échantillon.
+- **Vérité terrain** : écriture arabe. D'après l'article (annexe E et références), c'est le texte de l'édition de Richard F. Kreutel, *Die Autobiographie des Dolmetschers Osman Aga aus Temeschwar* (E. J. W. Gibb Memorial Trust, Cambridge, 1980), aligné page par page sur les images par les auteurs de CHURRO. Ce n'est donc pas une transcription faite directement sur les images pour l'HTR : sa fidélité à la page (orthographe du manuscrit, corrections ou normalisations de l'éditeur, limites de page) est à confirmer.
+- **Licence** : les sources se contredisent. La fiche du jeu sur Hugging Face le réserve à la recherche (« use is permitted for research purposes only », en raison des licences des jeux qu'il agrège). L'article, section *Ethical Considerations*, annonce CHURRO-DS sous CC BY-SA 4.0 (« released under the Creative Commons Attribution Share Alike 4.0 license »). L'annexe E donne pour le jeu d'Osman Ağa : « permission granted for research use ». La copie OttomanNLP affiche CC BY 4.0, mais c'est un tiers qui a changé l'étiquette : on ne peut pas s'y fier.
 - **Format** : image de page et texte de la page **en un seul paragraphe**, sans correspondance ligne par ligne ni ligne de base.
 - **Conventions** (échantillon) : ک/ك et ی/ي mêlés, hamza (ؤ), chiffres arabes.
 - **Recouvrement** : aucun avec MAKHZAN (cote, bibliothèque et titre vérifiés dans les métadonnées de MAKHZAN 2026.1.2 : ses deux seuls documents de la British Library sont en persan et en arabe). Aucun avec le modèle de départ.
 - **Limites** : un seul manuscrit d'une seule main, donc pas d'intervalle de confiance par manuscrit ; alignement texte-lignes à faire, ou CER par page qui inclurait les erreurs de segmentation (contraire à la décision 31).
-- **Statut** : questions envoyées (licence du sous-ensemble ottoman, existence d'une transcription alignée par ligne). Décision 41.
+- **Statut** : mail envoyé le 2026-09-28 à Merve Tekgürler, Sina J. Semnani en copie (licence du sous-ensemble ottoman, compte tenu des sources contradictoires ; existence d'une transcription alignée par ligne ; fidélité à la page de la transcription issue de l'édition de 1980) ; en attente de réponse. Décision 41.
 
 ### 3.5 RikaOCR
 
@@ -123,7 +123,7 @@ Consultées le 2026-09-28.
 - MAKHZAN : https://doi.org/10.5281/zenodo.19861912 ; https://openhumanitiesdata.metajnl.com/articles/10.5334/johd.465
 - Akis : https://github.com/verimsu/Akis-Ottoman-Dataset ; article : https://doi.org/10.1007/978-3-031-70442-0_26
 - Osmanlica.com : https://osmanlica.com/test
-- CHURRO : https://arxiv.org/abs/2509.19768 ; https://huggingface.co/datasets/stanford-oval/churro-dataset ; https://huggingface.co/datasets/OttomanNLP/CHURRO-Ottoman-Turkish-Subset
+- CHURRO : https://arxiv.org/abs/2509.19768 (texte HTML de la v1 : section *Ethical Considerations* ; annexe E, « The Osman Agha dataset » ; référence « Osman agha dataset ») ; https://huggingface.co/datasets/stanford-oval/churro-dataset ; https://huggingface.co/datasets/OttomanNLP/CHURRO-Ottoman-Turkish-Subset
 - RikaOCR : https://github.com/umute642-boop/RikaOCR ; https://zenodo.org/records/22151212
 - OtaHTR-search : https://github.com/Koras0ff/OtaHTR-search
 - OpenITI `arabic_ms_data` : https://github.com/OpenITI/arabic_ms_data ; modèle Party : https://zenodo.org/records/20642057

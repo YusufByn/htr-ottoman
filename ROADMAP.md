@@ -319,7 +319,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
   - Comparaison avec les résultats publiés, s'il y en a, en précisant les différences de protocole.
 - **Points de décision** : aucun réglage ne doit dépendre de ces résultats (évaluation finale uniquement).
 - **Concept à expliquer** : validité externe, et comment comparer honnêtement avec des résultats publiés.
-- **Statut** : en attente (décision 41). Aucun jeu externe ne remplit les critères ; le test interne (F9) est le résultat principal de généralisation. Réponses attendues d'Osmanlica.com (jeu rik'a : licence, droit de publier des scores, origine de la vérité terrain, provenance des documents) et des auteurs de CHURRO (licence du sous-ensemble ottoman, transcription alignée par ligne). À rouvrir avec un pré-enregistrement si une réponse permet un test propre.
+- **Statut** : en attente (décision 41). Aucun jeu externe ne remplit les critères ; le test interne (F9) est le résultat principal de généralisation. Mails envoyés le 2026-09-28, réponses attendues d'Osmanlica.com (jeu rik'a : licence, droit de publier des scores, origine de la vérité terrain, provenance des documents) et des auteurs de CHURRO (licence du sous-ensemble ottoman, contradictoire selon les sources ; transcription alignée par ligne ; fidélité à la page de l'édition de Kreutel, 1980). À rouvrir avec un pré-enregistrement si une réponse permet un test propre.
 
 ---
 
