@@ -99,7 +99,7 @@ uv run ketos -d auto -s 42 train --load models/.../modele.mlmodel \
 uv run ketos test -m modele.safetensors -f binary -e test.lst
 ```
 
-Rapport : CER, WER, précision par écriture, confusions de caractères (training_recognition, « Evaluation »). Options : `-B`, `--linetype`, `--pad`, `-u`, `-n`, `--reorder`, `--base-dir`, `--no-legacy-polygons`. Le CER de référence du projet est celui de `htr_ottoman.evaluate` (F5) ; `ketos test` sert de contrôle croisé.
+Rapport : CER, WER, précision par écriture, confusions de caractères (training_recognition, « Evaluation »). Options : `-B`, `--linetype`, `--pad`, `-u`, `-n`, `--reorder`, `--base-dir`, `--no-legacy-polygons`. Le CER de référence du projet est celui de `htr_ottoman.evaluate` (F5) ; `ketos test` sert de contrôle croisé. `ketos test` n'applique aux prédictions que `-u` et `-n` (`train/vgsl.py`, `_pred_transforms`), pas nos règles : sur la validation, modèle de départ, 36,2 % contre 27,8 % pour `evaluate`, écart dû aux ی/ک prédits (convention OpenITI imprimé) et aux suites d'espaces (décision 29). Le rapport donne une « Character Accuracy » = 1 − CER.
 
 ## 7. Inférence
 
@@ -123,7 +123,7 @@ Options utiles de `ocr` : `--reorder/--no-reorder`, `--base-dir`, `--no-legacy-p
 ## 10. Constats vérifiés dans le projet (F4, 2026-09-28)
 
 - Défauts réels de `ketos train` et `ketos test` (`configs/vgsl.py`, `configs/base.py`) : `normalization` aucune, `normalize_whitespace` activé, `bidi_reordering` activé, `base_dir` auto. **`--load` ne reprend pas ces réglages du modèle chargé** : les donner explicitement (`htr_ottoman.prepare.KRAKEN_TEXT_OPTIONS`).
-- `-n` remplace chaque espace Unicode par une espace simple et retire début et fin (`functional_im_transforms.text_whitespace_normalize`) ; le ZWNJ n'est pas touché. Sur nos 3 719 lignes compilées, NFD et `-n` ne changent aucune ligne (test `test_kraken_text_transforms_are_noop`).
+- `-n` remplace chaque espace Unicode par une espace simple et retire début et fin (`functional_im_transforms.text_whitespace_normalize`), **sans réduire les suites d'espaces** ; le ZWNJ n'est pas touché. Sur nos 3 719 lignes compilées, NFD et `-n` ne changent aucune ligne (test `test_kraken_text_transforms_are_noop`).
 - BiDi (`get_display`) remplace les caractères « miroir » (parenthèses...) ; aucun n'est présent dans nos lignes compilées.
 - **Le modèle de départ produit l'ordre d'affichage** : avec `bidi_reordering=True`, la sortie est en ordre logique (31,7 % d'écart sur une page de validation, 80 % sans). Il a donc été entraîné avec `--reorder` ; garder `bidi_reordering: true`.
 - L'avertissement « Neural network has been trained on mode L images, training set contains mode 1 data » est un **faux positif** : le mode du jeu part de `1` et n'est mis à jour qu'au chargement des lignes, après l'avertissement. Les lignes sont converties en niveaux de gris (1 canal, 256 niveaux) par `ImageInputTransforms`.

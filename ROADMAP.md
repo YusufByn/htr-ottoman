@@ -12,7 +12,7 @@ Statuts : à faire, en cours, fait. Dernière mise à jour : 2026-09-28.
 | F2 | Téléchargement et extraction de MAKHZAN | | fait |
 | F3 | Splits | F2 | fait |
 | F4 | Préparation des données pour kraken | F1, F2, F3 | fait |
-| F5 | Évaluation (CER) | F1 | à faire |
+| F5 | Évaluation (CER) | F1 | fait |
 | F6 | Modèle de départ | F1, F2 | fait |
 | F7 | Baseline | F4, F5, F6 | à faire |
 | F8 | Premier fine-tuning | F7 | à faire |
@@ -185,7 +185,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
   - Utiliser `ketos test` ou notre propre calcul comme référence.
   - Intervalles de confiance (bootstrap par manuscrit) pour les petits groupes.
 - **Concept à expliquer** : la distance d'édition (Levenshtein : substitutions, insertions, suppressions), la définition du CER, et pourquoi un CER sur 30 lignes est beaucoup moins fiable qu'un CER sur 3 000.
-- **Statut** : à faire.
+- **Statut** : fait (2026-09-28). `evaluate` (CER micro, espaces comptés, bootstrap par manuscrit) et `predict` (API kraken). 21 tests, dont tous les cas calculés à la main et la concordance avec torchmetrics. Contrôle sur la validation avec le modèle de départ : 27,8 % (`evaluate`) contre 36,2 % (`ketos test`), écart expliqué exactement par nos règles de normalisation. Décisions 28 à 30.
 
 ---
 
@@ -217,7 +217,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
 - **Dépend de** : F4, F5, F6.
 - **Tâches** :
   - Reconnaissance des lignes de la validation et du test interne avec le modèle de départ, sur la segmentation de la vérité terrain (`data/processed/makhzan/`, anciens polygones). Prédire avec l'API Python (`bidi_reordering=True`) ou `ketos test`, jamais la sortie texte de `kraken ocr`, inversée en 7.1.1 (skill kraken, section 8).
-  - CER avec `evaluate`, avec toutes les ventilations de F5.
+  - CER avec `evaluate`, avec toutes les ventilations de F5. La validation a déjà été mesurée en contrôle de F5 (27,8 %) : F7 refait la mesure avec les prédictions à leur emplacement officiel et ajoute le test interne. Prédictions : `uv run python -m htr_ottoman.predict`.
   - Consigner le résultat dans EXPERIMENTS.md (date, commit, données, modèle, paramètres, CER validation, CER test interne).
   - Sauvegarder les prédictions dans `reports/` pour F13.
 - **Critères d'acceptation** :
