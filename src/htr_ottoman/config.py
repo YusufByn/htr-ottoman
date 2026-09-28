@@ -21,3 +21,7 @@ MAKHZAN_METADATA = MAKHZAN_RAW / "OpenITI-Makhzan_Metadata_2026-1-2.tsv"
 MAKHZAN_ZIP = MAKHZAN_RAW / "OpenITI-Makhzan_Data_2026-1-2.zip"
 MAKHZAN_INTERIM = DATA_INTERIM / "makhzan"  # un dossier par manuscrit ottoman (<DocID>/)
 MAKHZAN_LINES = MAKHZAN_INTERIM / "ottoman_lines.parquet"  # une ligne par TextLine
+
+# Modèle de départ : OpenITI ottoman imprimé (DOI 10.5281/zenodo.7050342, CC0)
+BASE_MODEL_DIR = MODELS / "openiti_ottoman_print"
+BASE_MODEL = BASE_MODEL_DIR / "ottoman_best.mlmodel"

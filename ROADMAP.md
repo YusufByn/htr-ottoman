@@ -13,7 +13,7 @@ Statuts : à faire, en cours, fait. Dernière mise à jour : 2026-09-28.
 | F3 | Splits | F2 | fait |
 | F4 | Préparation des données pour kraken | F1, F2, F3 | à faire |
 | F5 | Évaluation (CER) | F1 | à faire |
-| F6 | Modèle de départ | F1, F2 | à faire |
+| F6 | Modèle de départ | F1, F2 | fait |
 | F7 | Baseline | F4, F5, F6 | à faire |
 | F8 | Premier fine-tuning | F7 | à faire |
 | F9 | Évaluation interne du modèle affiné | F5, F8 | à faire |
@@ -143,6 +143,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
 - **Tâches** :
   - Vérifier dans la documentation de la version installée (kraken 7.1.1) le format d'entraînement attendu et la commande de compilation (`ketos compile`, format binaire Arrow).
   - Appliquer `normalize` au texte des lignes.
+  - Découper les images de lignes comme le modèle de départ l'attend (F6) : lignes de base, anciens polygones (`use_legacy_polygons`), hauteur 120 px, niveaux de gris.
   - Exclure les lignes vides de l'entraînement (règle de CLAUDE.md).
   - Exclure de l'entraînement et de l'évaluation les lignes avec annotations de transcripteur (`{...}`, `(؟)`), et consigner leur nombre (décision 15).
   - Garder la trace des pages en couche gen2 (décision 4).
@@ -206,7 +207,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
   - Si des caractères fréquents sont inconnus du modèle : les normaliser (règle ajoutée à F1), ou étendre le codec pendant le fine-tuning (F8).
   - Si kraken 7 ne charge pas le modèle directement : méthode de conversion.
 - **Concept à expliquer** : ce qu'est le codec d'un modèle HTR (la couche de sortie, un caractère par classe), et pourquoi un caractère absent du codec ne peut jamais être prédit.
-- **Statut** : à faire.
+- **Statut** : fait (2026-09-28). `uv run python -m htr_ottoman.base_model` : MD5 vérifié, chargé par kraken 7.1.1 sans conversion (lignes de 120 px, niveaux de gris, lignes de base, anciens polygones). Codec de 196 caractères. `analysis.codec_coverage` : après les règles 8 et 9, 100 % des caractères de la validation connus, 99,92 % du test interne, 99,99 % du train (`reports/codec_coverage.csv`). Décisions 21 à 24.
 
 ---
 
@@ -251,7 +252,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
   - Expérience consignée.
 - **Points de décision** :
   - Entraîner en local (MPS) ou sur Colab ou Kaggle (GPU CUDA), selon la durée estimée.
-  - Validation des hyperparamètres et du mode de gestion du codec avant le lancement.
+  - Validation des hyperparamètres et du mode de gestion du codec avant le lancement : 7 caractères du train sont absents du codec (4 `#`, 2 ZWNJ, 1 ٮ, décision 23). Étendre le codec, ou écarter ces 6 lignes.
   - Accord avant tout entraînement long (CLAUDE.md).
 - **Concept à expliquer** : fine-tuning contre entraînement depuis zéro, époque, taux d'apprentissage, surapprentissage et arrêt anticipé, rôle de la validation dans le choix du meilleur modèle.
 - **Statut** : à faire.

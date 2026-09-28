@@ -2,7 +2,9 @@
 vérité terrain et aux prédictions (CLAUDE.md, décisions 5 et 8).
 
 Les règles sont appliquées dans l'ordre de RULES. Chacune est documentée
-(quoi, pourquoi, exemple) et consignée dans DECISIONS.md (décisions 5, 9 à 14).
+(quoi, pourquoi, exemple) et consignée dans DECISIONS.md (décisions 5, 9 à 14,
+21, 22). Le numéro d'une règle est un identifiant (cité par les décisions),
+pas son rang d'application.
 
 Non traités, car absents des lignes ottomanes de MAKHZAN (inventaire du
 2026-09-28, reports/ottoman_characters.csv) : tatwīl, ZWJ, chiffres persans.
@@ -18,6 +20,8 @@ BIDI_MARKS = "‎‏؜"  # LRM, RLM, ALM
 HARAKAT = re.compile("[ً-ْٰ]")  # tanwīn, voyelles, shadda, sukūn, alif suscrit
 KEHEH, KAF = "ک", "ك"  # ک, ك
 FARSI_YEH, YEH, ALEF_MAKSURA = "ی", "ي", "ى"  # ی, ي, ى
+VERSE_SEPARATORS = "•؞"  # •, ؞
+SEEN_THREE_DOTS_BELOW, SEEN = "ڛ", "س"  # ڛ, س
 
 
 def to_nfd(text: str) -> str:
@@ -82,6 +86,28 @@ def unify_farsi_yeh(text: str) -> str:
     return "".join(chars)
 
 
+def unify_verse_separators(text: str) -> str:
+    """Règle 8 (décision 21) : séparateurs de vers • (U+2022) et ؞ (U+061E) -> "." (U+002E).
+
+    Pourquoi : trois transcripteurs notent la fin d'hémistiche de trois façons
+    ("." dans le train, souvent sans encre sur l'image ; • pour un point rouge ;
+    ؞ pour trois points rouges). Seul "." est dans le codec du modèle de départ
+    et dans le train.
+    Exemple : "ازه لي•" -> "ازه لي.".
+    """
+    return text.translate({ord(c): "." for c in VERSE_SEPARATORS})
+
+
+def unify_seen_marks(text: str) -> str:
+    """Règle 9 (décision 22) : sīn à trois points dessous ڛ (U+069B) -> س (U+0633).
+
+    Pourquoi : convention MAKHZAN 3.2 (Allen et al., JOHD), les marques qui
+    signalent un sīn ne sont pas transcrites ; ڛ est absent du codec.
+    Exemple : "ڛلام" -> "سلام".
+    """
+    return text.replace(SEEN_THREE_DOTS_BELOW, SEEN)
+
+
 def collapse_zwnj(text: str) -> str:
     """Règle 6 (décision 11) : réduit les ZWNJ répétés à un seul.
 
@@ -109,6 +135,8 @@ RULES = [
     remove_harakat,
     unify_kaf,
     unify_farsi_yeh,
+    unify_verse_separators,
+    unify_seen_marks,
     collapse_zwnj,
     normalize_spaces,
 ]

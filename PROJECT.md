@@ -18,7 +18,7 @@ Projet de recherche et portfolio.
 |-----------|---------|------|---------|
 | OpenITI MAKHZAN, partie ottomane | 2026.1.2, DOI 10.5281/zenodo.19861912 | entraînement, validation, test interne | CC BY-NC-SA 4.0 |
 | Akis | à venir | test final externe | Apache 2.0, citer Tasdemir et al., DAS 2024 |
-| Modèle OpenITI ottoman imprimé | DOI 10.5281/zenodo.7050342 (kraken, CER annoncé 4,22 %) | modèle de départ | CC0 |
+| Modèle OpenITI ottoman imprimé | DOI 10.5281/zenodo.7050342 (kraken, CER annoncé 4,22 %). Lignes de 120 px en niveaux de gris, lignes de base, NFD ; codec de 196 caractères | modèle de départ | CC0 |
 
 Tout modèle dérivé de MAKHZAN est sous CC BY-NC-SA. Détails et MD5 : [README](README.md).
 
@@ -34,7 +34,7 @@ Tout modèle dérivé de MAKHZAN est sous CC BY-NC-SA. Détails et MD5 : [README
 - Découpage par œuvre : toutes les copies d'une œuvre sont dans le même jeu (décision 6).
 - Les lignes sans transcription sont exclues de l'entraînement.
 - Les lignes contenant des annotations de transcripteur (`{...}`, `(؟)`, environ 43) sont exclues de l'entraînement et de l'évaluation (décision 15). Les effectifs du tableau seront ajustés en F3 et F4.
-- **Métrique** : CER (taux d'erreur par caractère), calculé sur vérité terrain et prédictions passées par la même fonction `normalize` : NFD, voyelles supprimées, ک et ی unifiés, espaces et invisibles nettoyés (décisions 5, 9 à 14). Rapporté au global, par écriture et par catégorie de relecture.
+- **Métrique** : CER (taux d'erreur par caractère), calculé sur vérité terrain et prédictions passées par la même fonction `normalize` : NFD, voyelles supprimées, ک et ی unifiés, séparateurs de vers unifiés en ".", ڛ → س, espaces et invisibles nettoyés (décisions 5, 9 à 14, 21, 22). Rapporté au global, par écriture et par catégorie de relecture.
 - Découpage figé dans `splits/train.csv`, `val.csv`, `test_interne.csv` (une ligne par page, seed 42), étanchéité vérifiée par les tests (décision 20).
 - CER du test interne rapporté avec et sans les pages multilingues (décision 19).
 
@@ -48,8 +48,10 @@ Tout modèle dérivé de MAKHZAN est sous CC BY-NC-SA. Détails et MD5 : [README
 | Téléchargement de MAKHZAN avec vérification MD5, idempotent : `data.makhzan` | fait |
 | Extraction des 30 manuscrits ottomans et table des lignes (Parquet, 3 868 lignes) : `data.makhzan` | fait |
 | Inventaire des caractères des lignes ottomanes : `analysis.char_inventory` | fait |
-| Normalisation (NFD + 6 règles) et 39 tests : `normalize` | fait |
+| Normalisation (NFD + 8 règles) et 43 tests : `normalize` | fait |
 | Création des splits, contrôle d'étanchéité : `splits` | fait |
+| Modèle de départ : téléchargement, chargement, codec : `base_model` | fait |
+| Couverture du codec par MAKHZAN : `analysis.codec_coverage` | fait |
 | Évaluation (CER par écriture et relecture) | à venir |
 | Fine-tuning kraken | à venir |
 
@@ -72,10 +74,10 @@ Voir [ROADMAP.md](ROADMAP.md) : liste des tickets F0 à F14, avec leurs dépenda
 - **Lettres sans points** (ڡ, ٮ, ں) : transcription diplomatique de Doc 3178 (test interne), absente de l'entraînement. Ces lignes seront probablement pénalisées.
 - **Unicode** : MAKHZAN est en NFC, le modèle de départ en NFD ; résolu par `normalize` (décision 5).
 - **Peu de données** : environ 2 800 lignes d'entraînement.
-- **Modèle de départ** entraîné sur de l'imprimé, pas sur des manuscrits.
+- **Modèle de départ** entraîné sur de l'imprimé, pas sur des manuscrits. Son codec couvre 99,92 à 100 % des caractères de MAKHZAN après normalisation ; restent inconnus `#` et ZWNJ (train, décision 23) et les lettres sans points de Doc 3178 (décision 24).
 
 ## 8. Prochaines étapes
 
-Voir [ROADMAP.md](ROADMAP.md). Tickets dont les dépendances sont remplies : F4, F5 et F6.
+Voir [ROADMAP.md](ROADMAP.md). Tickets dont les dépendances sont remplies : F4 et F5 (F7, la baseline, attend les deux).
 
 Journal des décisions : [DECISIONS.md](DECISIONS.md).

@@ -77,6 +77,21 @@ def test_rule5_keeps_arabic_yeh_and_alef_maksura():
     assert normalize("ي ى") == "ي ى"
 
 
+# Règle 8 : séparateurs de vers (décision 21)
+@pytest.mark.parametrize("sep", ["•", "؞"])
+def test_rule8_verse_separators_to_full_stop(sep):
+    assert normalize(f"ازه لي{sep}") == "ازه لي."
+
+
+def test_rule8_separator_with_spaces():
+    assert normalize("يزه لي•  علم") == "يزه لي. علم"
+
+
+# Règle 9 : sīn à trois points dessous (décision 22)
+def test_rule9_seen_with_dots_below():
+    assert normalize("ڛلام") == "سلام"
+
+
 # Règle 6 : ZWNJ répétés (décision 11)
 def test_rule6_collapses_repeated_zwnj():
     assert normalize("كله" + ZWNJ * 2 + "سن") == "كله" + ZWNJ + "سن"
@@ -132,6 +147,6 @@ def test_all_makhzan_ottoman_lines():
         out = normalize(text)
         assert unicodedata.is_normalized("NFD", out)
         assert normalize(out) == out
-        assert "ک" not in out and "ی" not in out
+        assert not set(out) & {"ک", "ی", "•", "؞", "ڛ"}
         n += 1
     assert n == 3868
