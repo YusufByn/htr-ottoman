@@ -22,8 +22,9 @@ Statuts : à faire, en cours, fait. Dernière mise à jour : 2026-09-28.
 | F12 | Expériences complémentaires | F9 | à faire |
 | F13 | Analyse d'erreurs | F9 | à faire |
 | F14 | Publication | F11 | à faire |
+| F15 | v1.0 : modèle naskh utilisable | F14 | à faire |
 
-Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), généralisation externe (F10, F11), approfondissement et publication (F12 à F14).
+Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), généralisation externe (F10, F11), approfondissement et publication (F12 à F14), v1.0 (F15, pas avant F14).
 
 ---
 
@@ -354,3 +355,29 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
 - **Tâches, critères, points de décision** : à préciser selon les résultats. Il faudra au moins choisir le lieu du dépôt (Zenodo, par exemple) et la licence du code.
 - **Concept à expliquer** : ce que contient une carte de modèle, et comment les licences des données se transmettent au modèle.
 - **Statut** : à faire.
+
+---
+
+## F15 · v1.0 : modèle naskh utilisable
+
+- **Objectif** : un modèle naskh utilisable en pratique, avec un CER inférieur à 10 % sur un nouveau jeu de test réservé.
+- **Dépend de** : F14. À ne pas commencer avant F14.
+- **Tâches** :
+  - Constituer d'abord le nouveau jeu de test réservé, avant tout entraînement de F15 : manuscrits naskh, ni la validation (*Manāfi' al-nās*) ni ACDC, aucune œuvre en commun avec les données d'entraînement (décision 6). Le figer dans `splits/` avec la seed, et ne le consulter qu'une fois, pour le modèle final.
+  - Ajouter les leviers dans cet ordre, un à la fois, en mesurant l'effet de chacun sur la validation :
+    1. données ouvertes : ACDC-Training (arabe et persan, voir F12), RASAM, TariMa ;
+    2. transcriptions de l'utilisateur, corrigées dans eScriptorium ;
+    3. meilleurs réglages trouvés en F12.
+  - Consigner chaque expérience dans EXPERIMENTS.md.
+  - Publier le modèle sous CC BY-NC-SA (hérité de MAKHZAN), avec une fiche : données et licences, protocole, CER par écriture, limites, citation.
+- **Critères d'acceptation** :
+  - CER inférieur à 10 % (`evaluate`) sur le nouveau jeu de test réservé, mesuré une seule fois.
+  - Modèle publié sous CC BY-NC-SA, avec sa fiche.
+  - Expériences consignées dans EXPERIMENTS.md.
+- **Points de décision** :
+  - Composition du nouveau jeu de test (source, manuscrits, taille), à trancher avant tout entraînement.
+  - Licences de RASAM, de TariMa et des transcriptions de l'utilisateur : vérifier qu'elles permettent une publication sous CC BY-NC-SA.
+  - Conventions de transcription de chaque nouvelle source : règles à ajouter à `normalize` (toute règle ajoutée change le CER de toutes les expériences, voir F10).
+  - Si le seuil n'est pas atteint après les trois leviers : ne pas régler sur le test réservé, revenir à la validation et consigner la décision.
+- **Concept à expliquer** : pourquoi un jeu de test déjà consulté ne peut plus servir de mesure finale, et ce qu'apportent des données d'autres langues ou d'autres mains (transfert).
+- **Statut** : à faire (pas avant F14).
