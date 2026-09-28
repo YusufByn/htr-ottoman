@@ -11,7 +11,7 @@ Statuts : à faire, en cours, fait. Dernière mise à jour : 2026-09-28.
 | F1 | `normalize.py` et ses tests | | fait |
 | F2 | Téléchargement et extraction de MAKHZAN | | fait |
 | F3 | Splits | F2 | fait |
-| F4 | Préparation des données pour kraken | F1, F2, F3 | à faire |
+| F4 | Préparation des données pour kraken | F1, F2, F3 | fait |
 | F5 | Évaluation (CER) | F1 | à faire |
 | F6 | Modèle de départ | F1, F2 | fait |
 | F7 | Baseline | F4, F5, F6 | à faire |
@@ -161,7 +161,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
   - comment kraken découpe une image de ligne à partir de la ligne de base et du polygone ;
   - ce qu'est un jeu compilé et pourquoi il accélère l'entraînement ;
   - ce qu'est le codec (l'alphabet du modèle).
-- **Statut** : à faire.
+- **Statut** : fait (2026-09-28). `uv run python -m htr_ottoman.prepare` : 248 ALTO normalisés, `train.arrow` (2 763 lignes), `val.arrow` (412), `test_interne.arrow` (544), anciens polygones, fichiers identiques octet pour octet d'une exécution à l'autre, 3 719 lignes lues par kraken sans erreur, essai d'entraînement d'une époque réussi sur MPS (EXPERIMENTS.md). Réglages de texte de kraken vérifiés sans effet sur notre texte, modèle de départ en ordre d'affichage (BiDi). Skill `.claude/skills/kraken/`. Décisions 25 à 27.
 
 ---
 
@@ -170,7 +170,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
 - **Objectif** : un module d'évaluation fiable, qui donne le CER global et ventilé.
 - **Dépend de** : F1.
 - **Tâches** :
-  - `src/htr_ottoman/evaluate.py` : CER calculé sur des textes normalisés par `normalize`.
+  - `src/htr_ottoman/evaluate.py` : CER calculé sur des textes normalisés par `normalize`, prédictions remises en ordre logique (BiDi, décision 26).
   - Ventilations : global, par écriture, par catégorie de relecture, couche gen2 ou non, par manuscrit.
   - CER du test interne avec et sans les 7 pages multilingues (`is_multilingual`, décision 19).
   - Rapporter pour chaque groupe le nombre de lignes et de caractères, pour juger de la taille de l'échantillon.
@@ -216,7 +216,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
 - **Objectif** : mesurer le modèle de départ tel quel, sans affinage, comme point de référence.
 - **Dépend de** : F4, F5, F6.
 - **Tâches** :
-  - Reconnaissance des lignes de la validation et du test interne avec le modèle de départ, sur la segmentation de la vérité terrain.
+  - Reconnaissance des lignes de la validation et du test interne avec le modèle de départ, sur la segmentation de la vérité terrain (`data/processed/makhzan/`, anciens polygones). Prédire avec l'API Python (`bidi_reordering=True`) ou `ketos test`, jamais la sortie texte de `kraken ocr`, inversée en 7.1.1 (skill kraken, section 8).
   - CER avec `evaluate`, avec toutes les ventilations de F5.
   - Consigner le résultat dans EXPERIMENTS.md (date, commit, données, modèle, paramètres, CER validation, CER test interne).
   - Sauvegarder les prédictions dans `reports/` pour F13.
@@ -244,7 +244,8 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
     - gestion du codec ;
     - seed.
   - `src/htr_ottoman/train.py` : lance kraken à partir de la config, sur MPS.
-  - Estimer la durée à partir d'un essai court (quelques centaines d'itérations) avant de lancer l'entraînement complet.
+  - Estimer la durée à partir d'un essai court (quelques centaines d'itérations) avant de lancer l'entraînement complet. Mesure de F4 : 1 min 50 par époque d'entraînement sur MPS (lots de 16), plus la validation à chaque époque.
+  - Réglages de texte : `htr_ottoman.prepare.KRAKEN_TEXT_OPTIONS` (décision 26), à donner explicitement.
   - Consigner l'expérience dans EXPERIMENTS.md (CER validation seulement).
 - **Critères d'acceptation** :
   - Entraînement terminé, meilleur modèle choisi sur la validation, sauvegardé dans `models/`.

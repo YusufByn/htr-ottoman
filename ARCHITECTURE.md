@@ -14,7 +14,7 @@ data/raw/makhzan/  (zip + TSV, lecture seule)
                                           │
                         splits ──> splits/│  (train / val / test_interne, une ligne par page)
                                           │
-       normalize (NFD + 6 règles), appliqué en F4
+  prepare : normalize + compilation (anciens polygones)
                                           v
                                    data/processed/  (jeux prêts pour kraken, par split)
                                           │
@@ -33,7 +33,7 @@ htr-ottoman/
 ├── data/                 hors git
 │   ├── raw/              sources telles que téléchargées, en lecture seule (chmod a-w)
 │   ├── interim/          zips décompressés, ALTO bruts, avant normalisation
-│   └── processed/        données prêtes pour kraken (ALTO normalisés NFD, jeux compilés par split)
+│   └── processed/        makhzan/alto/ (ALTO normalisés), makhzan/<jeu>.arrow et <jeu>.lst
 ├── models/               modèle de départ (openiti_ottoman_print/) et modèles entraînés (hors git)
 ├── notebooks/            exploration visuelle uniquement, aucun code du pipeline n'en dépend
 ├── reports/              inventaires, métriques (versionné, CC BY-NC-SA)
@@ -47,6 +47,7 @@ htr-ottoman/
 │   ├── base_model.py     modèle de départ : téléchargement, chargement kraken, codec
 │   ├── normalize.py      l'unique fonction de normalisation (NFD + règles documentées)
 │   ├── splits.py         découpage par œuvre, fichiers de splits/ et contrôle d'étanchéité
+│   ├── prepare.py        ALTO normalisés, compilation Arrow pour kraken, vérifications
 │   ├── train.py          (à venir) fine-tuning kraken piloté par une config
 │   └── evaluate.py       (à venir) CER global, par écriture et par relecture
 ├── tests/                tests automatiques (pytest)
@@ -66,7 +67,7 @@ htr-ottoman/
 | Modèle de départ | `base_model` | API Zenodo, record 7050342 | `models/openiti_ottoman_print/` (MD5 vérifiés, lecture seule) | fait |
 | Couverture du codec | `analysis.codec_coverage` | table des lignes, `splits/`, modèle de départ | `reports/codec_coverage.csv` | fait |
 | Découpage | `splits` | TSV, décisions 1, 3, 6, 7, 19, 20 | `splits/train.csv`, `val.csv`, `test_interne.csv` | fait |
-| Normalisation | `normalize` (fonction faite, appliquée aux données en F4) | `data/interim/` | `data/processed/` | à venir (F4) |
+| Préparation pour kraken | `prepare` (avec `normalize`, `data.annotations`) | table des lignes, `splits/`, images de `data/interim/` | `data/processed/makhzan/` (248 ALTO normalisés, `train.arrow` 2 763 lignes, `val.arrow` 412, `test_interne.arrow` 544, manifestes `.lst`), `reports/processed_datasets.csv` | fait |
 | Entraînement | `train` (à venir) | `data/processed/`, `configs/`, modèle de départ | `models/` | à venir |
 | Évaluation | `evaluate` (à venir) | modèle, jeux val / test | `reports/`, `EXPERIMENTS.md` | à venir |
 
@@ -85,6 +86,7 @@ htr-ottoman/
 | `base_model` | `download` (Zenodo, `ensure_file`), `load` (kraken `load_models`, lit l'ancien `.mlmodel` ; avertissements bénins de coremltools masqués), `codec_labels`. Modèle : lignes de 120 px, niveaux de gris, lignes de base, anciens polygones, NFD. | `uv run python -m htr_ottoman.base_model` | fait |
 | `analysis.codec_coverage` | Caractères des lignes transcrites après `normalize`, par jeu, comparés au codec ; lignes annotées comptées à part. | `uv run python -m htr_ottoman.analysis.codec_coverage` | fait |
 | `data.annotations` | `has_annotation(text)` : accolades et `(؟)` (décision 15), utilisé par la couverture du codec et par F4. | aucun | fait |
+| `prepare` | `select_lines` (exclut vides et annotées), `write_page_alto` (texte passé par `normalize`, lignes exclues retirées, image désignée par chemin relatif), `compile_split` (`build_binary_dataset`, anciens polygones, un seul processus), `check_split` (nombre de lignes, NFD, texte attendu, statut des polygones), `verify_with_kraken` (lecture par la classe de jeu de l'entraînement, aucune ligne remplacée). Constantes `LEGACY_POLYGONS`, `KRAKEN_TEXT_OPTIONS` (réutilisées par F7 et F8). | `uv run python -m htr_ottoman.prepare` | fait |
 | `splits` | `assign` (règles fixes : ACDC-Evaluation → test_interne, *Manāfi' al-nās* → val, reste de Research → train), `validate` (chaque page une fois, aucune œuvre, Doc ID ni cote partagés, Doc 86 et 89 ensemble), `render` (en-tête sans date : fichiers identiques octet pour octet), `load_split` pour les étapes suivantes. `SEED = 42`. | `uv run python -m htr_ottoman.splits` | fait |
 | `train` | Fine-tuning kraken à partir d'un fichier de `configs/`. | à venir | à venir |
 | `evaluate` | CER global, par écriture et par catégorie de relecture. | à venir | à venir |
@@ -101,6 +103,7 @@ htr-ottoman/
 - **Normalisation** : appliquée en un seul point, par `normalize`, à la vérité terrain et aux prédictions (décisions 5 et 8). Toute nouvelle règle : une fonction dans `RULES`, une docstring, un test, une décision. Les annotations de transcripteur ne sont pas normalisées mais filtrées en F4 (décision 15).
 - **Valeurs multiples** dans les CSV de `reports/` : séparées par ` | `.
 - **Seeds** : `SEED = 42` dans `splits.py`, écrite dans l'en-tête des fichiers de `splits/` ; les configs d'entraînement la reprendront. L'affectation aux jeux ne dépend d'aucun tirage.
+- **kraken** : toujours lire la skill `.claude/skills/kraken/` avant de l'utiliser. Réglages de texte : `prepare.KRAKEN_TEXT_OPTIONS` ; découpe : anciens polygones ; prédictions via l'API Python ou `ketos test`, pas `kraken ocr` ; tout code qui lance kraken tourne dans un module avec `if __name__ == "__main__":` (processus parallèles).
 - **Fichiers générés versionnés** (`splits/`, `reports/`) : jamais de date ni d'élément variable dans leur contenu, pour que la régénération soit vérifiable par comparaison.
 - **Lancement** : `uv run python -m htr_ottoman.<module>`.
 
@@ -114,6 +117,7 @@ htr-ottoman/
 | `tests/test_splits.py` | Fichiers identiques à une régénération, étanchéité (œuvre, Doc ID, cote), Doc 86 et 89 ensemble, chaque page une fois, effectifs, pages multilingues, `validate` détecte une fuite. | fait (16 tests) |
 | `tests/test_annotations.py` | `has_annotation` sur des cas réels (illisible, restitution, note, incertitude) et des lignes ordinaires. | fait (8 tests) |
 | `tests/test_base_model.py` | MD5 du modèle, chargement, entrée (120 px, niveaux de gris, lignes de base, NFD), codec de 196 caractères (sauté si le modèle est absent). | fait (3 tests) |
+| `tests/test_prepare.py` | Effectifs compilés et exclusions, texte des `.arrow` (NFD, sans annotation, anciens polygones), réglages de texte de kraken sans effet, ALTO normalisés relus par kraken, lecture d'un échantillon par kraken, réglages identiques au modèle de départ (sauté si les jeux sont absents). | fait (15 tests) |
 | `tests/test_config.py` | Le package s'importe, `ROOT` est la racine du projet, les chemins sont dans le projet. | fait |
 | `tests/test_normalize.py` | Un test par règle (exemples réels آ, أ, ئ, ی selon la position, séparateurs de vers, ڛ), sortie NFD, idempotence ; et sur les 3 868 lignes ottomanes réelles (sauté si le zip MAKHZAN est absent). | fait (43 tests) |
 
@@ -131,6 +135,7 @@ uv run python -m htr_ottoman.analysis.char_inventory
 uv run python -m htr_ottoman.splits                            # splits/*.csv
 uv run python -m htr_ottoman.base_model                        # modèle de départ (16 Mo)
 uv run python -m htr_ottoman.analysis.codec_coverage
-# application de la normalisation, entraînement, évaluation : à venir
+uv run python -m htr_ottoman.prepare                           # data/processed/makhzan/*.arrow (environ 2 min)
+# entraînement, évaluation : à venir
 uv run pytest
 ```
