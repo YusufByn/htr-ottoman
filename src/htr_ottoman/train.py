@@ -181,7 +181,7 @@ def experiment_row(config: dict, config_path: Path, output: Path, commit: str, t
 
 
 def read_metrics(log_dir: Path) -> pd.DataFrame:
-    """Métriques par époque du journal TensorBoard : perte d'entraînement moyenne,
+    """Métriques par époque du journal TensorBoard : perte CTC du train (somme par lot, moyenne des lots),
     précision caractère de validation calculée par kraken (sans nos règles sur la
     prédiction, donc proche mais pas égale au CER de `evaluate`) et durées.
     `epoque` compte à partir de 1 ; le checkpoint kraken de l'époque n s'appelle
@@ -234,15 +234,21 @@ def plot_curves(metrics: pd.DataFrame, title: str, path: Path) -> None:
 
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
+    from matplotlib.ticker import MaxNLocator
 
     ink, muted, grid, surface, series = "#0b0b0b", "#52514e", "#e4e3df", "#fcfcfb", "#2a78d6"
     fig, axes = plt.subplots(1, 2, figsize=(10, 4), constrained_layout=True, facecolor=surface)
-    panels = [("perte_train", 1, "Perte CTC moyenne (train)"), ("cer_val_kraken", 100, "CER de validation, kraken (%)")]
+    panels = [("perte_train", 1, "Perte CTC du train (somme par lot de lignes)"), ("cer_val_kraken", 100, "CER de validation, kraken (%)")]
     for ax, (col, scale, label) in zip(axes, panels):
         ax.set_facecolor(surface)
         ax.plot(metrics["epoque"], scale * metrics[col], color=series, lw=2, marker="o", ms=4)
         ax.set_title(label, color=ink, fontsize=11, loc="left")
         ax.set_xlabel("époque", color=muted)
+        if len(metrics) <= 12:  # une graduation par époque ; au-delà, des entiers espacés
+            ax.set_xticks(metrics["epoque"])
+        else:
+            ax.xaxis.set_major_locator(MaxNLocator(integer=True))
+        ax.set_xlim(metrics["epoque"].min() - 0.5, metrics["epoque"].max() + 0.5)
         ax.grid(True, color=grid, lw=1)
         ax.tick_params(colors=muted)
         for side in ("top", "right"):
@@ -305,10 +311,12 @@ def run(config_path: Path, trial: bool = False) -> Path:
                 avertissements_determinisme=log_text.count(DETERMINISM_WARNING))
     metrics = read_metrics(logs) if code == 0 else None
     if metrics is not None:
+        load_s = metrics["debut_s"].iloc[0] - start  # préparation des jeux par kraken, avant la 1re époque
         train_s, val_s = metrics["duree_train_s"].sum(), metrics["duree_val_s"].sum()
-        info["durees_min"] = {k: round(v / 60, 2) for k, v in {
-            "chargement": metrics["debut_s"].iloc[0] - start, "entrainement": train_s, "validation": val_s,
-            "reste": end - start - train_s - val_s, "total": end - start}.items()}
+        info["durees_min"] = {k: round(float(v) / 60, 2) for k, v in {
+            "chargement": load_s, "entrainement": train_s, "validation": val_s,
+            "reste": end - start - load_s - train_s - val_s,  # sauvegardes, conversion du meilleur modèle
+            "total": end - start}.items()}
     (output / "run.json").write_text(json.dumps(info, ensure_ascii=False, indent=2) + "\n")
     if code != 0:
         raise SystemExit(f"ketos s'est arrêté avec le code {code} : voir {output / 'ketos.log'}")
