@@ -1,0 +1,3 @@
+is_multilingual,manuscrits,lignes,caracteres,erreurs_reference,substitutions_reference,suppressions_reference,insertions_reference,cer_reference,erreurs_modele,substitutions_modele,suppressions_modele,insertions_modele,cer_modele,difference,ic95_bas,ic95_haut,reduction_relative,manuscrits_ameliores
+False,13,438,16745,6199,3111,2744,344,0.370200,4393,2245,1841,307,0.262347,-0.107853,-0.120729,-0.096046,0.291337,13
+True,4,106,4466,1656,709,887,60,0.370802,1192,548,577,67,0.266906,-0.103896,-0.116598,-0.082009,0.280193,4

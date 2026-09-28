@@ -1,0 +1,3 @@
+category,manuscrits,lignes,caracteres,erreurs_reference,substitutions_reference,suppressions_reference,insertions_reference,cer_reference,erreurs_modele,substitutions_modele,suppressions_modele,insertions_modele,cer_modele,difference,ic95_bas,ic95_haut,reduction_relative,manuscrits_ameliores
+clean; once vetted,8,196,8607,3529,1674,1696,159,0.410015,2602,1279,1163,160,0.302312,-0.107703,-0.125347,-0.085846,0.262681,8
+clean; twice vetted,9,348,12604,4326,2146,1935,245,0.343224,2983,1514,1255,214,0.236671,-0.106553,-0.118439,-0.094758,0.310448,9

@@ -1,0 +1,27 @@
+{
+  "config": "configs/f9_test_interne.yml",
+  "commit": "0ac13a3",
+  "debut": "2026-09-28T21:00:53",
+  "fin": "2026-09-28T21:02:43",
+  "sha256": {
+    "modele": "3709c4f3b5600db2399ebd2260feba7c5fcf8999afaf71a9cb9a0bab9847f8dd",
+    "reference": "1b60d34d758ed9cddd14289d708be8ce584e74a170d0db252eab1ab8cf48e93b",
+    "predictions_reference": "49bd33e3d32fcbac1eeb08a5289141035c9e29b2062d56010ed055cb9c990dd9",
+    "predictions_modele": "b9ae6c6fd2765f1b835f519347fcc379250521135f44e4294630a83c69eb13cb"
+  },
+  "controles": "tous passés, prédiction de la référence identique octet pour octet",
+  "ketos_test": {
+    "commande": "uv run ketos -d cpu test -m models/f8_finetune/best_0.8365.safetensors -f binary -e data/processed/makhzan/test_interne.lst -u NFD -n --reorder -B 1",
+    "code_retour": 0,
+    "caracteres": 21209,
+    "erreurs": 5580,
+    "cer": 0.26309585553302844
+  },
+  "durees_min": {
+    "controles": 0.74,
+    "prediction": 0.71,
+    "evaluation_comparaison": 0.01,
+    "ketos_test": 0.39,
+    "total": 1.84
+  }
+}

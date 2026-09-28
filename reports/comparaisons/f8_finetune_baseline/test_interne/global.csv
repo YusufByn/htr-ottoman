@@ -1,0 +1,2 @@
+groupe,manuscrits,lignes,caracteres,erreurs_reference,substitutions_reference,suppressions_reference,insertions_reference,cer_reference,erreurs_modele,substitutions_modele,suppressions_modele,insertions_modele,cer_modele,difference,ic95_bas,ic95_haut,reduction_relative,manuscrits_ameliores,conclusion
+tout,17,544,21211,7855,3820,3631,404,0.370327,5585,2793,2418,374,0.263307,-0.107020,-0.116927,-0.096366,0.288988,17,gain

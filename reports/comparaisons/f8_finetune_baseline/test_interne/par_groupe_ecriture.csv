@@ -1,0 +1,3 @@
+script_group,manuscrits,lignes,caracteres,erreurs_reference,substitutions_reference,suppressions_reference,insertions_reference,cer_reference,erreurs_modele,substitutions_modele,suppressions_modele,insertions_modele,cer_modele,difference,ic95_bas,ic95_haut,reduction_relative,manuscrits_ameliores,conclusion
+autres,10,342,12240,4701,2191,2306,204,0.384069,3459,1704,1529,226,0.282598,-0.101471,-0.116236,-0.083658,0.264199,10,gain
+naskh,7,202,8971,3154,1629,1325,200,0.351577,2126,1089,889,148,0.236986,-0.114591,-0.127148,-0.104861,0.325935,7,gain
