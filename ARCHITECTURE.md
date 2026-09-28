@@ -20,7 +20,7 @@ data/raw/makhzan/  (zip + TSV, lecture seule)
                                           │
                         train (à venir) ──> models/  (modèles affinés)
                                           │
-            predict + evaluate ──> reports/ + EXPERIMENTS.md  (CER)
+            predict + evaluate ──> reports/ + EXPERIMENTS.md  (CER ; baseline : reports/baseline/)
 ```
 
 Le pipeline part toujours de `data/raw/`, qui n'est jamais modifié. Chaque étape lit la sortie de la précédente et écrit dans son propre dossier.
@@ -37,6 +37,7 @@ htr-ottoman/
 ├── models/               modèle de départ (openiti_ottoman_print/) et modèles entraînés (hors git)
 ├── notebooks/            exploration visuelle uniquement, aucun code du pipeline n'en dépend
 ├── reports/              inventaires, métriques (versionné, CC BY-NC-SA)
+│   ├── baseline/         F7 : prédictions et CER du modèle de départ, un dossier par jeu (val/, test_interne/)
 │   └── figures/          graphiques générés par les modules d'analyse
 ├── scripts/              utilitaires (vérification d'environnement)
 ├── splits/               listes train/val/test figées, avec la seed (versionné)
@@ -70,14 +71,14 @@ htr-ottoman/
 | Découpage | `splits` | TSV, décisions 1, 3, 6, 7, 19, 20 | `splits/train.csv`, `val.csv`, `test_interne.csv` | fait |
 | Préparation pour kraken | `prepare` (avec `normalize`, `data.annotations`) | table des lignes, `splits/`, images de `data/interim/` | `data/processed/makhzan/` (248 ALTO normalisés, `train.arrow` 2 763 lignes, `val.arrow` 412, `test_interne.arrow` 544, manifestes `.lst`), `reports/processed_datasets.csv` | fait |
 | Entraînement | `train` (à venir) | `data/processed/`, `configs/`, modèle de départ | `models/` | à venir |
-| Prédiction | `predict` | modèle, ALTO normalisés d'un jeu (`data/processed/makhzan/alto/`) | parquet (part_id, line_id, pred) | fait |
-| Évaluation | `evaluate` | prédictions, table des lignes, `splits/` | dossier de CSV (global, par écriture, relecture, couche modèle, manuscrit, multilinguisme) + `lignes.parquet` ; résultat consigné dans `EXPERIMENTS.md` | fait |
+| Prédiction | `predict` | modèle, ALTO normalisés d'un jeu (`data/processed/makhzan/alto/`, segmentation de la vérité terrain, décision 31) | parquet (part_id, line_id, pred) ; baseline : `reports/baseline/<jeu>/predictions.parquet` | fait |
+| Évaluation | `evaluate` | prédictions, table des lignes, `splits/` | dossier de CSV (global, par écriture, relecture, couche modèle, manuscrit, multilinguisme) + `lignes.parquet` ; baseline : `reports/baseline/<jeu>/` ; résultat consigné dans `EXPERIMENTS.md` | fait |
 
 ## 4. Modules du package
 
 | Module | Responsabilité | Point d'entrée | État |
 |--------|----------------|----------------|------|
-| `config` | Chemins du projet (`ROOT`, `DATA_RAW`, `SPLITS`, `REPORTS`, fichiers MAKHZAN). Tous les modules les importent d'ici. | aucun | fait |
+| `config` | Chemins du projet (`ROOT`, `DATA_RAW`, `SPLITS`, `REPORTS`, `BASELINE_REPORTS`, fichiers MAKHZAN). Tous les modules les importent d'ici. | aucun | fait |
 | `analysis.inventory_ottoman` | Une ligne par manuscrit ottoman : titre, pages, écritures, langues, source, relecture, lignes, pages en couche modèle. S'arrête si une couche de transcription inconnue apparaît. | `uv run python -m htr_ottoman.analysis.inventory_ottoman` | fait |
 | `analysis.compare_ottoman_sources` | Research contre ACDC-Evaluation : pages, lignes, écritures, relecture ; lignes par manuscrit et par œuvre. | `uv run python -m htr_ottoman.analysis.compare_ottoman_sources` | fait |
 | `analysis.char_inventory` | Une ligne par caractère des lignes ottomanes : point de code, nom et catégorie Unicode, occurrences, lignes, manuscrits, Research / ACDC-Evaluation. Signale les anomalies d'espacement. Fournit aussi `iter_lines`, utilisé par les tests. | `uv run python -m htr_ottoman.analysis.char_inventory` | fait |
@@ -121,7 +122,7 @@ htr-ottoman/
 | `tests/test_annotations.py` | `has_annotation` sur des cas réels (illisible, restitution, note, incertitude) et des lignes ordinaires. | fait (8 tests) |
 | `tests/test_base_model.py` | MD5 du modèle, chargement, entrée (120 px, niveaux de gris, lignes de base, NFD), codec de 196 caractères (sauté si le modèle est absent). | fait (3 tests) |
 | `tests/test_prepare.py` | Effectifs compilés et exclusions, texte des `.arrow` (NFD, sans annotation, anciens polygones), réglages de texte de kraken sans effet, ALTO normalisés relus par kraken, lecture d'un échantillon par kraken, réglages identiques au modèle de départ (sauté si les jeux sont absents). | fait (15 tests) |
-| `tests/test_evaluate.py` | Cas calculés à la main (identiques, S, D, I, vides, kitten/sitting), retournement, NFC/NFD, normalize des deux côtés, espaces, agrégation micro, concordance torchmetrics, bootstrap (reproductible, rien sous 3 manuscrits), bout en bout sur la validation (CER nul, prédiction manquante détectée). | fait (21 tests) |
+| `tests/test_evaluate.py` | Cas calculés à la main (identiques, S, D, I, vides, kitten/sitting), retournement, NFC/NFD, normalize des deux côtés, espaces, agrégation micro, concordance torchmetrics, bootstrap (reproductible, rien sous 3 manuscrits), bout en bout sur la validation (CER nul, prédiction manquante détectée), tableaux de la baseline redonnés à partir des prédictions versionnées (val, test interne). | fait (23 tests) |
 | `tests/test_config.py` | Le package s'importe, `ROOT` est la racine du projet, les chemins sont dans le projet. | fait |
 | `tests/test_normalize.py` | Un test par règle (exemples réels آ, أ, ئ, ی selon la position, séparateurs de vers, ڛ), sortie NFD, idempotence ; et sur les 3 868 lignes ottomanes réelles (sauté si le zip MAKHZAN est absent). | fait (43 tests) |
 
@@ -140,8 +141,11 @@ uv run python -m htr_ottoman.splits                            # splits/*.csv
 uv run python -m htr_ottoman.base_model                        # modèle de départ (16 Mo)
 uv run python -m htr_ottoman.analysis.codec_coverage
 uv run python -m htr_ottoman.prepare                           # data/processed/makhzan/*.arrow (environ 2 min)
-uv run python -m htr_ottoman.predict --model models/openiti_ottoman_print/ottoman_best.mlmodel --split val --output PRED.parquet
-uv run python -m htr_ottoman.evaluate PRED.parquet --split val --output-dir DOSSIER
+# baseline (F7), environ 40 s par jeu, redonne les fichiers versionnés de reports/baseline/
+uv run python -m htr_ottoman.predict --model models/openiti_ottoman_print/ottoman_best.mlmodel --split val --output reports/baseline/val/predictions.parquet
+uv run python -m htr_ottoman.evaluate reports/baseline/val/predictions.parquet --split val --output-dir reports/baseline/val
+uv run python -m htr_ottoman.predict --model models/openiti_ottoman_print/ottoman_best.mlmodel --split test_interne --output reports/baseline/test_interne/predictions.parquet
+uv run python -m htr_ottoman.evaluate reports/baseline/test_interne/predictions.parquet --split test_interne --output-dir reports/baseline/test_interne
 # entraînement : à venir
 uv run pytest
 ```

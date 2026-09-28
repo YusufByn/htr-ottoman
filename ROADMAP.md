@@ -14,7 +14,7 @@ Statuts : à faire, en cours, fait. Dernière mise à jour : 2026-09-28.
 | F4 | Préparation des données pour kraken | F1, F2, F3 | fait |
 | F5 | Évaluation (CER) | F1 | fait |
 | F6 | Modèle de départ | F1, F2 | fait |
-| F7 | Baseline | F4, F5, F6 | à faire |
+| F7 | Baseline | F4, F5, F6 | fait |
 | F8 | Premier fine-tuning | F7 | à faire |
 | F9 | Évaluation interne du modèle affiné | F5, F8 | à faire |
 | F10 | Akis | F1, F5 | à faire |
@@ -228,7 +228,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
   - Confirmer l'évaluation sur la segmentation de la vérité terrain (on mesure la reconnaissance seule, pas la segmentation).
   - Consulter une seule fois le test interne ici, puis seulement après le fine-tuning final (F9).
 - **Concept à expliquer** : pourquoi une référence est indispensable avant d'entraîner, et la différence entre erreurs de segmentation et erreurs de reconnaissance.
-- **Statut** : à faire.
+- **Statut** : fait (2026-09-28). Segmentation de la vérité terrain (décision 31), test interne consulté ici puis seulement en F9 (décision 32). CER validation 27,8 %, test interne 37,0 % [33,5 ; 41,8]. Prédictions et tableaux dans `reports/baseline/<jeu>/`, contrôlés par `tests/test_evaluate.py`.
 
 ---
 
@@ -267,7 +267,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
 - **Tâches** :
   - Évaluer le modèle retenu en F8 sur le test interne, une seule fois.
   - CER global, par écriture (naskh contre les autres écritures), par relecture.
-  - Comparer avec la baseline F7.
+  - Comparer avec la baseline F7 (`reports/baseline/test_interne/`, décision 32).
   - Consigner le résultat dans EXPERIMENTS.md.
 - **Critères d'acceptation** :
   - Tableau baseline contre modèle affiné, par écriture, avec les effectifs.
@@ -335,7 +335,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
 
 ## F13 · Analyse d'erreurs
 
-- **Objectif** : à préciser selon les résultats. Pistes : un notebook d'analyse, les confusions de caractères les plus fréquentes, des exemples d'images de lignes avec vérité terrain et prédiction.
+- **Objectif** : à préciser selon les résultats. Pistes : un notebook d'analyse, la comparaison ligne à ligne avec la baseline (`reports/baseline/<jeu>/lignes.parquet`), les confusions de caractères les plus fréquentes, des exemples d'images de lignes avec vérité terrain et prédiction.
 - **Dépend de** : F9.
 - **Tâches, critères, points de décision** : à préciser selon les résultats. Les calculs sont dans `htr_ottoman.analysis` ; le notebook ne fait qu'afficher.
 - **Concept à expliquer** : l'alignement de deux chaînes et la matrice de confusion au niveau des caractères.

@@ -134,3 +134,18 @@ def test_missing_prediction_raises():
     preds = val[["part_id", "line_id"]].assign(pred="").iloc[1:]  # une ligne sans prédiction
     with pytest.raises(ValueError):
         attach_metadata(preds, "val")
+
+
+# Baseline (F7) : evaluate redonne les CER versionnés à partir des prédictions versionnées
+@pytest.mark.skipif(not _val_data_available(), reason="table des lignes absente")
+@pytest.mark.parametrize("split", ["val", "test_interne"])
+def test_baseline_reports_are_reproduced(split):
+    from htr_ottoman.config import BASELINE_REPORTS
+    from htr_ottoman.evaluate import attach_metadata, report
+
+    folder = BASELINE_REPORTS / split
+    tables = report(score_lines(attach_metadata(pd.read_parquet(folder / "predictions.parquet"), split)))
+    assert sorted(f"{name}.csv" for name in tables) == sorted(p.name for p in folder.glob("*.csv"))
+    for name, table in tables.items():
+        saved = pd.read_csv(folder / f"{name}.csv", index_col=0)
+        pd.testing.assert_frame_equal(table, saved, check_dtype=False, atol=1e-6)

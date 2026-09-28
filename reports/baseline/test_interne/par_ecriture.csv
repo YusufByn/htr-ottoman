@@ -1,0 +1,8 @@
+script,manuscrits,lignes,caracteres,erreurs,substitutions,suppressions,insertions,cer,ic95_bas,ic95_haut
+divani,3,71,2992,1173,598,498,77,0.392045,0.302843,0.528897
+naskh,7,202,8971,3154,1629,1325,200,0.351577,0.292475,0.412566
+naskh_shikaste_mixed,1,13,598,338,182,139,17,0.565217,,
+naskh_varied,1,15,568,262,112,144,6,0.461268,,
+nastaliq,2,65,2716,1120,489,598,33,0.412371,,
+riqa,1,18,846,223,133,84,6,0.263593,,
+taliq,2,160,4520,1585,677,843,65,0.350664,,

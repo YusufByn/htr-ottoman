@@ -14,6 +14,7 @@ CONFIGS = ROOT / "configs"
 SPLITS = ROOT / "splits"
 REPORTS = ROOT / "reports"
 FIGURES = REPORTS / "figures"
+BASELINE_REPORTS = REPORTS / "baseline"  # F7 : prédictions et CER du modèle de départ, un dossier par jeu
 
 # MAKHZAN, version 2026.1.2 (voir README)
 MAKHZAN_RAW = DATA_RAW / "makhzan"

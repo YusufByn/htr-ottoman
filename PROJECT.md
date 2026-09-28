@@ -37,6 +37,8 @@ Tout modèle dérivé de MAKHZAN est sous CC BY-NC-SA. Détails et MD5 : [README
 - **Métrique** : CER (taux d'erreur par caractère), calculé sur vérité terrain et prédictions passées par la même fonction `normalize` : NFD, voyelles supprimées, ک et ی unifiés, séparateurs de vers unifiés en ".", ڛ → س, espaces et invisibles nettoyés (décisions 5, 9 à 14, 21, 22). CER micro, espaces comptés (décision 28), rapporté au global, par écriture, par catégorie de relecture, par couche gen2 et par manuscrit, avec un intervalle de confiance à 95 % par bootstrap sur les manuscrits quand le groupe en compte au moins 3 (décision 30). Référence : `evaluate` ; `ketos test` en contrôle (décision 29).
 - Découpage figé dans `splits/train.csv`, `val.csv`, `test_interne.csv` (une ligne par page, seed 42), étanchéité vérifiée par les tests (décision 20).
 - CER du test interne rapporté avec et sans les pages multilingues (décision 19).
+- **Segmentation** : évaluation sur les lignes tracées par les annotateurs, pour mesurer la reconnaissance seule (décision 31).
+- **Test interne consulté deux fois seulement** : baseline (F7) et modèle affiné final (F9) ; tout réglage se fait sur la validation (décision 32).
 
 ## 4. Fonctionnalités
 
@@ -55,6 +57,7 @@ Tout modèle dérivé de MAKHZAN est sous CC BY-NC-SA. Détails et MD5 : [README
 | Couverture du codec par MAKHZAN : `analysis.codec_coverage` | fait |
 | Prédiction ligne par ligne (API kraken) : `predict` | fait |
 | Évaluation (CER micro ventilé, bootstrap par manuscrit) : `evaluate` | fait |
+| Baseline du modèle de départ, validation et test interne : `predict` + `evaluate`, `reports/baseline/` | fait |
 | Fine-tuning kraken | à venir |
 
 ## 5. État d'avancement
@@ -63,7 +66,15 @@ Voir [ROADMAP.md](ROADMAP.md) : liste des tickets F0 à F14, avec leurs dépenda
 
 ## 6. Résultats clés
 
-Premier repère (contrôle de F5, pas encore la baseline officielle) : modèle de départ sans affinage, validation, **CER 27,8 %** (`evaluate`). La baseline complète, avec le test interne, vient en F7. Le détail de chaque expérience est consigné dans [EXPERIMENTS.md](EXPERIMENTS.md).
+**Baseline (F7)** : modèle de départ sans affinage, segmentation de la vérité terrain, CER `evaluate`.
+
+| Jeu | Manuscrits | Lignes | CER | IC 95 % |
+|-----|-----------:|-------:|----:|---------|
+| Validation | 2 | 412 | **27,8 %** | non calculé (2 manuscrits) |
+| Test interne | 17 | 544 | **37,0 %** | [33,5 ; 41,8] |
+| Test interne sans multilingue | 13 | 438 | 37,0 % | [33,5 ; 41,5] |
+
+Sur le test interne : naskh 35,2 % (7 manuscrits), divani 39,2 % (3), relu deux fois 34,3 %, une fois 41,0 % ; de 23,2 % à 56,5 % selon le manuscrit. Les suppressions (3 631) y pèsent presque autant que les substitutions (3 820). Détail dans `reports/baseline/` et [EXPERIMENTS.md](EXPERIMENTS.md).
 
 ## 7. Limites et questions ouvertes
 
@@ -77,6 +88,8 @@ Premier repère (contrôle de F5, pas encore la baseline officielle) : modèle d
 - **Unicode** : MAKHZAN est en NFC, le modèle de départ en NFD ; résolu par `normalize` (décision 5).
 - **Conventions d'encodage du modèle de départ** : il écrit ی et ک (imprimé OpenITI) là où MAKHZAN écrit ي/ى et ك. Sans les règles 4 et 5, sa baseline serait pénalisée d'environ 8 points (décision 29) ; tout CER calculé sans `normalize`, comme celui de `ketos test`, n'est pas comparable.
 - **Peu de données** : 2 763 lignes d'entraînement compilées.
+- **CER de reconnaissance seule** : mesuré sur la segmentation de la vérité terrain (décision 31), il est plus bas que celui d'une chaîne complète sur une page brute.
+- **Ventilations du test interne** : écriture et relecture se recouvrent (manuscrits différents dans chaque groupe) et la plupart des écritures n'ont que 1 ou 2 manuscrits, sans intervalle. Ces écarts sont des indications, pas des effets démontrés.
 - **Outil** : la sortie texte de `kraken ocr` 7.1.1 est inversée sur nos ALTO ; les prédictions passent par l'API Python ou `ketos test` (skill kraken).
 - **Modèle de départ** entraîné sur de l'imprimé, pas sur des manuscrits. Son codec couvre 99,92 à 100 % des caractères de MAKHZAN après normalisation ; restent inconnus `#` et ZWNJ (train, décision 23) et les lettres sans points de Doc 3178 (décision 24).
 
