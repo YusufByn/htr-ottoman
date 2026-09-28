@@ -16,7 +16,7 @@ Statuts : à faire, en cours, fait. Dernière mise à jour : 2026-09-28.
 | F6 | Modèle de départ | F1, F2 | fait |
 | F7 | Baseline | F4, F5, F6 | fait |
 | F8 | Premier fine-tuning | F7 | fait |
-| F9 | Évaluation interne du modèle affiné | F5, F8 | en cours |
+| F9 | Évaluation interne du modèle affiné | F5, F8 | fait |
 | F10 | Akis | F1, F5 | à faire |
 | F11 | Évaluation externe sur Akis | F7, F9, F10 | à faire |
 | F12 | Expériences complémentaires | F9 | à faire |
@@ -276,7 +276,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
 - **Points de décision** :
   - Si le résultat est décevant, ne pas régler sur le test interne : revenir à la validation (F8) et consigner la décision.
 - **Concept à expliquer** : généralisation dans le domaine contre hors domaine, et pourquoi on ne regarde le test qu'une fois.
-- **Statut** : en cours (2026-09-28). Pré-enregistrement : décisions 37 et 38. Code prêt et testé : `compare` (bootstrap apparié), `final_eval` (contrôles bloquants), `configs/f9_test_interne.yml`. Tableaux de `evaluate` recalculés sur les prédictions existantes (naskh contre autres ajouté, tableau gen2 retiré, autres CSV identiques). Aucune prédiction sur le test interne : contrôles bloquants et prédiction du modèle F8 en attente de l'accord de l'utilisateur.
+- **Statut** : fait (2026-09-28). Pré-enregistrement : décisions 37 et 38. `uv run python -m htr_ottoman.final_eval configs/f9_test_interne.yml` : contrôles bloquants tous passés, dont la prédiction de la baseline refaite, identique octet pour octet à F7. CER test interne **26,3 %** [22,9 ; 31,1] contre 37,0 % pour la baseline ; différence −10,7 points [−11,7 ; −9,6], **gain** (critère principal). Naskh −11,5 points [−12,7 ; −10,5], autres écritures −10,2 [−11,6 ; −8,4] : gain dans les deux groupes. 17 manuscrits améliorés sur 17. `ketos test` : 26,31 % contre 26,33 %. Test interne clos (décision 39). Résultats : `reports/f8_finetune/test_interne/`, `reports/comparaisons/f8_finetune_baseline/test_interne/`, EXPERIMENTS.md.
 
 ---
 
@@ -330,7 +330,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
   - taux d'apprentissage et programme (F8 : la validation progressait encore après 86 époques à 1e-4 constant ; essayer un taux plus élevé, `cosine` ou `reduceonplateau`) ;
   - ancien ou nouvel extracteur de polygones (décisions 25 et 36 : écart de 0,05 point sur le modèle F8, de 0,8 point sur l'essai).
 - **Dépend de** : F9.
-- **Tâches, critères, points de décision** : à préciser selon les résultats. Chaque expérience ne change qu'un facteur à la fois et est consignée dans EXPERIMENTS.md.
+- **Tâches, critères, points de décision** : à préciser selon les résultats. Chaque expérience ne change qu'un facteur à la fois et est consignée dans EXPERIMENTS.md. Mesure sur la validation, puis sur Akis ; jamais sur le test interne, clos (décision 39).
 - **Concept à expliquer** : l'étude d'ablation (ne changer qu'un facteur à la fois).
 - **Statut** : à faire.
 
@@ -340,6 +340,9 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
 
 - **Objectif** : à préciser selon les résultats. Pistes : un notebook d'analyse, la comparaison ligne à ligne avec la baseline (`reports/baseline/<jeu>/lignes.parquet`), les confusions de caractères les plus fréquentes, des exemples d'images de lignes avec vérité terrain et prédiction.
 - **Dépend de** : F9.
+- **Points notés en F9** (à traiter sur les prédictions déjà sauvegardées, sans nouvelle prédiction sur le test interne, décision 39 ; analyses exploratoires, décision 37) :
+  - (a) Mesurer quelle part du gain de F9 vient des conventions de transcription (espaces, séparateurs, choix de lettres) plutôt que de la lecture. Indice : le gain est presque uniforme entre écritures (naskh −11,5 points, autres écritures −10,2 ; de −5,6 à −14,7 selon le manuscrit).
+  - (b) Expliquer l'écart de 2 caractères entre `ketos test` (21 209) et `evaluate` (21 211) sur le test interne.
 - **Tâches, critères, points de décision** : à préciser selon les résultats. Les calculs sont dans `htr_ottoman.analysis` ; le notebook ne fait qu'afficher.
 - **Concept à expliquer** : l'alignement de deux chaînes et la matrice de confusion au niveau des caractères.
 - **Statut** : à faire.
