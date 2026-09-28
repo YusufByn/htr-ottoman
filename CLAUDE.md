@@ -22,6 +22,7 @@ Affiner le modèle kraken ottoman imprimé d'OpenITI sur la partie ottomane de M
 
 ## Reproductibilité
 - Tout entraînement ou évaluation est consigné dans EXPERIMENTS.md.
+- Toute décision méthodologique est consignée dans DECISIONS.md (date, décision, justification).
 - Tout traitement passe par un script dans src/, aucune manipulation manuelle non tracée.
 - src/ contient les traitements de données, scripts/ les utilitaires (vérification d'environnement, etc.).
 
