@@ -58,7 +58,7 @@ Tout modèle dérivé de MAKHZAN est sous CC BY-NC-SA. Détails et MD5 : [README
 | Prédiction ligne par ligne (API kraken) : `predict` | fait |
 | Évaluation (CER micro ventilé, bootstrap par manuscrit) : `evaluate` | fait |
 | Baseline du modèle de départ, validation et test interne : `predict` + `evaluate`, `reports/baseline/` | fait |
-| Fine-tuning kraken | à venir |
+| Fine-tuning kraken piloté par une config (`configs/`), garde-fous, courbes : `train` | fait |
 
 ## 5. État d'avancement
 
@@ -76,6 +76,16 @@ Voir [ROADMAP.md](ROADMAP.md) : liste des tickets F0 à F14, avec leurs dépenda
 
 Sur le test interne : naskh 35,2 % (7 manuscrits), divani 39,2 % (3), relu deux fois 34,3 %, une fois 41,0 % ; de 23,2 % à 56,5 % selon le manuscrit. Les suppressions (3 631) y pèsent presque autant que les substitutions (3 820). Détail dans `reports/baseline/` et [EXPERIMENTS.md](EXPERIMENTS.md).
 
+**Premier fine-tuning (F8)** : 91 époques (meilleure : 86), Adam, lr 1e-4 constant, codec du modèle de départ. Validation seulement ; le test interne sera mesuré une fois en F9 (décision 32).
+
+| Modèle | CER validation | Doc 2937 | Doc 2939 |
+|--------|---------------:|---------:|---------:|
+| Modèle de départ (F7) | 27,8 % | 27,6 % | 27,9 % |
+| Essai, 1 époque | 27,3 % | 27,1 % | 27,4 % |
+| **F8** | **16,3 %** | 17,2 % | 15,6 % |
+
+Le CER de kraken (16,35 %) et celui de `evaluate` coïncident à 0,03 point près : le modèle affiné a adopté les conventions de MAKHZAN. Courbes : `reports/figures/f8_finetune_courbes.png`.
+
 ## 7. Limites et questions ouvertes
 
 - **Poids de *Revnaḳ-ı Būstān*** : environ 63 % des lignes d'entraînement (1 755 / 2 771), surtout Doc 3263. Expérience possible plus tard pour limiter sa part.
@@ -90,6 +100,8 @@ Sur le test interne : naskh 35,2 % (7 manuscrits), divani 39,2 % (3), relu deux 
 - **Peu de données** : 2 757 lignes d'entraînement compilées.
 - **CER de reconnaissance seule** : mesuré sur la segmentation de la vérité terrain (décision 31), il est plus bas que celui d'une chaîne complète sur une page brute.
 - **Ventilations du test interne** : écriture et relecture se recouvrent (manuscrits différents dans chaque groupe) et la plupart des écritures n'ont que 1 ou 2 manuscrits, sans intervalle. Ces écarts sont des indications, pas des effets démontrés.
+- **Drapeau « anciens polygones »** : kraken 7.1.1 le perd en convertissant le modèle entraîné ; `predict` impose la découpe du projet, et le modèle publié devra être corrigé (décision 36, F14).
+- **Durée d'entraînement** : 4 h 38 pour F8 sur MacBook Air (MPS), dont 7 min de chargement par lancement ; les époques ont ralenti de 111 à 151 s après la première, cause non établie.
 - **Outil** : la sortie texte de `kraken ocr` 7.1.1 est inversée sur nos ALTO ; les prédictions passent par l'API Python ou `ketos test` (skill kraken).
 - **Modèle de départ** entraîné sur de l'imprimé, pas sur des manuscrits. Son codec couvre 99,92 à 100 % des caractères de MAKHZAN après normalisation ; restent inconnus `#` et ZWNJ (train, décision 23) et les lettres sans points de Doc 3178 (décision 24).
 

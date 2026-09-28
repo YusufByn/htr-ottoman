@@ -15,7 +15,7 @@ Statuts : à faire, en cours, fait. Dernière mise à jour : 2026-09-28.
 | F5 | Évaluation (CER) | F1 | fait |
 | F6 | Modèle de départ | F1, F2 | fait |
 | F7 | Baseline | F4, F5, F6 | fait |
-| F8 | Premier fine-tuning | F7 | en cours |
+| F8 | Premier fine-tuning | F7 | fait |
 | F9 | Évaluation interne du modèle affiné | F5, F8 | à faire |
 | F10 | Akis | F1, F5 | à faire |
 | F11 | Évaluation externe sur Akis | F7, F9, F10 | à faire |
@@ -257,7 +257,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
   - Validation des hyperparamètres et du mode de gestion du codec avant le lancement : 7 caractères du train sont absents du codec (4 `#`, 2 ZWNJ, 1 ٮ, décision 23). Étendre le codec, ou écarter ces 6 lignes.
   - Accord avant tout entraînement long (CLAUDE.md).
 - **Concept à expliquer** : fine-tuning contre entraînement depuis zéro, époque, taux d'apprentissage, surapprentissage et arrêt anticipé, rôle de la validation dans le choix du meilleur modèle.
-- **Statut** : en cours.
+- **Statut** : fait (2026-09-28). Codec du modèle de départ, 6 lignes hors codec écartées (décision 33) ; Adam, lr 1e-4 constant, MPS (décision 34). 91 époques en 4 h 38, meilleure : 86 (`models/f8_finetune/best_0.8365.safetensors`, décision 35). CER validation 16,3 % (`evaluate`) contre 27,8 % pour la baseline ; écart avec kraken 0,03 point. Découpe imposée par `predict` (décision 36). Courbes : `reports/figures/f8_finetune_courbes.png`.
 
 ---
 
@@ -326,7 +326,9 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
 - **Objectif** : à préciser selon les résultats. Pistes :
   - entraînement avec ou sans les pages en couche gen2 (décision 4) ;
   - part de *Revnaḳ-ı Būstān* limitée (environ 63 % de l'entraînement) ;
-  - ajout d'ACDC-Training. Attention : il ne contient aucune page ottomane (arabe et persan seulement), il s'agirait donc d'un entraînement multilingue.
+  - ajout d'ACDC-Training. Attention : il ne contient aucune page ottomane (arabe et persan seulement), il s'agirait donc d'un entraînement multilingue ;
+  - taux d'apprentissage et programme (F8 : la validation progressait encore après 86 époques à 1e-4 constant ; essayer un taux plus élevé, `cosine` ou `reduceonplateau`) ;
+  - ancien ou nouvel extracteur de polygones (décisions 25 et 36 : écart de 0,05 point sur le modèle F8, de 0,8 point sur l'essai).
 - **Dépend de** : F9.
 - **Tâches, critères, points de décision** : à préciser selon les résultats. Chaque expérience ne change qu'un facteur à la fois et est consignée dans EXPERIMENTS.md.
 - **Concept à expliquer** : l'étude d'ablation (ne changer qu'un facteur à la fois).
@@ -349,7 +351,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
 - **Objectif** : à préciser selon les résultats. Pistes :
   - README final ;
   - carte du modèle (*model card*) ;
-  - dépôt du modèle sous CC BY-NC-SA (hérité de MAKHZAN) ;
+  - dépôt du modèle sous CC BY-NC-SA (hérité de MAKHZAN), avec le drapeau `use_legacy_polygons` corrigé (décision 36) ;
   - référencement sur HTR-United.
 - **Dépend de** : F11.
 - **Tâches, critères, points de décision** : à préciser selon les résultats. Il faudra au moins choisir le lieu du dépôt (Zenodo, par exemple) et la licence du code.

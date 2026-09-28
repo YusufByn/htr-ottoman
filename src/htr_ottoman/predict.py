@@ -2,8 +2,9 @@
 
 Passe par l'API Python de kraken (la sortie texte de `kraken ocr` 7.1.1 est
 inversée, skill kraken section 8), avec le réglage BiDi du projet (décision 26) :
-les prédictions sont en ordre logique. La découpe des lignes suit le drapeau du
-modèle (anciens polygones pour le modèle de départ, décision 25).
+les prédictions sont en ordre logique. La découpe des lignes est imposée par le
+projet (`prepare.LEGACY_POLYGONS`, décision 25), pas lue dans le modèle : kraken
+7.1.1 perd ce drapeau en convertissant un checkpoint en .safetensors (décision 36).
 
 Usage : uv run python -m htr_ottoman.predict --model CHEMIN --split val --output FICHIER.parquet
 """
@@ -13,7 +14,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from htr_ottoman.prepare import ALTO_DIR, KRAKEN_TEXT_OPTIONS
+from htr_ottoman.prepare import ALTO_DIR, KRAKEN_TEXT_OPTIONS, LEGACY_POLYGONS
 from htr_ottoman.splits import load_split
 
 
@@ -23,7 +24,12 @@ def load_model(path: Path):
         warnings.filterwarnings("ignore", message="You will not be able to run predict", category=RuntimeWarning)
         from kraken.tasks import RecognitionTaskModel
 
-        return RecognitionTaskModel.load_model(path)
+        model = RecognitionTaskModel.load_model(path)
+    if model.net.use_legacy_polygons != LEGACY_POLYGONS:
+        print(f"  découpe imposée : anciens polygones = {LEGACY_POLYGONS} "
+              f"(drapeau du modèle : {model.net.use_legacy_polygons}, décision 36)", flush=True)
+        model.net.use_legacy_polygons = LEGACY_POLYGONS
+    return model
 
 
 def predict_split(model_path: Path, split: str) -> pd.DataFrame:

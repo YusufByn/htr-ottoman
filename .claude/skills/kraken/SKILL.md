@@ -139,6 +139,10 @@ Options utiles de `ocr` : `--reorder/--no-reorder`, `--base-dir`, `--no-legacy-p
 - Checkpoints : les 10 meilleurs sur `val_metric` (= `val_accuracy`) sont gardés dans `-o` (`checkpoint_<époque>-<val_metric>.ckpt`), plus `checkpoint_abort.ckpt` en cas d'arrêt brutal.
 - `--seed N` appelle `seed_everything(N, workers=True)` ; `--deterministic` passe Lightning en mode `warn` (opérations non déterministes signalées, pas bloquées). Reproductibilité exacte non garantie sur MPS.
 - `-d mps` est accepté (`to_ptl_device`), comme `auto`.
+- **Le drapeau « anciens polygones » est perdu à la conversion** : entraîné sur un jeu compilé avec `--legacy-polygons`, le modèle porte `use_legacy_polygons=False` une fois converti en `best_<score>.safetensors` (le checkpoint ne stocke pas ce statut). `htr_ottoman.predict` impose donc la découpe du projet (décision 36) ; à corriger dans le modèle avant publication.
+- La perte `train_loss` est une **somme** sur les lignes du lot (`CTCLoss(reduction='sum')`), pas une moyenne.
+- En mode `-v`, kraken signale une ligne illisible remplacée par « Failed. Replacing with sample » : `train` compte ces messages.
+- Entraînement F8 (2 757 lignes, lots de 16, MPS, MacBook Air) : 7 min de chargement des jeux par lancement, 111 à 151 s par époque, 21 s de validation (412 lignes), 6 s de sauvegarde de checkpoint par époque.
 
 ## 9. Écarts entre la doc 7.1 et l'aide installée
 

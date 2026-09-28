@@ -29,6 +29,8 @@ touche ni reports/ ni le dossier de l'entraînement complet.
 Usage :
   uv run python -m htr_ottoman.train configs/f8_finetune.yml           # entraînement complet
   uv run python -m htr_ottoman.train configs/f8_finetune.yml --trial   # essai court : 1 époque
+  uv run python -m htr_ottoman.train configs/f8_finetune.yml --plot-only   # métriques et courbes seulement,
+                                                                           # relues dans le journal existant
 """
 import argparse
 import contextlib
@@ -241,7 +243,8 @@ def plot_curves(metrics: pd.DataFrame, title: str, path: Path) -> None:
     panels = [("perte_train", 1, "Perte CTC du train (somme par lot de lignes)"), ("cer_val_kraken", 100, "CER de validation, kraken (%)")]
     for ax, (col, scale, label) in zip(axes, panels):
         ax.set_facecolor(surface)
-        ax.plot(metrics["epoque"], scale * metrics[col], color=series, lw=2, marker="o", ms=4)
+        marker = "o" if len(metrics) <= 30 else None  # au-delà, les marqueurs se chevauchent
+        ax.plot(metrics["epoque"], scale * metrics[col], color=series, lw=2, marker=marker, ms=4)
         ax.set_title(label, color=ink, fontsize=11, loc="left")
         ax.set_xlabel("époque", color=muted)
         if len(metrics) <= 12:  # une graduation par époque ; au-delà, des entiers espacés
@@ -256,14 +259,32 @@ def plot_curves(metrics: pd.DataFrame, title: str, path: Path) -> None:
         for side in ("left", "bottom"):
             ax.spines[side].set_color(grid)
     best = metrics.loc[metrics["cer_val_kraken"].idxmin()]
+    first, last = metrics["epoque"].min(), metrics["epoque"].max()
+    position = (best["epoque"] - first) / (last - first) if last > first else 0.5
+    align = "right" if position > 0.66 else "left" if position < 0.33 else "center"  # reste dans le cadre
     axes[1].plot(best["epoque"], 100 * best["cer_val_kraken"], "o", ms=9, color=series, mec=surface, mew=2)
     axes[1].annotate(f"meilleure : époque {int(best['epoque'])}, {100 * best['cer_val_kraken']:.1f} %",
                      (best["epoque"], 100 * best["cer_val_kraken"]), xytext=(0, -12), textcoords="offset points",
-                     ha="center", va="top", color=ink, fontsize=9)  # sous le minimum : jamais sur la courbe
+                     ha=align, va="top", color=ink, fontsize=9)  # sous le minimum : jamais sur la courbe
     axes[1].margins(y=0.15)
     fig.suptitle(title, color=ink, fontsize=12, x=0.01, ha="left")
     fig.savefig(path, dpi=120, metadata={"Software": None})
     plt.close(fig)
+
+
+def write_outputs(metrics: pd.DataFrame, paths: dict[str, Path]) -> None:
+    """Métriques par époque (CSV) et courbes d'apprentissage."""
+    for key in ("metrics", "figure"):
+        paths[key].parent.mkdir(parents=True, exist_ok=True)
+    metrics.drop(columns="debut_s").to_csv(paths["metrics"], index=False, lineterminator="\n", float_format="%.6f")
+    plot_curves(metrics, f"{paths['output'].name} : fine-tuning du modèle de départ", paths["figure"])
+
+
+def plot_only(config_path: Path, trial: bool = False) -> None:
+    """Réécrit métriques et courbes depuis le journal TensorBoard d'un entraînement terminé."""
+    paths = output_paths(config_path, trial)
+    write_outputs(read_metrics(paths["output"] / "logs"), paths)
+    print(f"-> {paths['metrics'].relative_to(ROOT)}, {paths['figure'].relative_to(ROOT)}")
 
 
 def run(config_path: Path, trial: bool = False) -> Path:
@@ -321,10 +342,7 @@ def run(config_path: Path, trial: bool = False) -> Path:
     if code != 0:
         raise SystemExit(f"ketos s'est arrêté avec le code {code} : voir {output / 'ketos.log'}")
 
-    for key in ("metrics", "figure"):
-        paths[key].parent.mkdir(parents=True, exist_ok=True)
-    metrics.drop(columns="debut_s").to_csv(paths["metrics"], index=False, lineterminator="\n", float_format="%.6f")
-    plot_curves(metrics, f"{output.name} : fine-tuning du modèle de départ", paths["figure"])
+    write_outputs(metrics, paths)
     best = sorted(output.glob("best_*.safetensors"))
     print(metrics.drop(columns="debut_s").to_string(index=False, float_format=lambda x: f"{x:.4f}"))
     print(f"Durées (min) : {info['durees_min']}")
@@ -339,8 +357,12 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("config", type=Path)
     parser.add_argument("--trial", action="store_true", help="essai court : 1 époque, sortie models/<config>_essai/")
+    parser.add_argument("--plot-only", action="store_true", help="métriques et courbes seulement, sans entraîner")
     args = parser.parse_args()
-    run(args.config.resolve(), args.trial)
+    if args.plot_only:
+        plot_only(args.config.resolve(), args.trial)
+    else:
+        run(args.config.resolve(), args.trial)
 
 
 if __name__ == "__main__":

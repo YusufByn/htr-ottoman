@@ -136,14 +136,19 @@ def test_missing_prediction_raises():
         attach_metadata(preds, "val")
 
 
-# Baseline (F7) : evaluate redonne les CER versionnés à partir des prédictions versionnées
+# Évaluations versionnées (reports/<modèle>/<jeu>/) : evaluate redonne les CER à partir des prédictions
+def _evaluation_folders():
+    from htr_ottoman.config import REPORTS
+
+    return sorted(p.parent for p in REPORTS.glob("*/*/predictions.parquet"))
+
+
 @pytest.mark.skipif(not _val_data_available(), reason="table des lignes absente")
-@pytest.mark.parametrize("split", ["val", "test_interne"])
-def test_baseline_reports_are_reproduced(split):
-    from htr_ottoman.config import BASELINE_REPORTS
+@pytest.mark.parametrize("folder", _evaluation_folders(), ids=lambda p: f"{p.parent.name}/{p.name}")
+def test_evaluation_reports_are_reproduced(folder):
     from htr_ottoman.evaluate import attach_metadata, report
 
-    folder = BASELINE_REPORTS / split
+    split = folder.name
     tables = report(score_lines(attach_metadata(pd.read_parquet(folder / "predictions.parquet"), split)))
     assert sorted(f"{name}.csv" for name in tables) == sorted(p.name for p in folder.glob("*.csv"))
     for name, table in tables.items():
