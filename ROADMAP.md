@@ -340,7 +340,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
   - [x] Bruit : F8 relancé avec les seeds 43 et 44, puis `predict` et `evaluate` sur la validation ; écart et seuil S (2026-09-29). Seed 43 : 76 époques, meilleure 71, 16,84 % ; seed 44 : 49 époques, meilleure 44, 17,75 % ; avec F8 (16,32 %) : écart 1,43 point, **S = 2,86 points** (`compare_variant` sans variante, `reports/bruit/f8_finetune/`).
   - [x] Diagnostic des courbes des trois seeds (`analysis.seed_curves`, CSV d'entraînement seulement) : à époque égale, écart de 0,2 à 0,4 point ; l'écart final vient surtout du moment de l'arrêt (seed 44 arrêtée à l'époque 49, les autres à 76 et 91). En attente de la décision de l'utilisateur avant toute variante.
   - [x] Décision 43 (complément à la décision 42) : règle d'arrêt de F12 = lag 15 et plafond de 150 époques ; référence « F8 lag 15 » (seeds 42, 43, 44) ; lanceur `ketos_capped` (kraken 7.1.1 ignore le plafond avec l'arrêt anticipé) ; `compare_variant` refuse une règle d'arrêt différente de celle de la référence ; contrôle de déterminisme `analysis.same_curve` (2026-09-29).
-  - [ ] Essai technique du plafond (2 époques, `configs/essai_technique_plafond.yml`, jamais utilisé dans F12).
+  - [x] Essai technique du plafond (2 époques, `configs/essai_technique_plafond.yml`, jamais utilisé dans F12) : arrêt au plafond, `best_*.safetensors` produit, `run.json` « plafond » ; époques 1 et 2 identiques à F8 (2026-09-29).
   - [ ] Référence F8 lag 15 : seeds 42, 43, 44 (`configs/f8_lag15_seed<N>.yml`), lancées par l'utilisateur ; contrôle de déterminisme de la seed 42 contre F8 jusqu'à l'époque 91 ; nouveau S (même formule).
   - [ ] B : augmentation d'images (essai d'une époque d'abord, pour la durée), règle d'arrêt de F12.
   - [ ] A : taux d'apprentissage 3e-4, règle d'arrêt de F12.
@@ -349,7 +349,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
 - **Critères d'acceptation** : deux répétitions et trois variantes consignées dans EXPERIMENTS.md ; pour chaque variante, la conclusion de la règle de la décision 42, rapportée quel qu'en soit le sens. Mesure sur la validation seulement ; jamais sur le test interne, clos (décision 39) ; sur un jeu externe seulement si F11 est rouvert (décision 41).
 - **Points de décision** : tranchés par les décisions 42 et 43 (règle d'arrêt : lag 15, plafond 150, plus aucune modification dans F12). Restent : accord de l'utilisateur avant chaque entraînement long ; toute combinaison de variantes gagnantes serait une nouvelle décision.
 - **Concept à expliquer** : l'étude d'ablation (ne changer qu'un facteur à la fois) et le bruit entre deux entraînements (expliqués à l'étape 1).
-- **Statut** : en cours. Prochaine étape : essai technique du plafond, puis référence F8 lag 15 (trois seeds), lancée par l'utilisateur.
+- **Statut** : en cours. Prochaine étape : référence F8 lag 15 (trois seeds), lancée par l'utilisateur.
 
 ---
 
