@@ -1,0 +1,10 @@
+seed,lag,epoques,meilleure_epoque,declenchements_avant_meilleure,premier_declenchement,cer_garde_au_premier,plus_longue_serie_sans_progres_avant_meilleure,fin_de_cette_serie,cer_garde_a_cette_epoque
+42,5,91,86,0,91,0.163511,4,53,0.176413
+42,10,91,86,0,,,4,53,0.176413
+42,15,91,86,0,,,4,53,0.176413
+43,5,76,71,0,76,0.168279,4,63,0.172299
+43,10,76,71,0,,,4,63,0.172299
+43,15,76,71,0,,,4,63,0.172299
+44,5,49,44,0,49,0.176740,2,22,0.198990
+44,10,49,44,0,,,2,22,0.198990
+44,15,49,44,0,,,2,22,0.198990

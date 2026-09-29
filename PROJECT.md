@@ -62,7 +62,8 @@ Tout modèle dérivé de MAKHZAN est sous CC BY-NC-SA. Détails et MD5 : [README
 | Comparaison appariée de deux modèles (bootstrap apparié sur les manuscrits) : `compare` | fait |
 | Évaluation pré-enregistrée avec contrôles bloquants (empreintes, découpe, effectifs, baseline refaite à l'octet) : `final_eval` | fait (F9) |
 | Analyse des erreurs de deux modèles sur la validation (catégories, confusions, longueur, manuscrit, pires lignes) : `analysis.error_analysis` | fait (F12, étape 1) |
-| Comparaison d'une variante à F8 sur la validation (bruit entre seeds, bootstrap apparié par page, règle de la décision 42) : `compare_variant` | fait (F12), en attente des répétitions |
+| Comparaison d'une variante à F8 sur la validation (bruit entre seeds, bootstrap apparié par page, règle de la décision 42) : `compare_variant` | fait (F12) ; bruit mesuré |
+| Diagnostic des courbes de validation des répétitions (époques égales, oscillations, arrêts simulés) : `analysis.seed_curves` | fait (F12) |
 | Téléchargement d'Akis (git LFS, SHA-256 vérifié contre le pointeur), table des lignes et inventaire : `data.akis`, `analysis.akis_inventory` | fait (F10, vérification ; Akis écarté, décision 40) |
 
 ## 5. État d'avancement
@@ -92,6 +93,8 @@ Sur le test interne : naskh 35,2 % (7 manuscrits), divani 39,2 % (3), relu deux 
 Le CER de kraken (16,35 %) et celui de `evaluate` coïncident à 0,03 point près : le modèle affiné a adopté les conventions de MAKHZAN. Courbes : `reports/figures/f8_finetune_courbes.png`.
 
 **Analyse des erreurs sur la validation (F12, étape 1)**, contribution au CER en points (baseline → F8) : espaces 7,1 → 3,7 ; séparateur « . » 0,56 → 0,46 ; ي / ى 0,66 → 0,42 ; ئ 0,07 → 0,07 ; chiffres et ponctuation 0,04 → 0 ; lettres (substitutions, suppressions, insertions) 19,3 → 11,6. Environ 30 % du gain de la validation vient des espaces, les deux tiers des lettres. Les suppressions dominent toujours les insertions (prédictions 4 % plus courtes que la vérité terrain). Détail : `reports/erreurs/f8_finetune_baseline/val/`.
+
+**Bruit entre entraînements (F12, décision 42)** : F8 répété à l'identique avec deux autres seeds. CER de validation : seed 42 (F8) 16,32 %, seed 43 16,84 %, seed 44 17,75 % ; écart 1,43 point, seuil S = 2,86 points. À époque égale, les trois courbes restent à 0,2 à 0,4 point l'une de l'autre : l'écart final vient surtout du moment où l'arrêt anticipé (5 époques sans progrès) s'est déclenché (époque 49 pour la seed 44, 76 et 91 pour les autres). Détail : `reports/bruit/f8_finetune/`, `reports/figures/f12_bruit_seeds.png`.
 
 **Évaluation interne (F9)** : modèle F8 sur le test interne, analyse pré-enregistrée (décisions 37 et 38), seconde et dernière consultation. Différence = CER F8 moins CER baseline, IC 95 % par bootstrap apparié sur les manuscrits. Conclusion selon la règle de la décision 38 : gain si l'IC est entièrement sous 0.
 

@@ -17,8 +17,11 @@
   baisse dans chaque manuscrit ; régression si les trois conditions sont
   vraies dans l'autre sens ; sinon pas de différence établie (on garde F8).
 - Validation seulement (test interne clos, décision 39).
+- Sans --model : bruit seul (bruit.csv, CER de chaque répétition, et seuil.csv,
+  écart et seuil S), sans comparer aucune variante.
 
 Usage : uv run python -m htr_ottoman.compare_variant --reference reports/f8_finetune/val --model reports/<variante>/val --noise reports/f8_finetune/val reports/f8_finetune_seed43/val reports/f8_finetune_seed44/val --output-dir reports/comparaisons/<variante>_f8_finetune/val
+Bruit seul : uv run python -m htr_ottoman.compare_variant --reference reports/f8_finetune/val --noise reports/f8_finetune/val reports/f8_finetune_seed43/val reports/f8_finetune_seed44/val --output-dir reports/bruit/f8_finetune
 """
 import argparse
 from pathlib import Path
@@ -79,15 +82,27 @@ def verdict(checks: dict[str, bool]) -> str:
     return NO_DIFFERENCE
 
 
-def tables(reference: pd.DataFrame, model: pd.DataFrame, noise: dict[str, pd.DataFrame]) -> dict[str, pd.DataFrame]:
-    """Tableaux de la comparaison. `noise` : répétitions de la référence, par nom de dossier."""
+def noise_tables(reference: pd.DataFrame, noise: dict[str, pd.DataFrame]) -> dict[str, pd.DataFrame]:
+    """CER de chaque répétition de la référence (global et par manuscrit), écart et seuil S.
+    `noise` : répétitions par nom ; au moins 3, sur les mêmes lignes que la référence."""
     if len(noise) < MIN_NOISE_RUNS:
         raise ValueError(f"Bruit : {len(noise)} répétitions, il en faut au moins {MIN_NOISE_RUNS} (décision 42)")
+    rows = {}
     for name, lines in noise.items():
         pair(reference, lines)  # mêmes lignes et même vérité terrain que la référence, sinon erreur
+        rows[name] = {"cer": cer(lines), **{f"cer_{doc}": cer(g) for doc, g in lines.groupby("doc_id")}}
+    runs = pd.DataFrame.from_dict(rows, orient="index").rename_axis("repetition")
+    spread, limit = threshold(runs["cer"].tolist())
+    summary = pd.DataFrame([{"repetitions": len(runs), "cer_min": runs["cer"].min(), "cer_max": runs["cer"].max(),
+                             "ecart": spread, "seuil": limit}], index=pd.Index(["tout"], name="groupe"))
+    return {"bruit": runs, "seuil": summary}
+
+
+def tables(reference: pd.DataFrame, model: pd.DataFrame, noise: dict[str, pd.DataFrame]) -> dict[str, pd.DataFrame]:
+    """Tableaux de la comparaison. `noise` : répétitions de la référence, par nom."""
+    noise_out = noise_tables(reference, noise)
+    spread, limit = noise_out["seuil"].loc["tout", ["ecart", "seuil"]]
     paired = pair(reference, model)
-    noise_table = pd.DataFrame({"cer": {name: cer(lines) for name, lines in noise.items()}}).rename_axis("repetition")
-    spread, limit = threshold(noise_table["cer"].tolist())
 
     row = compare(paired, with_ci=False).loc["tout"].to_dict()
     per_doc = compare(paired, "doc_id", with_ci=False)
@@ -104,24 +119,32 @@ def tables(reference: pd.DataFrame, model: pd.DataFrame, noise: dict[str, pd.Dat
     return {
         "global": pd.DataFrame([summary], index=pd.Index(["tout"], name="groupe")),
         "par_manuscrit": per_doc,
-        "bruit": noise_table,
+        "bruit": noise_out["bruit"],
     }
 
 
-def run(reference_dir: Path, model_dir: Path, noise_dirs: list[Path], output_dir: Path) -> dict[str, pd.DataFrame]:
+def run(reference_dir: Path, model_dir: Path | None, noise_dirs: list[Path], output_dir: Path) -> dict[str, pd.DataFrame]:
+    """Comparaison de la variante `model_dir` à la référence ; sans variante, bruit seul.
+    Chaque répétition est nommée d'après son modèle (dossier parent : f8_finetune_seed43...)."""
     if reference_dir.resolve() not in {d.resolve() for d in noise_dirs}:
         raise ValueError("La référence (F8, seed 42) doit figurer parmi les répétitions du bruit (décision 42)")
-    noise = {str(d): load(d) for d in noise_dirs}
-    out = tables(load(reference_dir), load(model_dir), noise)
+    noise = {d.resolve().parent.name: load(d) for d in noise_dirs}
+    if len(noise) != len(noise_dirs):
+        raise ValueError("Deux répétitions portent le même nom de modèle")
+    reference = load(reference_dir)
+    out = noise_tables(reference, noise) if model_dir is None else tables(reference, load(model_dir), noise)
     output_dir.mkdir(parents=True, exist_ok=True)
     for name, table in out.items():
         table.to_csv(output_dir / f"{name}.csv", lineterminator="\n", float_format="%.6f")
     pd.set_option("display.width", 250)
     fmt = lambda x: f"{x:.4f}"  # noqa: E731
     print(f"== bruit\n{out['bruit'].to_string(float_format=fmt)}\n")
-    print(f"== global\n{out['global'].T.to_string(float_format=fmt)}\n")
-    shown = ["lignes", "caracteres", "cer_reference", "cer_modele", "difference"]
-    print(f"== par_manuscrit\n{out['par_manuscrit'][shown].to_string(float_format=fmt)}\n")
+    if model_dir is None:
+        print(f"== seuil\n{out['seuil'].T.to_string(float_format=fmt)}\n")
+    else:
+        print(f"== global\n{out['global'].T.to_string(float_format=fmt)}\n")
+        shown = ["lignes", "caracteres", "cer_reference", "cer_modele", "difference"]
+        print(f"== par_manuscrit\n{out['par_manuscrit'][shown].to_string(float_format=fmt)}\n")
     print(f"-> {output_dir}")
     return out
 
@@ -129,7 +152,7 @@ def run(reference_dir: Path, model_dir: Path, noise_dirs: list[Path], output_dir
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--reference", type=Path, required=True, help="dossier d'evaluate de F8 (seed 42)")
-    parser.add_argument("--model", type=Path, required=True, help="dossier d'evaluate de la variante")
+    parser.add_argument("--model", type=Path, help="dossier d'evaluate de la variante ; absent : bruit seul")
     parser.add_argument("--noise", type=Path, nargs="+", required=True,
                         help="dossiers d'evaluate des répétitions de F8 (seeds 42, 43, 44)")
     parser.add_argument("--output-dir", type=Path, required=True)

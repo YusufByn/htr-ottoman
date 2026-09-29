@@ -124,6 +124,20 @@ def test_run_requires_the_reference_among_noise_runs_and_validation_only(tmp_pat
         run(ref, closed, [ref, s43, s44], tmp_path / "out3")
 
 
+def test_noise_only_run_writes_spread_and_threshold(tmp_path):
+    one_error = scored(["كتان اول", *TEXTS[1:]])  # Doc 2937 : 1 erreur sur 20 caractères (8 + 8 + 4)
+    ref, s43, s44 = (_write(tmp_path, n, lines) for n, lines in
+                     (("f8_finetune", PERFECT), ("f8_finetune_seed43", PERFECT), ("f8_finetune_seed44", one_error)))
+    out = run(ref, None, [ref, s43, s44], tmp_path / "bruit")
+    assert {p.name for p in (tmp_path / "bruit").iterdir()} == {"bruit.csv", "seuil.csv"}
+    assert list(out["bruit"].index) == ["f8_finetune", "f8_finetune_seed43", "f8_finetune_seed44"]
+    assert out["bruit"].loc["f8_finetune_seed44", "cer_2937"] == pytest.approx(1 / 20)
+    assert out["bruit"].loc["f8_finetune_seed44", "cer_2939"] == 0
+    summary = out["seuil"].loc["tout"]
+    assert summary["repetitions"] == 3 and summary["ecart"] == pytest.approx(1 / 39)
+    assert summary["seuil"] == pytest.approx(2 / 39)
+
+
 VAL = {m: REPORTS / m / "val" / "lignes.parquet" for m in ("baseline", "f8_finetune")}
 
 
