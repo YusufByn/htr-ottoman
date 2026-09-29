@@ -133,8 +133,8 @@ def check_split(lines: pd.DataFrame, source: str) -> None:
     """Refuse tout autre jeu que la validation (F12, décision 39)."""
     splits = set(lines["split"])
     if splits != {SPLIT}:
-        raise ValueError(f"{source} : jeu {sorted(splits)}. L'analyse d'erreurs de F12 ne porte que sur "
-                         f"la validation ; le test interne est clos (décision 39).")
+        raise ValueError(f"{source} : jeu {sorted(splits)}. F12 ne travaille que sur la validation ; "
+                         f"le test interne est clos (décision 39).")
 
 
 def error_table(lines: pd.DataFrame) -> pd.DataFrame:
