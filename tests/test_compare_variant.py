@@ -3,12 +3,13 @@ import math
 
 import pandas as pd
 import pytest
+import yaml
 
 from htr_ottoman.compare import pair
 from htr_ottoman.compare_variant import (
-    BETTER, NO_DIFFERENCE, WORSE, conditions, page_ci, run, tables, threshold, verdict,
+    BETTER, NO_DIFFERENCE, WORSE, conditions, page_ci, run, tables, threshold, training_stop_rule, verdict,
 )
-from htr_ottoman.config import REPORTS
+from htr_ottoman.config import CONFIGS, REPORTS
 from htr_ottoman.evaluate import bootstrap_ci, score_lines, script_groups
 
 TEXTS = ["كتاب اول", "علي ديلر", "بيله", "قلور ايدى", "باش", "اول كسك"]
@@ -104,31 +105,43 @@ def test_noise_needs_three_runs_on_the_same_lines():
         tables(NOISY, PERFECT, {"42": NOISY, "43": NOISY, "44": NOISY.iloc[1:]})
 
 
-def _write(tmp_path, name, lines):
+LAG5 = {"quit": "early", "lag": 5, "min-epochs": 5}
+LAG15 = {"quit": "early", "lag": 15, "epochs": 150, "min-epochs": 5}
+
+
+def _write(tmp_path, name, lines, stop=LAG5):
+    """Évaluation de validation du modèle `name` et sa config d'entraînement (règle d'arrêt `stop`)."""
     directory = tmp_path / name / "val"
     directory.mkdir(parents=True)
     lines.to_parquet(directory / "lignes.parquet", index=False)
+    configs = tmp_path / "configs"
+    configs.mkdir(exist_ok=True)
+    (configs / f"{name}.yml").write_text(yaml.safe_dump({"ketos": {"seed": 42}, "train": dict(stop)}))
     return directory
+
+
+def _dirs(tmp_path):
+    return {"configs_dir": tmp_path / "configs", "models_dir": tmp_path / "models"}
 
 
 def test_run_requires_the_reference_among_noise_runs_and_validation_only(tmp_path):
     ref, s43, s44 = (_write(tmp_path, n, NOISY) for n in ("f8", "s43", "s44"))
     variant = _write(tmp_path, "variante", PERFECT)
-    out = run(ref, variant, [ref, s43, s44], tmp_path / "out")
+    out = run(ref, variant, [ref, s43, s44], tmp_path / "out", **_dirs(tmp_path))
     assert out["global"].loc["tout", "conclusion"] == BETTER
     assert {p.name for p in (tmp_path / "out").iterdir()} == {"global.csv", "par_manuscrit.csv", "bruit.csv"}
     with pytest.raises(ValueError, match="référence"):
-        run(ref, variant, [s43, s44, variant], tmp_path / "out2")
+        run(ref, variant, [s43, s44, variant], tmp_path / "out2", **_dirs(tmp_path))
     closed = _write(tmp_path, "test", scored(TEXTS, split="test_interne"))
     with pytest.raises(ValueError, match="décision 39"):
-        run(ref, closed, [ref, s43, s44], tmp_path / "out3")
+        run(ref, closed, [ref, s43, s44], tmp_path / "out3", **_dirs(tmp_path))
 
 
 def test_noise_only_run_writes_spread_and_threshold(tmp_path):
     one_error = scored(["كتان اول", *TEXTS[1:]])  # Doc 2937 : 1 erreur sur 20 caractères (8 + 8 + 4)
     ref, s43, s44 = (_write(tmp_path, n, lines) for n, lines in
                      (("f8_finetune", PERFECT), ("f8_finetune_seed43", PERFECT), ("f8_finetune_seed44", one_error)))
-    out = run(ref, None, [ref, s43, s44], tmp_path / "bruit")
+    out = run(ref, None, [ref, s43, s44], tmp_path / "bruit", **_dirs(tmp_path))
     assert {p.name for p in (tmp_path / "bruit").iterdir()} == {"bruit.csv", "seuil.csv"}
     assert list(out["bruit"].index) == ["f8_finetune", "f8_finetune_seed43", "f8_finetune_seed44"]
     assert out["bruit"].loc["f8_finetune_seed44", "cer_2937"] == pytest.approx(1 / 20)
@@ -148,3 +161,40 @@ def test_page_ci_on_the_validation():
     assert paired["part_id"].nunique() == 19
     low, high = page_ci(paired)
     assert low < (3491 - 5938) / 21393 < high < 0
+
+
+def test_variant_with_another_stop_rule_is_refused(tmp_path):
+    # décision 43 : variante et répétitions suivent la règle d'arrêt de la référence
+    ref, s43, s44 = (_write(tmp_path, n, NOISY, LAG15) for n in ("f8_lag15_seed42", "f8_lag15_seed43", "f8_lag15_seed44"))
+    good = _write(tmp_path, "f12_b", PERFECT, LAG15)
+    assert run(ref, good, [ref, s43, s44], tmp_path / "ok", **_dirs(tmp_path))["global"].loc["tout", "conclusion"] == BETTER
+    lag5 = _write(tmp_path, "f12_b_lag5", PERFECT, LAG5)
+    with pytest.raises(ValueError, match="règle d'arrêt"):
+        run(ref, lag5, [ref, s43, s44], tmp_path / "non", **_dirs(tmp_path))
+    old = _write(tmp_path, "f8_finetune_seed43", NOISY, LAG5)  # ancien bruit (lag 5) avec la nouvelle référence
+    with pytest.raises(ValueError, match="règle d'arrêt"):
+        run(ref, None, [ref, old, s44], tmp_path / "non2", **_dirs(tmp_path))
+
+
+def test_technical_trial_and_changed_launch_config_are_refused(tmp_path):
+    ref = _write(tmp_path, "f8_lag15_seed42", NOISY, LAG15)
+    s43, s44 = (_write(tmp_path, n, NOISY, LAG15) for n in ("f8_lag15_seed43", "f8_lag15_seed44"))
+    technical = _write(tmp_path, "essai_technique_plafond", PERFECT, LAG15)
+    with pytest.raises(ValueError, match="essai technique"):
+        run(ref, technical, [ref, s43, s44], tmp_path / "non", **_dirs(tmp_path))
+    launched = tmp_path / "models" / "f8_lag15_seed43"
+    launched.mkdir(parents=True)
+    (launched / "config.yml").write_text(yaml.safe_dump({"ketos": {"seed": 43}, "train": dict(LAG5)}))
+    with pytest.raises(ValueError, match="copiée au lancement"):
+        run(ref, None, [ref, s43, s44], tmp_path / "non2", **_dirs(tmp_path))
+
+
+def test_stop_rules_of_the_versioned_configs():
+    assert training_stop_rule("f8_finetune") == {"quit": "early", "lag": 5, "epochs": None, "min-epochs": 5}
+    for seed in (42, 43, 44):
+        assert training_stop_rule(f"f8_lag15_seed{seed}") == LAG15
+    with pytest.raises(FileNotFoundError):
+        training_stop_rule("baseline")  # pas d'entraînement : jamais une variante de F12
+    assert (CONFIGS / "essai_technique_plafond.yml").exists()
+    with pytest.raises(ValueError, match="essai technique"):
+        training_stop_rule("essai_technique_plafond")

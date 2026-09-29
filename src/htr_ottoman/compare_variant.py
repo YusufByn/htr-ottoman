@@ -17,6 +17,11 @@
   baisse dans chaque manuscrit ; régression si les trois conditions sont
   vraies dans l'autre sens ; sinon pas de différence établie (on garde F8).
 - Validation seulement (test interne clos, décision 39).
+- Même règle d'arrêt partout (décision 43) : la variante et chaque répétition
+  doivent avoir la règle d'arrêt (quit, lag, plafond, min-epochs) de la
+  référence, lue dans configs/<modèle>.yml (et identique à la copie
+  models/<modèle>/config.yml faite au lancement, si elle existe). Un essai
+  technique (`essai_technique_*`) est toujours refusé.
 - Sans --model : bruit seul (bruit.csv, CER de chaque répétition, et seuil.csv,
   écart et seuil S), sans comparer aucune variante.
 
@@ -30,6 +35,8 @@ import pandas as pd
 
 from htr_ottoman.analysis.error_analysis import check_split
 from htr_ottoman.compare import compare, pair, paired_bootstrap_ci
+from htr_ottoman.config import CONFIGS, MODELS
+from htr_ottoman.train import TECHNICAL_PREFIX, load_config, stop_rule
 
 MIN_THRESHOLD = 0.005  # 0,5 point de CER
 NOISE_FACTOR = 2
@@ -41,6 +48,32 @@ def load(directory: Path) -> pd.DataFrame:
     lines = pd.read_parquet(directory / "lignes.parquet")
     check_split(lines, str(directory))
     return lines
+
+
+def training_stop_rule(name: str, configs_dir: Path = CONFIGS, models_dir: Path = MODELS) -> dict:
+    """Règle d'arrêt de l'entraînement du modèle `name` (configs/<name>.yml). Si la copie faite au
+    lancement (models/<name>/config.yml) existe, elle doit être identique à la config versionnée."""
+    if name.startswith(TECHNICAL_PREFIX):
+        raise ValueError(f"{name} : essai technique, jamais utilisé dans F12")
+    path = configs_dir / f"{name}.yml"
+    if not path.exists():
+        raise FileNotFoundError(f"Config d'entraînement de {name} introuvable : {path}")
+    config = load_config(path)
+    launched = models_dir / name / "config.yml"
+    if launched.exists() and load_config(launched) != config:
+        raise ValueError(f"{name} : {path.name} diffère de la config copiée au lancement ({launched})")
+    return stop_rule(config)
+
+
+def check_stop_rules(reference: str, others: list[str], **dirs) -> dict:
+    """Refuse tout modèle dont la règle d'arrêt diffère de celle de la référence (décision 43)."""
+    expected = training_stop_rule(reference, **dirs)
+    for name in others:
+        rule = training_stop_rule(name, **dirs)
+        if rule != expected:
+            raise ValueError(f"{name} : règle d'arrêt {rule} différente de celle de la référence {reference} "
+                             f"{expected} (décision 43)")
+    return expected
 
 
 def cer(lines: pd.DataFrame) -> float:
@@ -123,16 +156,20 @@ def tables(reference: pd.DataFrame, model: pd.DataFrame, noise: dict[str, pd.Dat
     }
 
 
-def run(reference_dir: Path, model_dir: Path | None, noise_dirs: list[Path], output_dir: Path) -> dict[str, pd.DataFrame]:
+def run(reference_dir: Path, model_dir: Path | None, noise_dirs: list[Path], output_dir: Path,
+        configs_dir: Path = CONFIGS, models_dir: Path = MODELS) -> dict[str, pd.DataFrame]:
     """Comparaison de la variante `model_dir` à la référence ; sans variante, bruit seul.
-    Chaque répétition est nommée d'après son modèle (dossier parent : f8_finetune_seed43...)."""
+    Chaque modèle est nommé d'après son dossier (parent de <jeu>/ : f8_finetune_seed43...)."""
     if reference_dir.resolve() not in {d.resolve() for d in noise_dirs}:
         raise ValueError("La référence (F8, seed 42) doit figurer parmi les répétitions du bruit (décision 42)")
     noise = {d.resolve().parent.name: load(d) for d in noise_dirs}
     if len(noise) != len(noise_dirs):
         raise ValueError("Deux répétitions portent le même nom de modèle")
     reference = load(reference_dir)
-    out = noise_tables(reference, noise) if model_dir is None else tables(reference, load(model_dir), noise)
+    model = None if model_dir is None else load(model_dir)
+    others = list(noise) + ([] if model_dir is None else [model_dir.resolve().parent.name])
+    check_stop_rules(reference_dir.resolve().parent.name, others, configs_dir=configs_dir, models_dir=models_dir)
+    out = noise_tables(reference, noise) if model is None else tables(reference, model, noise)
     output_dir.mkdir(parents=True, exist_ok=True)
     for name, table in out.items():
         table.to_csv(output_dir / f"{name}.csv", lineterminator="\n", float_format="%.6f")

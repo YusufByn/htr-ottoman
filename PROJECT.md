@@ -64,6 +64,8 @@ Tout modèle dérivé de MAKHZAN est sous CC BY-NC-SA. Détails et MD5 : [README
 | Analyse des erreurs de deux modèles sur la validation (catégories, confusions, longueur, manuscrit, pires lignes) : `analysis.error_analysis` | fait (F12, étape 1) |
 | Comparaison d'une variante à F8 sur la validation (bruit entre seeds, bootstrap apparié par page, règle de la décision 42) : `compare_variant` | fait (F12) ; bruit mesuré |
 | Diagnostic des courbes de validation des répétitions (époques égales, oscillations, arrêts simulés) : `analysis.seed_curves` | fait (F12) |
+| Arrêt anticipé avec plafond d'époques (lag 15, 150 époques), que kraken 7.1.1 ne permet pas seul : `ketos_capped`, choisi par `train` | fait (F12, décision 43) |
+| Contrôle de déterminisme (mêmes métriques époque par époque) : `analysis.same_curve` | fait (F12) |
 | Téléchargement d'Akis (git LFS, SHA-256 vérifié contre le pointeur), table des lignes et inventaire : `data.akis`, `analysis.akis_inventory` | fait (F10, vérification ; Akis écarté, décision 40) |
 
 ## 5. État d'avancement
@@ -134,6 +136,6 @@ Réduction relative : 28,9 % ; 17 manuscrits améliorés sur 17 (écart de −5,
 
 ## 8. Prochaines étapes
 
-Voir [ROADMAP.md](ROADMAP.md). F10 terminé : aucun jeu externe retenu (décisions 40 et 41). F11 en attente de réponses (Osmanlica.com, auteurs de CHURRO). F12 en cours : analyse des erreurs faite ; plan fixé par la décision 42 (répétitions de F8 avec les seeds 43 et 44 pour le bruit, puis trois variantes contre F8 : augmentation, taux 3e-4, sans pages gen2). Tickets dont les dépendances sont remplies : F13 (analyse d'erreurs, dont les deux points notés en F9), F14 (publication, qui dépend désormais de F9).
+Voir [ROADMAP.md](ROADMAP.md). F10 terminé : aucun jeu externe retenu (décisions 40 et 41). F11 en attente de réponses (Osmanlica.com, auteurs de CHURRO). F12 en cours : analyse des erreurs et bruit avec lag 5 faits ; plan fixé par les décisions 42 et 43 (nouvelle règle d'arrêt, lag 15 et plafond 150 ; référence « F8 lag 15 » avec les seeds 42, 43, 44 ; puis trois variantes contre sa seed 42 : augmentation, taux 3e-4, sans pages gen2). Tickets dont les dépendances sont remplies : F13 (analyse d'erreurs, dont les deux points notés en F9), F14 (publication, qui dépend désormais de F9).
 
 Journal des décisions : [DECISIONS.md](DECISIONS.md).

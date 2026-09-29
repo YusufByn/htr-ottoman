@@ -10,9 +10,16 @@ Garde-fous avant lancement :
 - réglages de texte identiques à `prepare.KRAKEN_TEXT_OPTIONS` (décision 26) ;
 - validation donnée explicitement, jamais le test interne, ni dans la config ni
   dans les manifestes (décisions 1 et 32) ;
-- seed égale à `splits.SEED`, sauf pour les répétitions de F8 qui mesurent le
-  bruit (seeds 43 et 44, décision 42) : leur config doit être celle de F8 à la
-  seed près ;
+- seed égale à `splits.SEED`, sauf pour les répétitions qui mesurent le bruit
+  (seeds 43 et 44) : leur config doit être celle de F8 à la seed près
+  (décision 42), ou celle de F8 avec la règle d'arrêt de F12 à la seed près
+  (décision 43) ;
+- règle d'arrêt : un plafond d'époques (`epochs` avec `quit: early`) n'est
+  permis qu'avec la règle de F12, lag 15 et plafond 150 (décision 43), et un
+  lag 15 exige ce plafond ; les configs `f8_lag15_seed<N>` doivent être celle
+  de F8 avec cette règle et la seed N ; un essai technique
+  (`essai_technique_*.yml`) doit être `f8_lag15_seed42` à un plafond plus
+  petit près ;
 - commande acceptée par ketos (analyse des options sans lancement) ;
 - dossier de sortie absent ou vide : rien n'est écrasé ;
 - tout le travail committé (hors EXPERIMENTS.md) : le commit enregistré décrit
@@ -20,13 +27,18 @@ Garde-fous avant lancement :
   EXPERIMENTS.md dès le lancement, à compléter avec les résultats.
 
 Le module ajoute la sortie (models/<config>/), le journal TensorBoard et `-v`
-(journal texte lisible, sans barre de progression). Il écrit dans la sortie la
-commande exacte, une copie de la config, le journal de ketos et run.json
-(commit, horaires, durée de chaque phase, lignes remplacées par kraken,
-avertissements du mode déterministe), puis les métriques par époque et les
-courbes : reports/training/<config>.csv et reports/figures/<config>_courbes.png.
-Un essai (`--trial`, 1 époque) écrit tout dans models/<config>_essai/ : il ne
-touche ni reports/ ni le dossier de l'entraînement complet.
+(journal texte lisible, sans barre de progression). Une config à plafond
+(règle de F12) est lancée par `htr_ottoman.ketos_capped`, les autres par
+`ketos`. Il écrit dans la sortie la commande exacte, une copie de la config, le
+journal de ketos et run.json (commit, lanceur, plafond, raison de l'arrêt :
+lag, plafond ou nombre fixe d'époques, horaires, durée de chaque phase, lignes
+remplacées par kraken, avertissements du mode déterministe), puis les
+métriques par époque et les courbes : reports/training/<config>.csv et
+reports/figures/<config>_courbes.png. Un essai (`--trial`, 1 époque) écrit tout
+dans models/<config>_essai/, et un essai technique (`essai_technique_*.yml`)
+tout dans models/<config>/ : ni l'un ni l'autre ne touche reports/.
+Au lancement, une ligne « prévu » d'EXPERIMENTS.md pour ce modèle est remplacée
+par la ligne « en cours » ; sinon la ligne est ajoutée à la fin.
 
 Usage :
   uv run python -m htr_ottoman.train configs/f8_finetune.yml           # entraînement complet
@@ -37,6 +49,7 @@ Usage :
 import argparse
 import contextlib
 import json
+import re
 import shlex
 import shutil
 import subprocess
@@ -70,6 +83,12 @@ FORBIDDEN_SPLIT = "test_interne"
 # Répétitions de F8 avec une autre seed, pour mesurer le bruit entre entraînements (F12, décision 42)
 NOISE_SEEDS = (43, 44)
 NOISE_REFERENCE = CONFIGS / "f8_finetune.yml"
+# Règle d'arrêt de F12 (décision 43) : arrêt anticipé, lag 15, plafond de 150 époques (ketos_capped)
+F12_STOP = {"quit": "early", "lag": 15, "epochs": 150}
+F12_REFERENCE = re.compile(r"f8_lag15_seed(\d+)")  # F8 avec la règle d'arrêt de F12, seed N
+TECHNICAL_PREFIX = "essai_technique_"  # essais techniques : jamais utilisés dans F12, sorties dans models/<config>/
+STOP_KEYS = ("quit", "lag", "epochs", "min-epochs")
+PLANNED = "(prévu)"  # marque d'une ligne d'EXPERIMENTS.md écrite avant le lancement
 
 
 def load_config(path: Path) -> dict:
@@ -83,24 +102,61 @@ def _as_list(value) -> list:
     return value if isinstance(value, list) else [value]
 
 
-def check(config: dict) -> None:
-    """Garde-fous de méthode, avant tout lancement."""
+def f8_config(seed: int = SEED, stop: dict | None = None) -> dict:
+    """Config de F8, avec une autre seed et, au besoin, une autre règle d'arrêt."""
+    config = load_config(NOISE_REFERENCE)
+    config["ketos"]["seed"] = seed
+    config["train"].update(stop or {})
+    return config
+
+
+def stop_rule(config: dict) -> dict:
+    """Règle d'arrêt d'une config : quit, lag, plafond (epochs) et min-epochs."""
+    return {key: config["train"].get(key) for key in STOP_KEYS}
+
+
+def check_stop_rule(config: dict, path: Path | None = None) -> None:
+    """Plafond seulement avec la règle de F12, lag 15 seulement avec le plafond (décision 43)."""
+    train, name = config["train"], path.stem if path else ""
+    capped = train.get("quit") == "early" and train.get("epochs") is not None
+    if capped and train.get("lag") != F12_STOP["lag"]:
+        raise ValueError(f"Plafond d'époques réservé à la règle d'arrêt de F12, lag {F12_STOP['lag']} (décision 43)")
+    if train.get("lag") == F12_STOP["lag"] and not capped:
+        raise ValueError(f"Lag {F12_STOP['lag']} sans plafond : la règle de F12 exige {F12_STOP['epochs']} époques "
+                         f"au plus (décision 43)")
+    if name.startswith(TECHNICAL_PREFIX):
+        cap = train.get("epochs")
+        if not (capped and isinstance(cap, int) and 0 < cap < F12_STOP["epochs"]):
+            raise ValueError("Essai technique : règle de F12 avec un plafond plus petit que 150")
+        if config != f8_config(SEED, {**F12_STOP, "epochs": cap}):
+            raise ValueError("Essai technique : la config doit être f8_lag15_seed42 à un plafond plus petit près")
+    elif capped and train.get("epochs") != F12_STOP["epochs"]:
+        raise ValueError(f"Plafond de {train.get('epochs')} époques : la règle de F12 est {F12_STOP['epochs']} "
+                         f"(décision 43)")
+    if match := F12_REFERENCE.fullmatch(name):
+        if config != f8_config(int(match.group(1)), F12_STOP):
+            raise ValueError(f"{name} doit être la config de F8 avec la règle d'arrêt de F12 et la seed "
+                             f"{match.group(1)} (décision 43)")
+
+
+def check(config: dict, path: Path | None = None) -> None:
+    """Garde-fous de méthode, avant tout lancement. `path` : fichier de la config (son nom compte
+    pour les configs de référence de F12 et les essais techniques)."""
     train = config["train"]
     for key, expected in TEXT_OPTIONS.items():
         if train.get(key) != expected:
             raise ValueError(f"train.{key} doit valoir {expected!r} (décision 26), trouvé {train.get(key)!r}")
     if "evaluation-data" not in train:
         raise ValueError("train.evaluation-data manquant : kraken couperait le train au hasard (-p)")
+    check_stop_rule(config, path)
     seed = config["ketos"].get("seed")
     if seed in NOISE_SEEDS:
-        reference = load_config(NOISE_REFERENCE)
-        reference["ketos"]["seed"] = seed
-        if config != reference:
-            raise ValueError(f"Seed {seed} réservée aux répétitions de F8 (décision 42) : "
-                             f"la config doit être {NOISE_REFERENCE.name} à la seed près")
+        if config not in (f8_config(seed), f8_config(seed, F12_STOP)):
+            raise ValueError(f"Seed {seed} réservée aux répétitions : la config doit être {NOISE_REFERENCE.name} "
+                             f"à la seed près (décision 42), ou avec la règle d'arrêt de F12 (décision 43)")
     elif seed != SEED:
         raise ValueError(f"ketos.seed doit valoir {SEED} (splits.SEED), ou {NOISE_SEEDS} pour les "
-                         f"répétitions de F8 (décision 42)")
+                         f"répétitions de F8 (décisions 42 et 43)")
     for key in PATH_KEYS:
         for value in _as_list(train.get(key)):
             if value is not None and not (ROOT / value).exists():
@@ -176,9 +232,10 @@ def git_commit() -> str:
 
 
 def output_paths(config_path: Path, trial: bool) -> dict[str, Path]:
-    """Dossier de sortie, métriques et courbes. L'essai garde tout dans son propre dossier."""
+    """Dossier de sortie, métriques et courbes. L'essai (--trial) et l'essai technique gardent
+    tout dans leur propre dossier."""
     output = MODELS / (config_path.stem + (TRIAL_SUFFIX if trial else ""))
-    if trial:
+    if trial or config_path.stem.startswith(TECHNICAL_PREFIX):
         return {"output": output, "metrics": output / "metriques.csv", "figure": output / "courbes.png"}
     return {"output": output, "metrics": TRAINING_REPORTS / f"{output.name}.csv",
             "figure": FIGURES / f"{output.name}_courbes.png"}
@@ -188,11 +245,63 @@ def experiment_row(config: dict, config_path: Path, output: Path, commit: str, t
     """Ligne « en cours » d'EXPERIMENTS.md, écrite au lancement."""
     train = config["train"]
     rel = lambda p: p.relative_to(ROOT) if p.is_relative_to(ROOT) else p  # noqa: E731
-    kind = "essai, 1 époque, non retenu" if trial else "entraînement"
+    kind = ("essai, 1 époque, non retenu" if trial else
+            "essai technique, non retenu" if config_path.stem.startswith(TECHNICAL_PREFIX) else "entraînement")
     return (f"| {start:%Y-%m-%d} | {commit} | `{train['training-data']}` / `{train['evaluation-data']}` "
             f"(jeux compilés, anciens polygones) | `{train['load']}` | **{output.name}** ({kind}) : "
             f"`{rel(config_path)}`{' --trial' if trial else ''}, commande dans `{rel(output)}/commande.txt` "
             f"| en cours | non mesuré | Lancé à {start:%H:%M}, sortie `{rel(output)}/`. Résultats à compléter. |")
+
+
+def add_experiment_row(text: str, row: str, name: str) -> str:
+    """Remplace la ligne « prévu » du modèle `name` par `row`, ou ajoute `row` à la fin."""
+    marker = f"**{name}** {PLANNED}"
+    lines = text.rstrip("\n").split("\n")
+    planned = [i for i, line in enumerate(lines) if marker in line]
+    if len(planned) > 1:
+        raise ValueError(f"EXPERIMENTS.md : plusieurs lignes prévues pour {name}")
+    if planned:
+        lines[planned[0]] = row
+    else:
+        lines.append(row)
+    return "\n".join(lines) + "\n"
+
+
+def cap_of(config: dict, trial: bool = False) -> int | None:
+    """Plafond d'époques appliqué par ketos_capped (règle de F12), None sinon."""
+    train = config["train"]
+    if trial or train.get("quit") != "early":
+        return None
+    return train.get("epochs")
+
+
+def launcher(config: dict, trial: bool = False) -> tuple[list[str], list[str]]:
+    """Début de la commande : tel qu'affiché (commande.txt) et tel qu'exécuté. ketos_capped pour
+    une config à plafond (règle de F12, décision 43), ketos sinon."""
+    if cap_of(config, trial) is not None:
+        module = ["-m", "htr_ottoman.ketos_capped"]
+        return ["uv", "run", "python", *module], [sys.executable, *module]
+    return ["uv", "run", "ketos"], [str(Path(sys.executable).with_name("ketos"))]
+
+
+def stop_reason(accuracy: list[float], config: dict, trial: bool = False) -> str:
+    """Raison de l'arrêt, d'après la précision de validation par époque : « lag » (le nombre
+    d'époques sans progrès a atteint le lag), « plafond » (nombre maximal d'époques atteint),
+    « lag et plafond » (les deux à la dernière époque), « nombre fixe d'époques » (--quit fixed),
+    « inexpliqué » sinon (à examiner dans ketos.log)."""
+    from htr_ottoman.analysis.seed_curves import epochs_without_progress
+
+    train = {**config["train"], **(TRIAL if trial else {})}
+    if train.get("quit") == "fixed":
+        return "nombre fixe d'époques"
+    by_lag = epochs_without_progress(accuracy)[-1] >= train["lag"]
+    cap = cap_of(config, trial)
+    by_cap = cap is not None and len(accuracy) >= cap
+    if by_lag and by_cap:
+        return "lag et plafond"
+    if by_lag or by_cap:
+        return "lag" if by_lag else "plafond"
+    return "inexpliqué (ni lag ni plafond)"  # jamais d'erreur ici : l'entraînement est déjà fini
 
 
 def read_metrics(log_dir: Path) -> pd.DataFrame:
@@ -302,7 +411,7 @@ def plot_only(config_path: Path, trial: bool = False) -> None:
 
 def run(config_path: Path, trial: bool = False) -> Path:
     config = load_config(config_path)
-    check(config)
+    check(config, config_path)
     commit = git_commit()
     paths = output_paths(config_path, trial)
     output = paths["output"]
@@ -319,20 +428,21 @@ def run(config_path: Path, trial: bool = False) -> Path:
         raise
 
     shutil.copy(config_path, output / "config.yml")
-    command = ["uv", "run", "ketos", *global_args, "train", *train_args]
+    shown, executed = launcher(config, trial)
+    command = [*shown, *global_args, "train", *train_args]
     (output / "commande.txt").write_text(shlex.join(command) + "\n")
     started = datetime.now()
     info = {"config": str(config_path.relative_to(ROOT)), "essai": trial, "commit": commit,
+            "lanceur": shown[-1], "plafond": cap_of(config, trial),
             "debut": started.isoformat(timespec="seconds")}
     row = experiment_row(config, config_path, output, commit, trial, started)
-    EXPERIMENTS_LOG.write_text(EXPERIMENTS_LOG.read_text().rstrip("\n") + "\n" + row + "\n")
+    EXPERIMENTS_LOG.write_text(add_experiment_row(EXPERIMENTS_LOG.read_text(), row, output.name))
     print(f"EXPERIMENTS.md : ligne « en cours » ajoutée (commit {commit})")
     print(shlex.join(command), flush=True)
 
-    ketos = Path(sys.executable).with_name("ketos")
     start = time.time()
     with open(output / "ketos.log", "w") as log:
-        proc = subprocess.Popen([str(ketos), *global_args, "train", *train_args], cwd=ROOT,
+        proc = subprocess.Popen([*executed, *global_args, "train", *train_args], cwd=ROOT,
                                 stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
         for line in proc.stdout:
             sys.stdout.write(line)
@@ -345,6 +455,8 @@ def run(config_path: Path, trial: bool = False) -> Path:
                 avertissements_determinisme=log_text.count(DETERMINISM_WARNING))
     metrics = read_metrics(logs) if code == 0 else None
     if metrics is not None:
+        info["epoques"] = len(metrics)
+        info["arret"] = stop_reason(metrics["val_accuracy"].tolist(), config, trial)
         load_s = metrics["debut_s"].iloc[0] - start  # préparation des jeux par kraken, avant la 1re époque
         train_s, val_s = metrics["duree_train_s"].sum(), metrics["duree_val_s"].sum()
         info["durees_min"] = {k: round(float(v) / 60, 2) for k, v in {
@@ -359,6 +471,7 @@ def run(config_path: Path, trial: bool = False) -> Path:
     best = sorted(output.glob("best_*.safetensors"))
     print(metrics.drop(columns="debut_s").to_string(index=False, float_format=lambda x: f"{x:.4f}"))
     print(f"Durées (min) : {info['durees_min']}")
+    print(f"Arrêt : {info['arret']} ({info['epoques']} époques ; lanceur {info['lanceur']}, plafond {info['plafond']})")
     print(f"Lignes remplacées par kraken : {info['lignes_remplacees']} ; "
           f"avertissements du mode déterministe : {info['avertissements_determinisme']}")
     print(f"Meilleur modèle : {', '.join(str(p.relative_to(ROOT)) for p in best)}")

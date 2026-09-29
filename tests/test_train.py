@@ -6,8 +6,9 @@ import click
 import pytest
 
 from htr_ottoman.config import BASE_MODEL, CONFIGS, MAKHZAN_PROCESSED, MODELS, REPORTS
-from htr_ottoman.train import (build_command, check, experiment_row, load_config, output_paths, plot_curves,
-                               read_metrics, to_args, uncommitted, validate_with_ketos)
+from htr_ottoman.train import (add_experiment_row, build_command, cap_of, check, experiment_row, launcher,
+                               load_config, output_paths, plot_curves, read_metrics, stop_reason, stop_rule, to_args,
+                               uncommitted, validate_with_ketos)
 
 F8_CONFIG = CONFIGS / "f8_finetune.yml"
 data_available = pytest.mark.skipif(
@@ -164,3 +165,105 @@ def test_read_metrics_and_plot(tmp_path):
 
     plot_curves(metrics, "essai", tmp_path / "courbes.png")
     assert (tmp_path / "courbes.png").stat().st_size > 0
+
+
+# F12, décision 43 : règle d'arrêt lag 15, plafond 150, appliquée par ketos_capped
+
+LAG15 = {seed: CONFIGS / f"f8_lag15_seed{seed}.yml" for seed in (42, 43, 44)}
+TECHNICAL = CONFIGS / "essai_technique_plafond.yml"
+
+
+@data_available
+@pytest.mark.parametrize("seed", [42, 43, 44])
+def test_lag15_configs_are_f8_with_f12_stop_rule(config, seed, tmp_path):
+    path = LAG15[seed]
+    lag15 = load_config(path)
+    check(lag15, path)
+    expected = copy.deepcopy(config)
+    expected["ketos"]["seed"] = seed
+    expected["train"].update(lag=15, epochs=150)
+    assert lag15 == expected
+    assert stop_rule(lag15) == {"quit": "early", "lag": 15, "epochs": 150, "min-epochs": 5}
+    assert launcher(lag15)[0] == ["uv", "run", "python", "-m", "htr_ottoman.ketos_capped"]
+    assert cap_of(lag15) == 150 and cap_of(lag15, trial=True) is None  # --trial : 1 époque fixe, ketos seul
+    (tmp_path / "logs").mkdir()
+    global_args, train_args = build_command(lag15, tmp_path)
+    validate_with_ketos(global_args, train_args)
+    pairs = dict(zip(train_args, train_args[1:]))
+    assert (pairs["--quit"], pairs["--lag"], pairs["--epochs"]) == ("early", "15", "150")
+
+
+@data_available
+@pytest.mark.parametrize("path", [F8_CONFIG, CONFIGS / "f8_finetune_seed43.yml", CONFIGS / "f8_finetune_seed44.yml"])
+def test_lag5_configs_never_use_the_capped_launcher(path):
+    lag5 = load_config(path)
+    check(lag5, path)
+    assert cap_of(lag5) is None and launcher(lag5)[0] == ["uv", "run", "ketos"]
+
+
+def _f12(**train):
+    bad = load_config(LAG15[42])
+    bad["train"].update(train)
+    return bad
+
+
+@data_available
+@pytest.mark.parametrize("changes, name, message", [
+    ({"epochs": None}, "variante", "exige 150"),                      # lag 15 sans plafond
+    ({"lag": 5}, "variante", "réservé à la règle d'arrêt de F12"),    # plafond avec lag 5
+    ({"epochs": 100}, "variante", "la règle de F12 est 150"),         # autre plafond, hors essai technique
+    ({"lrate": 0.0003}, "f8_lag15_seed42", "décision 43"),            # la référence ne change que seed, lag, plafond
+    ({"epochs": 2, "lrate": 0.0003}, "essai_technique_x", "à un plafond plus petit près"),
+    ({"epochs": 150}, "essai_technique_x", "plafond plus petit"),
+])
+def test_stop_rule_guards(changes, name, message):
+    with pytest.raises(ValueError, match=message):
+        check(_f12(**changes), CONFIGS / f"{name}.yml")
+
+
+@data_available
+def test_f12_variant_and_technical_trial_accepted():
+    check(_f12(augment=True), CONFIGS / "f12_b_augment.yml")  # variante : seed 42, règle de F12, une variable
+    technical = load_config(TECHNICAL)
+    check(technical, TECHNICAL)
+    assert technical == _f12(epochs=2) and cap_of(technical) == 2
+
+
+@data_available
+def test_noise_seed_with_f12_rule_refused_if_anything_else_changes():
+    bad = load_config(LAG15[43])
+    bad["train"]["augment"] = True
+    with pytest.raises(ValueError, match="décision 43"):
+        check(bad, CONFIGS / "variante.yml")
+
+
+def test_technical_trial_writes_apart_from_reports():
+    paths = output_paths(TECHNICAL, trial=False)
+    assert paths["output"] == MODELS / "essai_technique_plafond"
+    assert all(p.is_relative_to(paths["output"]) for p in paths.values())
+    row = experiment_row({"train": {"training-data": "t.lst", "evaluation-data": "v.lst", "load": "m"}}, TECHNICAL,
+                         paths["output"], "abc1234", False, datetime(2026, 9, 29, 17, 0))
+    assert "(essai technique, non retenu)" in row
+
+
+RULE = {"train": {"quit": "early", "lag": 3, "epochs": 6}}
+
+
+@pytest.mark.parametrize("accuracy, config, trial, expected", [
+    ([0.1, 0.2, 0.2, 0.2, 0.2], RULE, False, "lag"),                    # 3 époques sans progrès, 5 sur 6
+    ([0.1, 0.2, 0.3, 0.4, 0.5, 0.6], RULE, False, "plafond"),           # 6 époques, toujours en progrès
+    ([0.1, 0.2, 0.3, 0.3, 0.3, 0.3], RULE, False, "lag et plafond"),    # égalité : pas un progrès
+    ([0.1, 0.2, 0.3, 0.3, 0.3], {"train": {"quit": "early", "lag": 5}}, False, "inexpliqué (ni lag ni plafond)"),
+    ([0.1], RULE, True, "nombre fixe d'époques"),                        # --trial : 1 époque fixe
+])
+def test_stop_reason(accuracy, config, trial, expected):
+    # (c) raison de l'arrêt écrite dans run.json
+    assert stop_reason(accuracy, config, trial) == expected
+
+
+def test_planned_experiment_row_is_replaced_at_launch():
+    text = "| a | b |\n| prévu | **f8_lag15_seed42** (prévu) : x |\n| c | d |\n"
+    assert add_experiment_row(text, "| en cours |", "f8_lag15_seed42") == "| a | b |\n| en cours |\n| c | d |\n"
+    assert add_experiment_row(text, "| en cours |", "autre").endswith("| c | d |\n| en cours |\n")
+    with pytest.raises(ValueError, match="plusieurs"):
+        add_experiment_row(text + "| prévu | **f8_lag15_seed42** (prévu) |\n", "| x |", "f8_lag15_seed42")
