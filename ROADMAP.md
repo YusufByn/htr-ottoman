@@ -337,7 +337,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
   - [x] Étape 1 : analyse des erreurs de F8 et de la baseline sur la **validation seulement** (prédictions déjà sauvegardées) : `analysis.error_analysis`, `reports/erreurs/f8_finetune_baseline/val/` (2026-09-29).
   - [x] Bootstrap apparié par page et règle de la décision 42 : `compare_variant`, avec ses tests (2026-09-29).
   - [x] Décision 42 (variantes, ordre, bruit, règle, limites) ; configs `f8_finetune_seed43.yml` et `f8_finetune_seed44.yml` ; `train` accepte ces seeds pour une copie exacte de F8 seulement (2026-09-29).
-  - [ ] Bruit : F8 relancé avec les seeds 43 et 44, puis `predict` et `evaluate` sur la validation ; écart et seuil S. Seed 43 faite (2026-09-29) : 76 époques, meilleure 71, CER validation 16,84 % ; seed 44 à lancer.
+  - [ ] Bruit : F8 relancé avec les seeds 43 et 44, puis `predict` et `evaluate` sur la validation ; écart et seuil S. Seed 43 faite (2026-09-29) : 76 époques, meilleure 71, CER validation 16,84 % ; seed 44 faite (2026-09-29) : 49 époques, meilleure 44, 17,75 %.
   - [ ] B : augmentation d'images (essai d'une époque d'abord, pour la durée).
   - [ ] A : taux d'apprentissage 3e-4.
   - [ ] C : sans les pages gen2 (jeu d'entraînement compilé à part, validation inchangée).
