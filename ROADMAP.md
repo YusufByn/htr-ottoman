@@ -1,7 +1,7 @@
 # Feuille de route
 
 Liste des tickets du projet. Pour lancer un ticket : « fais Fx ».
-Statuts : à faire, en cours, en attente, fait. Dernière mise à jour : 2026-09-28.
+Statuts : à faire, en cours, en attente, fait. Dernière mise à jour : 2026-09-29.
 
 ## Vue d'ensemble
 
@@ -19,7 +19,7 @@ Statuts : à faire, en cours, en attente, fait. Dernière mise à jour : 2026-09
 | F9 | Évaluation interne du modèle affiné | F5, F8 | fait |
 | F10 | Jeu de test externe (aucun retenu, décisions 40 et 41) | F1, F5 | fait |
 | F11 | Évaluation externe | F7, F9, F10 | en attente |
-| F12 | Expériences complémentaires | F9 | à faire |
+| F12 | Expériences complémentaires | F9 | en cours |
 | F13 | Analyse d'erreurs | F9 | à faire |
 | F14 | Publication | F9 (F11 s'il est rouvert) | à faire |
 | F15 | v1.0 : modèle naskh utilisable | F14 | à faire |
@@ -334,7 +334,8 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
 - **Dépend de** : F9.
 - **Tâches, critères, points de décision** : à préciser selon les résultats. Chaque expérience ne change qu'un facteur à la fois et est consignée dans EXPERIMENTS.md. Mesure sur la validation, et sur le jeu externe seulement si F11 est rouvert (décision 41) ; jamais sur le test interne, clos (décision 39).
 - **Concept à expliquer** : l'étude d'ablation (ne changer qu'un facteur à la fois).
-- **Statut** : à faire.
+- **Fait (2026-09-29)** : étape 1, analyse des erreurs de F8 et de la baseline sur la **validation seulement** (prédictions déjà sauvegardées, aucune prédiction ni aucun entraînement) : `uv run python -m htr_ottoman.analysis.error_analysis`, résultats dans `reports/erreurs/f8_finetune_baseline/val/` (catégories, confusions, longueur, manuscrit, page des pires lignes). Variantes et règle de comparaison proposées à l'utilisateur, en attente de son choix.
+- **Statut** : en cours.
 
 ---
 

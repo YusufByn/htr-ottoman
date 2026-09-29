@@ -1,0 +1,695 @@
+operation,ref,hyp,categorie,ref_nom,hyp_nom,erreurs_baseline,erreurs_f8_finetune
+suppression, ,,espace,␣ U+0020 SPACE,,560,433
+substitution,ب,ي,même squelette (points),ب U+0628 ARABIC LETTER BEH,ي U+064A ARABIC LETTER YEH,92,128
+insertion,, ,espace,,␣ U+0020 SPACE,221,108
+suppression,ن,,autre suppression,ن U+0646 ARABIC LETTER NOON,,184,98
+substitution,ي,ى,ي / ى,ي U+064A ARABIC LETTER YEH,ى U+0649 ARABIC LETTER ALEF MAKSURA,123,83
+suppression,ه,,autre suppression,ه U+0647 ARABIC LETTER HEH,,152,76
+suppression,ا,,autre suppression,ا U+0627 ARABIC LETTER ALEF,,103,73
+suppression,ر,,autre suppression,ر U+0631 ARABIC LETTER REH,,136,69
+suppression,ي,,autre suppression,ي U+064A ARABIC LETTER YEH,,106,58
+insertion,,ي,autre insertion,,ي U+064A ARABIC LETTER YEH,61,57
+substitution,ر,د,autre substitution,ر U+0631 ARABIC LETTER REH,د U+062F ARABIC LETTER DAL,83,56
+substitution,ر,و,autre substitution,ر U+0631 ARABIC LETTER REH,و U+0648 ARABIC LETTER WAW,29,56
+substitution,ن,ت,même squelette (points),ن U+0646 ARABIC LETTER NOON,ت U+062A ARABIC LETTER TEH,63,51
+substitution,ا, ,espace,ا U+0627 ARABIC LETTER ALEF,␣ U+0020 SPACE,83,47
+suppression,ب,,autre suppression,ب U+0628 ARABIC LETTER BEH,,72,47
+suppression,ى,,autre suppression,ى U+0649 ARABIC LETTER ALEF MAKSURA,,106,46
+suppression,.,,séparateur .,. U+002E FULL STOP,,41,46
+suppression,ج,,autre suppression,ج U+062C ARABIC LETTER JEEM,,62,44
+suppression,م,,autre suppression,م U+0645 ARABIC LETTER MEEM,,90,41
+suppression,ل,,autre suppression,ل U+0644 ARABIC LETTER LAM,,42,36
+substitution, ,ر,espace,␣ U+0020 SPACE,ر U+0631 ARABIC LETTER REH,80,30
+suppression,س,,autre suppression,س U+0633 ARABIC LETTER SEEN,,45,30
+substitution,ج,خ,même squelette (points),ج U+062C ARABIC LETTER JEEM,خ U+062E ARABIC LETTER KHAH,42,30
+insertion,,ه,autre insertion,,ه U+0647 ARABIC LETTER HEH,39,29
+insertion,,ى,autre insertion,,ى U+0649 ARABIC LETTER ALEF MAKSURA,25,27
+substitution, ,ا,espace,␣ U+0020 SPACE,ا U+0627 ARABIC LETTER ALEF,73,26
+substitution,.,ه,séparateur .,. U+002E FULL STOP,ه U+0647 ARABIC LETTER HEH,34,25
+suppression,د,,autre suppression,د U+062F ARABIC LETTER DAL,,54,24
+insertion,,م,autre insertion,,م U+0645 ARABIC LETTER MEEM,26,24
+substitution,ه,م,autre substitution,ه U+0647 ARABIC LETTER HEH,م U+0645 ARABIC LETTER MEEM,24,24
+insertion,,ن,autre insertion,,ن U+0646 ARABIC LETTER NOON,21,24
+substitution, ,د,espace,␣ U+0020 SPACE,د U+062F ARABIC LETTER DAL,51,23
+substitution,و,د,autre substitution,و U+0648 ARABIC LETTER WAW,د U+062F ARABIC LETTER DAL,38,23
+insertion,,د,autre insertion,,د U+062F ARABIC LETTER DAL,29,23
+insertion,,ر,autre insertion,,ر U+0631 ARABIC LETTER REH,8,23
+suppression,ت,,autre suppression,ت U+062A ARABIC LETTER TEH,,25,22
+suppression,ٓ,,autre suppression,◌ٓ U+0653 ARABIC MADDAH ABOVE,,18,20
+substitution,ر, ,espace,ر U+0631 ARABIC LETTER REH,␣ U+0020 SPACE,55,19
+substitution,ن,ي,même squelette (points),ن U+0646 ARABIC LETTER NOON,ي U+064A ARABIC LETTER YEH,40,19
+suppression,و,,autre suppression,و U+0648 ARABIC LETTER WAW,,36,19
+substitution,ت,ن,même squelette (points),ت U+062A ARABIC LETTER TEH,ن U+0646 ARABIC LETTER NOON,14,19
+insertion,,ل,autre insertion,,ل U+0644 ARABIC LETTER LAM,14,18
+insertion,,ت,autre insertion,,ت U+062A ARABIC LETTER TEH,37,17
+substitution,ج,چ,même squelette (points),ج U+062C ARABIC LETTER JEEM,چ U+0686 ARABIC LETTER TCHEH,9,17
+substitution,ف,ق,même squelette (points),ف U+0641 ARABIC LETTER FEH,ق U+0642 ARABIC LETTER QAF,13,16
+insertion,,ا,autre insertion,,ا U+0627 ARABIC LETTER ALEF,21,15
+insertion,,ب,autre insertion,,ب U+0628 ARABIC LETTER BEH,44,14
+suppression,ز,,autre suppression,ز U+0632 ARABIC LETTER ZAIN,,18,14
+substitution,ن,ب,même squelette (points),ن U+0646 ARABIC LETTER NOON,ب U+0628 ARABIC LETTER BEH,38,13
+substitution,ه,ر,autre substitution,ه U+0647 ARABIC LETTER HEH,ر U+0631 ARABIC LETTER REH,23,13
+substitution,ز,ر,même squelette (points),ز U+0632 ARABIC LETTER ZAIN,ر U+0631 ARABIC LETTER REH,13,13
+substitution,س,ش,même squelette (points),س U+0633 ARABIC LETTER SEEN,ش U+0634 ARABIC LETTER SHEEN,7,13
+suppression,ح,,autre suppression,ح U+062D ARABIC LETTER HAH,,23,12
+substitution,ي,ن,même squelette (points),ي U+064A ARABIC LETTER YEH,ن U+0646 ARABIC LETTER NOON,13,12
+suppression,ٔ,,ئ,◌ٔ U+0654 ARABIC HAMZA ABOVE,,6,12
+substitution,ب,م,autre substitution,ب U+0628 ARABIC LETTER BEH,م U+0645 ARABIC LETTER MEEM,24,11
+suppression,ك,,autre suppression,ك U+0643 ARABIC LETTER KAF,,22,11
+substitution, ,ل,espace,␣ U+0020 SPACE,ل U+0644 ARABIC LETTER LAM,17,11
+substitution,و,ر,autre substitution,و U+0648 ARABIC LETTER WAW,ر U+0631 ARABIC LETTER REH,14,11
+substitution,ل,ي,autre substitution,ل U+0644 ARABIC LETTER LAM,ي U+064A ARABIC LETTER YEH,11,11
+substitution,م,ي,autre substitution,م U+0645 ARABIC LETTER MEEM,ي U+064A ARABIC LETTER YEH,11,11
+substitution,ح,ج,même squelette (points),ح U+062D ARABIC LETTER HAH,ج U+062C ARABIC LETTER JEEM,6,11
+substitution,ي,ب,même squelette (points),ي U+064A ARABIC LETTER YEH,ب U+0628 ARABIC LETTER BEH,36,10
+substitution, ,م,espace,␣ U+0020 SPACE,م U+0645 ARABIC LETTER MEEM,31,10
+substitution,د,ر,autre substitution,د U+062F ARABIC LETTER DAL,ر U+0631 ARABIC LETTER REH,22,10
+substitution,ك,ل,autre substitution,ك U+0643 ARABIC LETTER KAF,ل U+0644 ARABIC LETTER LAM,19,10
+suppression,ق,,autre suppression,ق U+0642 ARABIC LETTER QAF,,14,10
+substitution,ن,ش,autre substitution,ن U+0646 ARABIC LETTER NOON,ش U+0634 ARABIC LETTER SHEEN,12,10
+substitution,ا,ل,autre substitution,ا U+0627 ARABIC LETTER ALEF,ل U+0644 ARABIC LETTER LAM,28,9
+substitution,ل,ا,autre substitution,ل U+0644 ARABIC LETTER LAM,ا U+0627 ARABIC LETTER ALEF,24,9
+substitution, ,و,espace,␣ U+0020 SPACE,و U+0648 ARABIC LETTER WAW,21,9
+substitution,ب,ه,autre substitution,ب U+0628 ARABIC LETTER BEH,ه U+0647 ARABIC LETTER HEH,16,9
+substitution,پ,ي,même squelette (points),پ U+067E ARABIC LETTER PEH,ي U+064A ARABIC LETTER YEH,4,9
+substitution, ,ي,espace,␣ U+0020 SPACE,ي U+064A ARABIC LETTER YEH,46,8
+insertion,,و,autre insertion,,و U+0648 ARABIC LETTER WAW,17,8
+substitution,ع,ق,autre substitution,ع U+0639 ARABIC LETTER AIN,ق U+0642 ARABIC LETTER QAF,16,8
+substitution,س,ي,autre substitution,س U+0633 ARABIC LETTER SEEN,ي U+064A ARABIC LETTER YEH,11,8
+substitution,ب,ن,même squelette (points),ب U+0628 ARABIC LETTER BEH,ن U+0646 ARABIC LETTER NOON,10,8
+substitution,ب,ت,même squelette (points),ب U+0628 ARABIC LETTER BEH,ت U+062A ARABIC LETTER TEH,7,8
+substitution,ن,ف,autre substitution,ن U+0646 ARABIC LETTER NOON,ف U+0641 ARABIC LETTER FEH,6,8
+substitution,ه,د,autre substitution,ه U+0647 ARABIC LETTER HEH,د U+062F ARABIC LETTER DAL,39,7
+substitution,ب,ا,autre substitution,ب U+0628 ARABIC LETTER BEH,ا U+0627 ARABIC LETTER ALEF,17,7
+substitution,د,و,autre substitution,د U+062F ARABIC LETTER DAL,و U+0648 ARABIC LETTER WAW,14,7
+suppression,ش,,autre suppression,ش U+0634 ARABIC LETTER SHEEN,,14,7
+substitution,ا,د,autre substitution,ا U+0627 ARABIC LETTER ALEF,د U+062F ARABIC LETTER DAL,11,7
+substitution,ق,و,autre substitution,ق U+0642 ARABIC LETTER QAF,و U+0648 ARABIC LETTER WAW,8,7
+substitution,ى,ه,autre substitution,ى U+0649 ARABIC LETTER ALEF MAKSURA,ه U+0647 ARABIC LETTER HEH,8,7
+substitution,ج,م,autre substitution,ج U+062C ARABIC LETTER JEEM,م U+0645 ARABIC LETTER MEEM,6,7
+substitution,ع,غ,même squelette (points),ع U+0639 ARABIC LETTER AIN,غ U+063A ARABIC LETTER GHAIN,6,7
+substitution,خ,ح,même squelette (points),خ U+062E ARABIC LETTER KHAH,ح U+062D ARABIC LETTER HAH,3,7
+substitution,ذ,د,même squelette (points),ذ U+0630 ARABIC LETTER THAL,د U+062F ARABIC LETTER DAL,3,7
+substitution,س,ر,autre substitution,س U+0633 ARABIC LETTER SEEN,ر U+0631 ARABIC LETTER REH,1,7
+substitution, ,ه,espace,␣ U+0020 SPACE,ه U+0647 ARABIC LETTER HEH,19,6
+substitution,ى,ي,ي / ى,ى U+0649 ARABIC LETTER ALEF MAKSURA,ي U+064A ARABIC LETTER YEH,18,6
+substitution,ن, ,espace,ن U+0646 ARABIC LETTER NOON,␣ U+0020 SPACE,16,6
+substitution,ل,ك,autre substitution,ل U+0644 ARABIC LETTER LAM,ك U+0643 ARABIC LETTER KAF,13,6
+substitution,ل,د,autre substitution,ل U+0644 ARABIC LETTER LAM,د U+062F ARABIC LETTER DAL,12,6
+substitution,ت,ي,même squelette (points),ت U+062A ARABIC LETTER TEH,ي U+064A ARABIC LETTER YEH,11,6
+suppression,ع,,autre suppression,ع U+0639 ARABIC LETTER AIN,,11,6
+substitution,ن,ز,autre substitution,ن U+0646 ARABIC LETTER NOON,ز U+0632 ARABIC LETTER ZAIN,10,6
+substitution,ي,ل,autre substitution,ي U+064A ARABIC LETTER YEH,ل U+0644 ARABIC LETTER LAM,10,6
+substitution,ب,ل,autre substitution,ب U+0628 ARABIC LETTER BEH,ل U+0644 ARABIC LETTER LAM,9,6
+substitution,ر,ز,même squelette (points),ر U+0631 ARABIC LETTER REH,ز U+0632 ARABIC LETTER ZAIN,9,6
+substitution,ر,ل,autre substitution,ر U+0631 ARABIC LETTER REH,ل U+0644 ARABIC LETTER LAM,9,6
+substitution,ه,ن,autre substitution,ه U+0647 ARABIC LETTER HEH,ن U+0646 ARABIC LETTER NOON,9,6
+suppression,ف,,autre suppression,ف U+0641 ARABIC LETTER FEH,,9,6
+substitution,ر,ب,autre substitution,ر U+0631 ARABIC LETTER REH,ب U+0628 ARABIC LETTER BEH,7,6
+substitution,ف,غ,autre substitution,ف U+0641 ARABIC LETTER FEH,غ U+063A ARABIC LETTER GHAIN,7,6
+substitution,م,ه,autre substitution,م U+0645 ARABIC LETTER MEEM,ه U+0647 ARABIC LETTER HEH,7,6
+substitution,ي,ت,même squelette (points),ي U+064A ARABIC LETTER YEH,ت U+062A ARABIC LETTER TEH,7,6
+substitution,غ,ف,autre substitution,غ U+063A ARABIC LETTER GHAIN,ف U+0641 ARABIC LETTER FEH,6,6
+substitution,ز, ,espace,ز U+0632 ARABIC LETTER ZAIN,␣ U+0020 SPACE,5,6
+suppression,ٔ,,autre suppression,◌ٔ U+0654 ARABIC HAMZA ABOVE,,5,6
+substitution,ح,خ,même squelette (points),ح U+062D ARABIC LETTER HAH,خ U+062E ARABIC LETTER KHAH,3,6
+substitution,ب,ر,autre substitution,ب U+0628 ARABIC LETTER BEH,ر U+0631 ARABIC LETTER REH,1,6
+substitution,ن,ق,autre substitution,ن U+0646 ARABIC LETTER NOON,ق U+0642 ARABIC LETTER QAF,1,6
+substitution,ء,م,autre substitution,ء U+0621 ARABIC LETTER HAMZA,م U+0645 ARABIC LETTER MEEM,0,6
+substitution,و, ,espace,و U+0648 ARABIC LETTER WAW,␣ U+0020 SPACE,29,5
+substitution,د,ه,autre substitution,د U+062F ARABIC LETTER DAL,ه U+0647 ARABIC LETTER HEH,19,5
+substitution,ج,ي,autre substitution,ج U+062C ARABIC LETTER JEEM,ي U+064A ARABIC LETTER YEH,17,5
+substitution,د, ,espace,د U+062F ARABIC LETTER DAL,␣ U+0020 SPACE,17,5
+substitution,چ,ج,même squelette (points),چ U+0686 ARABIC LETTER TCHEH,ج U+062C ARABIC LETTER JEEM,17,5
+substitution, ,ب,espace,␣ U+0020 SPACE,ب U+0628 ARABIC LETTER BEH,16,5
+substitution,پ,ب,même squelette (points),پ U+067E ARABIC LETTER PEH,ب U+0628 ARABIC LETTER BEH,16,5
+substitution,ك,ت,autre substitution,ك U+0643 ARABIC LETTER KAF,ت U+062A ARABIC LETTER TEH,12,5
+substitution,ب, ,espace,ب U+0628 ARABIC LETTER BEH,␣ U+0020 SPACE,10,5
+substitution,م,ر,autre substitution,م U+0645 ARABIC LETTER MEEM,ر U+0631 ARABIC LETTER REH,10,5
+substitution,ز,ن,autre substitution,ز U+0632 ARABIC LETTER ZAIN,ن U+0646 ARABIC LETTER NOON,9,5
+substitution,ى,ن,autre substitution,ى U+0649 ARABIC LETTER ALEF MAKSURA,ن U+0646 ARABIC LETTER NOON,9,5
+substitution,ى,م,autre substitution,ى U+0649 ARABIC LETTER ALEF MAKSURA,م U+0645 ARABIC LETTER MEEM,7,5
+insertion,,ٔ,autre insertion,,◌ٔ U+0654 ARABIC HAMZA ABOVE,6,5
+substitution,ا,ه,autre substitution,ا U+0627 ARABIC LETTER ALEF,ه U+0647 ARABIC LETTER HEH,5,5
+substitution,ض,ص,même squelette (points),ض U+0636 ARABIC LETTER DAD,ص U+0635 ARABIC LETTER SAD,4,5
+substitution,ث,ش,autre substitution,ث U+062B ARABIC LETTER THEH,ش U+0634 ARABIC LETTER SHEEN,3,5
+substitution,ى,ر,autre substitution,ى U+0649 ARABIC LETTER ALEF MAKSURA,ر U+0631 ARABIC LETTER REH,2,5
+substitution,ن,ل,autre substitution,ن U+0646 ARABIC LETTER NOON,ل U+0644 ARABIC LETTER LAM,17,4
+substitution,ت,ق,autre substitution,ت U+062A ARABIC LETTER TEH,ق U+0642 ARABIC LETTER QAF,10,4
+substitution,ه,ت,autre substitution,ه U+0647 ARABIC LETTER HEH,ت U+062A ARABIC LETTER TEH,9,4
+substitution,ه,ي,autre substitution,ه U+0647 ARABIC LETTER HEH,ي U+064A ARABIC LETTER YEH,9,4
+substitution,ج,ن,autre substitution,ج U+062C ARABIC LETTER JEEM,ن U+0646 ARABIC LETTER NOON,8,4
+substitution,ه,ى,autre substitution,ه U+0647 ARABIC LETTER HEH,ى U+0649 ARABIC LETTER ALEF MAKSURA,8,4
+suppression,ص,,autre suppression,ص U+0635 ARABIC LETTER SAD,,8,4
+substitution,.,ت,séparateur .,. U+002E FULL STOP,ت U+062A ARABIC LETTER TEH,7,4
+substitution,ي,م,autre substitution,ي U+064A ARABIC LETTER YEH,م U+0645 ARABIC LETTER MEEM,7,4
+substitution,ت,ب,même squelette (points),ت U+062A ARABIC LETTER TEH,ب U+0628 ARABIC LETTER BEH,6,4
+substitution,ج,ح,même squelette (points),ج U+062C ARABIC LETTER JEEM,ح U+062D ARABIC LETTER HAH,6,4
+substitution,ص,م,autre substitution,ص U+0635 ARABIC LETTER SAD,م U+0645 ARABIC LETTER MEEM,6,4
+substitution,ة,ت,autre substitution,ة U+0629 ARABIC LETTER TEH MARBUTA,ت U+062A ARABIC LETTER TEH,3,4
+substitution,ز,و,autre substitution,ز U+0632 ARABIC LETTER ZAIN,و U+0648 ARABIC LETTER WAW,3,4
+substitution,ع,ي,autre substitution,ع U+0639 ARABIC LETTER AIN,ي U+064A ARABIC LETTER YEH,2,4
+substitution,ك,ي,autre substitution,ك U+0643 ARABIC LETTER KAF,ي U+064A ARABIC LETTER YEH,2,4
+substitution,و,ه,autre substitution,و U+0648 ARABIC LETTER WAW,ه U+0647 ARABIC LETTER HEH,2,4
+substitution,ي,پ,même squelette (points),ي U+064A ARABIC LETTER YEH,پ U+067E ARABIC LETTER PEH,2,4
+substitution,ب,پ,même squelette (points),ب U+0628 ARABIC LETTER BEH,پ U+067E ARABIC LETTER PEH,1,4
+substitution,ن,د,autre substitution,ن U+0646 ARABIC LETTER NOON,د U+062F ARABIC LETTER DAL,21,3
+substitution,ه,ع,autre substitution,ه U+0647 ARABIC LETTER HEH,ع U+0639 ARABIC LETTER AIN,19,3
+substitution,ج,ب,autre substitution,ج U+062C ARABIC LETTER JEEM,ب U+0628 ARABIC LETTER BEH,15,3
+substitution,ز,ذ,autre substitution,ز U+0632 ARABIC LETTER ZAIN,ذ U+0630 ARABIC LETTER THAL,14,3
+substitution,ن,ر,autre substitution,ن U+0646 ARABIC LETTER NOON,ر U+0631 ARABIC LETTER REH,12,3
+substitution,م,س,autre substitution,م U+0645 ARABIC LETTER MEEM,س U+0633 ARABIC LETTER SEEN,11,3
+substitution, ,ن,espace,␣ U+0020 SPACE,ن U+0646 ARABIC LETTER NOON,10,3
+substitution,د,ذ,même squelette (points),د U+062F ARABIC LETTER DAL,ذ U+0630 ARABIC LETTER THAL,10,3
+substitution,ق,ف,même squelette (points),ق U+0642 ARABIC LETTER QAF,ف U+0641 ARABIC LETTER FEH,9,3
+insertion,,س,autre insertion,,س U+0633 ARABIC LETTER SEEN,8,3
+insertion,,ٓ,autre insertion,,◌ٓ U+0653 ARABIC MADDAH ABOVE,8,3
+substitution,ا,م,autre substitution,ا U+0627 ARABIC LETTER ALEF,م U+0645 ARABIC LETTER MEEM,8,3
+substitution,د,ل,autre substitution,د U+062F ARABIC LETTER DAL,ل U+0644 ARABIC LETTER LAM,8,3
+substitution,ر,ن,autre substitution,ر U+0631 ARABIC LETTER REH,ن U+0646 ARABIC LETTER NOON,7,3
+substitution,م,ل,autre substitution,م U+0645 ARABIC LETTER MEEM,ل U+0644 ARABIC LETTER LAM,7,3
+substitution,ن,ه,autre substitution,ن U+0646 ARABIC LETTER NOON,ه U+0647 ARABIC LETTER HEH,7,3
+substitution,ى,ا,autre substitution,ى U+0649 ARABIC LETTER ALEF MAKSURA,ا U+0627 ARABIC LETTER ALEF,7,3
+substitution, ,ح,espace,␣ U+0020 SPACE,ح U+062D ARABIC LETTER HAH,6,3
+substitution,ح,ه,autre substitution,ح U+062D ARABIC LETTER HAH,ه U+0647 ARABIC LETTER HEH,6,3
+substitution,د,م,autre substitution,د U+062F ARABIC LETTER DAL,م U+0645 ARABIC LETTER MEEM,6,3
+substitution,س,ب,autre substitution,س U+0633 ARABIC LETTER SEEN,ب U+0628 ARABIC LETTER BEH,6,3
+substitution,ل,ت,autre substitution,ل U+0644 ARABIC LETTER LAM,ت U+062A ARABIC LETTER TEH,6,3
+substitution,م,ب,autre substitution,م U+0645 ARABIC LETTER MEEM,ب U+0628 ARABIC LETTER BEH,6,3
+substitution,و,ي,autre substitution,و U+0648 ARABIC LETTER WAW,ي U+064A ARABIC LETTER YEH,6,3
+substitution,ي,ر,autre substitution,ي U+064A ARABIC LETTER YEH,ر U+0631 ARABIC LETTER REH,6,3
+suppression,ء,,autre suppression,ء U+0621 ARABIC LETTER HAMZA,,6,3
+substitution,.,ء,séparateur .,. U+002E FULL STOP,ء U+0621 ARABIC LETTER HAMZA,5,3
+substitution,ا,ب,autre substitution,ا U+0627 ARABIC LETTER ALEF,ب U+0628 ARABIC LETTER BEH,5,3
+substitution,ا,ن,autre substitution,ا U+0627 ARABIC LETTER ALEF,ن U+0646 ARABIC LETTER NOON,5,3
+substitution,ح, ,espace,ح U+062D ARABIC LETTER HAH,␣ U+0020 SPACE,5,3
+substitution,ي,و,autre substitution,ي U+064A ARABIC LETTER YEH,و U+0648 ARABIC LETTER WAW,5,3
+substitution, ,ك,espace,␣ U+0020 SPACE,ك U+0643 ARABIC LETTER KAF,4,3
+substitution,س,ت,autre substitution,س U+0633 ARABIC LETTER SEEN,ت U+062A ARABIC LETTER TEH,4,3
+suppression,پ,,autre suppression,پ U+067E ARABIC LETTER PEH,,4,3
+substitution, ,ش,espace,␣ U+0020 SPACE,ش U+0634 ARABIC LETTER SHEEN,3,3
+substitution,ب,ع,autre substitution,ب U+0628 ARABIC LETTER BEH,ع U+0639 ARABIC LETTER AIN,3,3
+substitution,ش,ي,autre substitution,ش U+0634 ARABIC LETTER SHEEN,ي U+064A ARABIC LETTER YEH,3,3
+substitution,ط,ل,autre substitution,ط U+0637 ARABIC LETTER TAH,ل U+0644 ARABIC LETTER LAM,3,3
+substitution,ك,ق,autre substitution,ك U+0643 ARABIC LETTER KAF,ق U+0642 ARABIC LETTER QAF,3,3
+substitution,ن,ج,autre substitution,ن U+0646 ARABIC LETTER NOON,ج U+062C ARABIC LETTER JEEM,3,3
+substitution,ن,خ,autre substitution,ن U+0646 ARABIC LETTER NOON,خ U+062E ARABIC LETTER KHAH,3,3
+substitution,ن,و,autre substitution,ن U+0646 ARABIC LETTER NOON,و U+0648 ARABIC LETTER WAW,3,3
+insertion,,ح,autre insertion,,ح U+062D ARABIC LETTER HAH,2,3
+substitution,خ,م,autre substitution,خ U+062E ARABIC LETTER KHAH,م U+0645 ARABIC LETTER MEEM,2,3
+substitution,ذ,ز,autre substitution,ذ U+0630 ARABIC LETTER THAL,ز U+0632 ARABIC LETTER ZAIN,2,3
+substitution,ص,س,autre substitution,ص U+0635 ARABIC LETTER SAD,س U+0633 ARABIC LETTER SEEN,2,3
+substitution,ق,م,autre substitution,ق U+0642 ARABIC LETTER QAF,م U+0645 ARABIC LETTER MEEM,2,3
+substitution,ك,ع,autre substitution,ك U+0643 ARABIC LETTER KAF,ع U+0639 ARABIC LETTER AIN,2,3
+substitution,ل,ر,autre substitution,ل U+0644 ARABIC LETTER LAM,ر U+0631 ARABIC LETTER REH,2,3
+substitution,ل,ه,autre substitution,ل U+0644 ARABIC LETTER LAM,ه U+0647 ARABIC LETTER HEH,2,3
+substitution,م,ن,autre substitution,م U+0645 ARABIC LETTER MEEM,ن U+0646 ARABIC LETTER NOON,2,3
+substitution,ب,ق,autre substitution,ب U+0628 ARABIC LETTER BEH,ق U+0642 ARABIC LETTER QAF,1,3
+substitution,ز,د,autre substitution,ز U+0632 ARABIC LETTER ZAIN,د U+062F ARABIC LETTER DAL,1,3
+substitution,ي,ج,autre substitution,ي U+064A ARABIC LETTER YEH,ج U+062C ARABIC LETTER JEEM,0,3
+substitution,ق,ع,autre substitution,ق U+0642 ARABIC LETTER QAF,ع U+0639 ARABIC LETTER AIN,19,2
+substitution,ق,ت,autre substitution,ق U+0642 ARABIC LETTER QAF,ت U+062A ARABIC LETTER TEH,14,2
+substitution,د,ي,autre substitution,د U+062F ARABIC LETTER DAL,ي U+064A ARABIC LETTER YEH,11,2
+substitution,ش,ت,autre substitution,ش U+0634 ARABIC LETTER SHEEN,ت U+062A ARABIC LETTER TEH,11,2
+substitution,ح,م,autre substitution,ح U+062D ARABIC LETTER HAH,م U+0645 ARABIC LETTER MEEM,10,2
+substitution,م, ,espace,م U+0645 ARABIC LETTER MEEM,␣ U+0020 SPACE,10,2
+substitution, ,ز,espace,␣ U+0020 SPACE,ز U+0632 ARABIC LETTER ZAIN,9,2
+substitution,ن,ث,même squelette (points),ن U+0646 ARABIC LETTER NOON,ث U+062B ARABIC LETTER THEH,9,2
+substitution,ك,ا,autre substitution,ك U+0643 ARABIC LETTER KAF,ا U+0627 ARABIC LETTER ALEF,8,2
+substitution,ي, ,espace,ي U+064A ARABIC LETTER YEH,␣ U+0020 SPACE,7,2
+insertion,,ع,autre insertion,,ع U+0639 ARABIC LETTER AIN,6,2
+substitution,.,د,séparateur .,. U+002E FULL STOP,د U+062F ARABIC LETTER DAL,6,2
+substitution,ر,ا,autre substitution,ر U+0631 ARABIC LETTER REH,ا U+0627 ARABIC LETTER ALEF,6,2
+substitution,ر,ي,autre substitution,ر U+0631 ARABIC LETTER REH,ي U+064A ARABIC LETTER YEH,6,2
+substitution,ل,ن,autre substitution,ل U+0644 ARABIC LETTER LAM,ن U+0646 ARABIC LETTER NOON,6,2
+substitution,ا,ك,autre substitution,ا U+0627 ARABIC LETTER ALEF,ك U+0643 ARABIC LETTER KAF,5,2
+substitution,ب,ج,autre substitution,ب U+0628 ARABIC LETTER BEH,ج U+062C ARABIC LETTER JEEM,5,2
+substitution,ج,ت,autre substitution,ج U+062C ARABIC LETTER JEEM,ت U+062A ARABIC LETTER TEH,5,2
+substitution,خ,غ,autre substitution,خ U+062E ARABIC LETTER KHAH,غ U+063A ARABIC LETTER GHAIN,5,2
+substitution,خ,ن,autre substitution,خ U+062E ARABIC LETTER KHAH,ن U+0646 ARABIC LETTER NOON,5,2
+substitution,د,ن,autre substitution,د U+062F ARABIC LETTER DAL,ن U+0646 ARABIC LETTER NOON,5,2
+substitution,ع,ه,autre substitution,ع U+0639 ARABIC LETTER AIN,ه U+0647 ARABIC LETTER HEH,5,2
+substitution,ك,ه,autre substitution,ك U+0643 ARABIC LETTER KAF,ه U+0647 ARABIC LETTER HEH,5,2
+substitution,م,ف,autre substitution,م U+0645 ARABIC LETTER MEEM,ف U+0641 ARABIC LETTER FEH,5,2
+substitution,ن,ا,autre substitution,ن U+0646 ARABIC LETTER NOON,ا U+0627 ARABIC LETTER ALEF,5,2
+substitution,ه, ,espace,ه U+0647 ARABIC LETTER HEH,␣ U+0020 SPACE,5,2
+substitution,ه,ة,même squelette (points),ه U+0647 ARABIC LETTER HEH,ة U+0629 ARABIC LETTER TEH MARBUTA,5,2
+substitution,ه,ش,autre substitution,ه U+0647 ARABIC LETTER HEH,ش U+0634 ARABIC LETTER SHEEN,5,2
+insertion,,ق,autre insertion,,ق U+0642 ARABIC LETTER QAF,4,2
+insertion,,ك,autre insertion,,ك U+0643 ARABIC LETTER KAF,4,2
+substitution,ب,د,autre substitution,ب U+0628 ARABIC LETTER BEH,د U+062F ARABIC LETTER DAL,4,2
+substitution,ت, ,espace,ت U+062A ARABIC LETTER TEH,␣ U+0020 SPACE,4,2
+substitution,ر,ت,autre substitution,ر U+0631 ARABIC LETTER REH,ت U+062A ARABIC LETTER TEH,4,2
+substitution,س,م,autre substitution,س U+0633 ARABIC LETTER SEEN,م U+0645 ARABIC LETTER MEEM,4,2
+substitution,ه,ا,autre substitution,ه U+0647 ARABIC LETTER HEH,ا U+0627 ARABIC LETTER ALEF,4,2
+substitution,چ,ح,même squelette (points),چ U+0686 ARABIC LETTER TCHEH,ح U+062D ARABIC LETTER HAH,4,2
+substitution,.,ى,séparateur .,. U+002E FULL STOP,ى U+0649 ARABIC LETTER ALEF MAKSURA,3,2
+substitution,ء,ه,autre substitution,ء U+0621 ARABIC LETTER HAMZA,ه U+0647 ARABIC LETTER HEH,3,2
+substitution,ت,م,autre substitution,ت U+062A ARABIC LETTER TEH,م U+0645 ARABIC LETTER MEEM,3,2
+substitution,ش,س,même squelette (points),ش U+0634 ARABIC LETTER SHEEN,س U+0633 ARABIC LETTER SEEN,3,2
+substitution,غ,ع,même squelette (points),غ U+063A ARABIC LETTER GHAIN,ع U+0639 ARABIC LETTER AIN,3,2
+substitution,ف,ي,autre substitution,ف U+0641 ARABIC LETTER FEH,ي U+064A ARABIC LETTER YEH,3,2
+substitution,ق,ر,autre substitution,ق U+0642 ARABIC LETTER QAF,ر U+0631 ARABIC LETTER REH,3,2
+substitution,ك,د,autre substitution,ك U+0643 ARABIC LETTER KAF,د U+062F ARABIC LETTER DAL,3,2
+substitution,ه,ب,autre substitution,ه U+0647 ARABIC LETTER HEH,ب U+0628 ARABIC LETTER BEH,3,2
+substitution,ي,ق,autre substitution,ي U+064A ARABIC LETTER YEH,ق U+0642 ARABIC LETTER QAF,3,2
+substitution,.,ك,séparateur .,. U+002E FULL STOP,ك U+0643 ARABIC LETTER KAF,2,2
+substitution,.,م,séparateur .,. U+002E FULL STOP,م U+0645 ARABIC LETTER MEEM,2,2
+substitution,ث,ت,même squelette (points),ث U+062B ARABIC LETTER THEH,ت U+062A ARABIC LETTER TEH,2,2
+substitution,ر,س,autre substitution,ر U+0631 ARABIC LETTER REH,س U+0633 ARABIC LETTER SEEN,2,2
+substitution,ق,ن,autre substitution,ق U+0642 ARABIC LETTER QAF,ن U+0646 ARABIC LETTER NOON,2,2
+substitution,ٓ,ا,autre substitution,◌ٓ U+0653 ARABIC MADDAH ABOVE,ا U+0627 ARABIC LETTER ALEF,2,2
+substitution,چ,ي,autre substitution,چ U+0686 ARABIC LETTER TCHEH,ي U+064A ARABIC LETTER YEH,2,2
+insertion,,خ,autre insertion,,خ U+062E ARABIC LETTER KHAH,1,2
+insertion,,غ,autre insertion,,غ U+063A ARABIC LETTER GHAIN,1,2
+substitution, ,ى,espace,␣ U+0020 SPACE,ى U+0649 ARABIC LETTER ALEF MAKSURA,1,2
+substitution,.,ن,séparateur .,. U+002E FULL STOP,ن U+0646 ARABIC LETTER NOON,1,2
+substitution,ء,ى,autre substitution,ء U+0621 ARABIC LETTER HAMZA,ى U+0649 ARABIC LETTER ALEF MAKSURA,1,2
+substitution,ا,ر,autre substitution,ا U+0627 ARABIC LETTER ALEF,ر U+0631 ARABIC LETTER REH,1,2
+substitution,ب,ك,autre substitution,ب U+0628 ARABIC LETTER BEH,ك U+0643 ARABIC LETTER KAF,1,2
+substitution,ب,و,autre substitution,ب U+0628 ARABIC LETTER BEH,و U+0648 ARABIC LETTER WAW,1,2
+substitution,ج,غ,autre substitution,ج U+062C ARABIC LETTER JEEM,غ U+063A ARABIC LETTER GHAIN,1,2
+substitution,ض,ف,autre substitution,ض U+0636 ARABIC LETTER DAD,ف U+0641 ARABIC LETTER FEH,1,2
+substitution,ك,خ,autre substitution,ك U+0643 ARABIC LETTER KAF,خ U+062E ARABIC LETTER KHAH,1,2
+substitution,ن,س,autre substitution,ن U+0646 ARABIC LETTER NOON,س U+0633 ARABIC LETTER SEEN,1,2
+substitution,ي,ه,autre substitution,ي U+064A ARABIC LETTER YEH,ه U+0647 ARABIC LETTER HEH,1,2
+substitution,ٔ,ى,ئ,◌ٔ U+0654 ARABIC HAMZA ABOVE,ى U+0649 ARABIC LETTER ALEF MAKSURA,1,2
+suppression,ث,,autre suppression,ث U+062B ARABIC LETTER THEH,,1,2
+suppression,ذ,,autre suppression,ذ U+0630 ARABIC LETTER THAL,,1,2
+suppression,ط,,autre suppression,ط U+0637 ARABIC LETTER TAH,,1,2
+insertion,,ج,autre insertion,,ج U+062C ARABIC LETTER JEEM,0,2
+substitution,ة,ه,même squelette (points),ة U+0629 ARABIC LETTER TEH MARBUTA,ه U+0647 ARABIC LETTER HEH,0,2
+substitution,ح,ب,autre substitution,ح U+062D ARABIC LETTER HAH,ب U+0628 ARABIC LETTER BEH,0,2
+substitution,ص,ت,autre substitution,ص U+0635 ARABIC LETTER SAD,ت U+062A ARABIC LETTER TEH,0,2
+substitution,ف,م,autre substitution,ف U+0641 ARABIC LETTER FEH,م U+0645 ARABIC LETTER MEEM,0,2
+substitution,ك,ث,autre substitution,ك U+0643 ARABIC LETTER KAF,ث U+062B ARABIC LETTER THEH,0,2
+substitution,ك,ج,autre substitution,ك U+0643 ARABIC LETTER KAF,ج U+062C ARABIC LETTER JEEM,0,2
+substitution,ه,ز,autre substitution,ه U+0647 ARABIC LETTER HEH,ز U+0632 ARABIC LETTER ZAIN,0,2
+substitution,و,م,autre substitution,و U+0648 ARABIC LETTER WAW,م U+0645 ARABIC LETTER MEEM,0,2
+substitution, ,ت,espace,␣ U+0020 SPACE,ت U+062A ARABIC LETTER TEH,20,1
+substitution,ن,ذ,autre substitution,ن U+0646 ARABIC LETTER NOON,ذ U+0630 ARABIC LETTER THAL,14,1
+substitution, ,ع,espace,␣ U+0020 SPACE,ع U+0639 ARABIC LETTER AIN,10,1
+substitution,ى,خ,autre substitution,ى U+0649 ARABIC LETTER ALEF MAKSURA,خ U+062E ARABIC LETTER KHAH,10,1
+insertion,,ف,autre insertion,,ف U+0641 ARABIC LETTER FEH,9,1
+substitution,د,ا,autre substitution,د U+062F ARABIC LETTER DAL,ا U+0627 ARABIC LETTER ALEF,9,1
+substitution,ا,ي,autre substitution,ا U+0627 ARABIC LETTER ALEF,ي U+064A ARABIC LETTER YEH,8,1
+substitution,د,ب,autre substitution,د U+062F ARABIC LETTER DAL,ب U+0628 ARABIC LETTER BEH,8,1
+insertion,,ث,autre insertion,,ث U+062B ARABIC LETTER THEH,7,1
+substitution,ص,ض,même squelette (points),ص U+0635 ARABIC LETTER SAD,ض U+0636 ARABIC LETTER DAD,6,1
+substitution,ك,ن,autre substitution,ك U+0643 ARABIC LETTER KAF,ن U+0646 ARABIC LETTER NOON,6,1
+substitution,ن,ى,autre substitution,ن U+0646 ARABIC LETTER NOON,ى U+0649 ARABIC LETTER ALEF MAKSURA,6,1
+substitution, ,ج,espace,␣ U+0020 SPACE,ج U+062C ARABIC LETTER JEEM,5,1
+substitution,ش,ن,autre substitution,ش U+0634 ARABIC LETTER SHEEN,ن U+0646 ARABIC LETTER NOON,5,1
+substitution,ل, ,espace,ل U+0644 ARABIC LETTER LAM,␣ U+0020 SPACE,5,1
+substitution,ى,ت,autre substitution,ى U+0649 ARABIC LETTER ALEF MAKSURA,ت U+062A ARABIC LETTER TEH,5,1
+substitution, ,ٔ,espace,␣ U+0020 SPACE,◌ٔ U+0654 ARABIC HAMZA ABOVE,4,1
+substitution,ا,و,autre substitution,ا U+0627 ARABIC LETTER ALEF,و U+0648 ARABIC LETTER WAW,4,1
+substitution,ج, ,espace,ج U+062C ARABIC LETTER JEEM,␣ U+0020 SPACE,4,1
+substitution,ر,ى,autre substitution,ر U+0631 ARABIC LETTER REH,ى U+0649 ARABIC LETTER ALEF MAKSURA,4,1
+substitution,س,ن,autre substitution,س U+0633 ARABIC LETTER SEEN,ن U+0646 ARABIC LETTER NOON,4,1
+substitution,ق, ,espace,ق U+0642 ARABIC LETTER QAF,␣ U+0020 SPACE,4,1
+substitution,ي,ك,autre substitution,ي U+064A ARABIC LETTER YEH,ك U+0643 ARABIC LETTER KAF,4,1
+suppression,خ,,autre suppression,خ U+062E ARABIC LETTER KHAH,,4,1
+substitution, ,ف,espace,␣ U+0020 SPACE,ف U+0641 ARABIC LETTER FEH,3,1
+substitution,ب,س,autre substitution,ب U+0628 ARABIC LETTER BEH,س U+0633 ARABIC LETTER SEEN,3,1
+substitution,ب,ف,autre substitution,ب U+0628 ARABIC LETTER BEH,ف U+0641 ARABIC LETTER FEH,3,1
+substitution,ح,ت,autre substitution,ح U+062D ARABIC LETTER HAH,ت U+062A ARABIC LETTER TEH,3,1
+substitution,د,ع,autre substitution,د U+062F ARABIC LETTER DAL,ع U+0639 ARABIC LETTER AIN,3,1
+substitution,ش,ض,autre substitution,ش U+0634 ARABIC LETTER SHEEN,ض U+0636 ARABIC LETTER DAD,3,1
+substitution,ص,ع,autre substitution,ص U+0635 ARABIC LETTER SAD,ع U+0639 ARABIC LETTER AIN,3,1
+substitution,ع,ح,autre substitution,ع U+0639 ARABIC LETTER AIN,ح U+062D ARABIC LETTER HAH,3,1
+substitution,ع,م,autre substitution,ع U+0639 ARABIC LETTER AIN,م U+0645 ARABIC LETTER MEEM,3,1
+substitution,ق,ا,autre substitution,ق U+0642 ARABIC LETTER QAF,ا U+0627 ARABIC LETTER ALEF,3,1
+substitution,ق,د,autre substitution,ق U+0642 ARABIC LETTER QAF,د U+062F ARABIC LETTER DAL,3,1
+substitution,م,ك,autre substitution,م U+0645 ARABIC LETTER MEEM,ك U+0643 ARABIC LETTER KAF,3,1
+substitution,ه,ص,autre substitution,ه U+0647 ARABIC LETTER HEH,ص U+0635 ARABIC LETTER SAD,3,1
+substitution,ى,ب,autre substitution,ى U+0649 ARABIC LETTER ALEF MAKSURA,ب U+0628 ARABIC LETTER BEH,3,1
+substitution,ي,ا,autre substitution,ي U+064A ARABIC LETTER YEH,ا U+0627 ARABIC LETTER ALEF,3,1
+substitution,ي,د,autre substitution,ي U+064A ARABIC LETTER YEH,د U+062F ARABIC LETTER DAL,3,1
+suppression,ض,,autre suppression,ض U+0636 ARABIC LETTER DAD,,3,1
+insertion,,ة,autre insertion,,ة U+0629 ARABIC LETTER TEH MARBUTA,2,1
+insertion,,ش,autre insertion,,ش U+0634 ARABIC LETTER SHEEN,2,1
+substitution, ,چ,espace,␣ U+0020 SPACE,چ U+0686 ARABIC LETTER TCHEH,2,1
+substitution,., ,espace,. U+002E FULL STOP,␣ U+0020 SPACE,2,1
+substitution,ت,د,autre substitution,ت U+062A ARABIC LETTER TEH,د U+062F ARABIC LETTER DAL,2,1
+substitution,ت,ش,autre substitution,ت U+062A ARABIC LETTER TEH,ش U+0634 ARABIC LETTER SHEEN,2,1
+substitution,ج,ع,autre substitution,ج U+062C ARABIC LETTER JEEM,ع U+0639 ARABIC LETTER AIN,2,1
+substitution,ج,ك,autre substitution,ج U+062C ARABIC LETTER JEEM,ك U+0643 ARABIC LETTER KAF,2,1
+substitution,ح,و,autre substitution,ح U+062D ARABIC LETTER HAH,و U+0648 ARABIC LETTER WAW,2,1
+substitution,خ,ت,autre substitution,خ U+062E ARABIC LETTER KHAH,ت U+062A ARABIC LETTER TEH,2,1
+substitution,ذ,ت,autre substitution,ذ U+0630 ARABIC LETTER THAL,ت U+062A ARABIC LETTER TEH,2,1
+substitution,ر,م,autre substitution,ر U+0631 ARABIC LETTER REH,م U+0645 ARABIC LETTER MEEM,2,1
+substitution,ش,ث,autre substitution,ش U+0634 ARABIC LETTER SHEEN,ث U+062B ARABIC LETTER THEH,2,1
+substitution,غ,خ,autre substitution,غ U+063A ARABIC LETTER GHAIN,خ U+062E ARABIC LETTER KHAH,2,1
+substitution,ك,ح,autre substitution,ك U+0643 ARABIC LETTER KAF,ح U+062D ARABIC LETTER HAH,2,1
+substitution,ل,ج,autre substitution,ل U+0644 ARABIC LETTER LAM,ج U+062C ARABIC LETTER JEEM,2,1
+substitution,ل,ط,autre substitution,ل U+0644 ARABIC LETTER LAM,ط U+0637 ARABIC LETTER TAH,2,1
+substitution,ل,م,autre substitution,ل U+0644 ARABIC LETTER LAM,م U+0645 ARABIC LETTER MEEM,2,1
+substitution,م,ج,autre substitution,م U+0645 ARABIC LETTER MEEM,ج U+062C ARABIC LETTER JEEM,2,1
+substitution,م,ح,autre substitution,م U+0645 ARABIC LETTER MEEM,ح U+062D ARABIC LETTER HAH,2,1
+substitution,ه,ح,autre substitution,ه U+0647 ARABIC LETTER HEH,ح U+062D ARABIC LETTER HAH,2,1
+substitution,ه,ڭ,autre substitution,ه U+0647 ARABIC LETTER HEH,ڭ U+06AD ARABIC LETTER NG,2,1
+substitution,و,ل,autre substitution,و U+0648 ARABIC LETTER WAW,ل U+0644 ARABIC LETTER LAM,2,1
+substitution,و,ن,autre substitution,و U+0648 ARABIC LETTER WAW,ن U+0646 ARABIC LETTER NOON,2,1
+substitution,ى,ط,autre substitution,ى U+0649 ARABIC LETTER ALEF MAKSURA,ط U+0637 ARABIC LETTER TAH,2,1
+substitution,ى,ق,autre substitution,ى U+0649 ARABIC LETTER ALEF MAKSURA,ق U+0642 ARABIC LETTER QAF,2,1
+substitution,ى,و,autre substitution,ى U+0649 ARABIC LETTER ALEF MAKSURA,و U+0648 ARABIC LETTER WAW,2,1
+substitution,ي,چ,autre substitution,ي U+064A ARABIC LETTER YEH,چ U+0686 ARABIC LETTER TCHEH,2,1
+substitution,ٓ,ٔ,autre substitution,◌ٓ U+0653 ARABIC MADDAH ABOVE,◌ٔ U+0654 ARABIC HAMZA ABOVE,2,1
+insertion,,ص,autre insertion,,ص U+0635 ARABIC LETTER SAD,1,1
+substitution,.,،,séparateur .,. U+002E FULL STOP,، U+060C ARABIC COMMA,1,1
+substitution,.,ب,séparateur .,. U+002E FULL STOP,ب U+0628 ARABIC LETTER BEH,1,1
+substitution,.,ة,séparateur .,. U+002E FULL STOP,ة U+0629 ARABIC LETTER TEH MARBUTA,1,1
+substitution,.,ر,séparateur .,. U+002E FULL STOP,ر U+0631 ARABIC LETTER REH,1,1
+substitution,.,ق,séparateur .,. U+002E FULL STOP,ق U+0642 ARABIC LETTER QAF,1,1
+substitution,ا,ق,autre substitution,ا U+0627 ARABIC LETTER ALEF,ق U+0642 ARABIC LETTER QAF,1,1
+substitution,ا,ى,autre substitution,ا U+0627 ARABIC LETTER ALEF,ى U+0649 ARABIC LETTER ALEF MAKSURA,1,1
+substitution,ب,ش,autre substitution,ب U+0628 ARABIC LETTER BEH,ش U+0634 ARABIC LETTER SHEEN,1,1
+substitution,ت,ل,autre substitution,ت U+062A ARABIC LETTER TEH,ل U+0644 ARABIC LETTER LAM,1,1
+substitution,ج,د,autre substitution,ج U+062C ARABIC LETTER JEEM,د U+062F ARABIC LETTER DAL,1,1
+substitution,ج,ى,autre substitution,ج U+062C ARABIC LETTER JEEM,ى U+0649 ARABIC LETTER ALEF MAKSURA,1,1
+substitution,خ,ج,même squelette (points),خ U+062E ARABIC LETTER KHAH,ج U+062C ARABIC LETTER JEEM,1,1
+substitution,خ,ق,autre substitution,خ U+062E ARABIC LETTER KHAH,ق U+0642 ARABIC LETTER QAF,1,1
+substitution,ر,ش,autre substitution,ر U+0631 ARABIC LETTER REH,ش U+0634 ARABIC LETTER SHEEN,1,1
+substitution,ر,ظ,autre substitution,ر U+0631 ARABIC LETTER REH,ظ U+0638 ARABIC LETTER ZAH,1,1
+substitution,ر,غ,autre substitution,ر U+0631 ARABIC LETTER REH,غ U+063A ARABIC LETTER GHAIN,1,1
+substitution,س, ,espace,س U+0633 ARABIC LETTER SEEN,␣ U+0020 SPACE,1,1
+substitution,ش,غ,autre substitution,ش U+0634 ARABIC LETTER SHEEN,غ U+063A ARABIC LETTER GHAIN,1,1
+substitution,ش,ق,autre substitution,ش U+0634 ARABIC LETTER SHEEN,ق U+0642 ARABIC LETTER QAF,1,1
+substitution,ص,ر,autre substitution,ص U+0635 ARABIC LETTER SAD,ر U+0631 ARABIC LETTER REH,1,1
+substitution,ض,ر,autre substitution,ض U+0636 ARABIC LETTER DAD,ر U+0631 ARABIC LETTER REH,1,1
+substitution,ض,غ,autre substitution,ض U+0636 ARABIC LETTER DAD,غ U+063A ARABIC LETTER GHAIN,1,1
+substitution,ظ,ط,même squelette (points),ظ U+0638 ARABIC LETTER ZAH,ط U+0637 ARABIC LETTER TAH,1,1
+substitution,ع,ن,autre substitution,ع U+0639 ARABIC LETTER AIN,ن U+0646 ARABIC LETTER NOON,1,1
+substitution,ف,و,autre substitution,ف U+0641 ARABIC LETTER FEH,و U+0648 ARABIC LETTER WAW,1,1
+substitution,ق,ث,autre substitution,ق U+0642 ARABIC LETTER QAF,ث U+062B ARABIC LETTER THEH,1,1
+substitution,ق,ي,autre substitution,ق U+0642 ARABIC LETTER QAF,ي U+064A ARABIC LETTER YEH,1,1
+substitution,ك,غ,autre substitution,ك U+0643 ARABIC LETTER KAF,غ U+063A ARABIC LETTER GHAIN,1,1
+substitution,ل,ب,autre substitution,ل U+0644 ARABIC LETTER LAM,ب U+0628 ARABIC LETTER BEH,1,1
+substitution,ل,ش,autre substitution,ل U+0644 ARABIC LETTER LAM,ش U+0634 ARABIC LETTER SHEEN,1,1
+substitution,م,ذ,autre substitution,م U+0645 ARABIC LETTER MEEM,ذ U+0630 ARABIC LETTER THAL,1,1
+substitution,م,ز,autre substitution,م U+0645 ARABIC LETTER MEEM,ز U+0632 ARABIC LETTER ZAIN,1,1
+substitution,م,و,autre substitution,م U+0645 ARABIC LETTER MEEM,و U+0648 ARABIC LETTER WAW,1,1
+substitution,م,ٓ,autre substitution,م U+0645 ARABIC LETTER MEEM,◌ٓ U+0653 ARABIC MADDAH ABOVE,1,1
+substitution,ن,غ,autre substitution,ن U+0646 ARABIC LETTER NOON,غ U+063A ARABIC LETTER GHAIN,1,1
+substitution,ن,ٔ,autre substitution,ن U+0646 ARABIC LETTER NOON,◌ٔ U+0654 ARABIC HAMZA ABOVE,1,1
+substitution,ن,پ,même squelette (points),ن U+0646 ARABIC LETTER NOON,پ U+067E ARABIC LETTER PEH,1,1
+substitution,و,ا,autre substitution,و U+0648 ARABIC LETTER WAW,ا U+0627 ARABIC LETTER ALEF,1,1
+substitution,و,ذ,autre substitution,و U+0648 ARABIC LETTER WAW,ذ U+0630 ARABIC LETTER THAL,1,1
+substitution,و,ى,autre substitution,و U+0648 ARABIC LETTER WAW,ى U+0649 ARABIC LETTER ALEF MAKSURA,1,1
+substitution,ى,د,autre substitution,ى U+0649 ARABIC LETTER ALEF MAKSURA,د U+062F ARABIC LETTER DAL,1,1
+substitution,ى,ك,autre substitution,ى U+0649 ARABIC LETTER ALEF MAKSURA,ك U+0643 ARABIC LETTER KAF,1,1
+substitution,ي,ش,autre substitution,ي U+064A ARABIC LETTER YEH,ش U+0634 ARABIC LETTER SHEEN,1,1
+substitution,پ,ر,autre substitution,پ U+067E ARABIC LETTER PEH,ر U+0631 ARABIC LETTER REH,1,1
+suppression,ظ,,autre suppression,ظ U+0638 ARABIC LETTER ZAH,,1,1
+insertion,,ز,autre insertion,,ز U+0632 ARABIC LETTER ZAIN,0,1
+insertion,,چ,autre insertion,,چ U+0686 ARABIC LETTER TCHEH,0,1
+substitution,.,ع,séparateur .,. U+002E FULL STOP,ع U+0639 ARABIC LETTER AIN,0,1
+substitution,.,ي,séparateur .,. U+002E FULL STOP,ي U+064A ARABIC LETTER YEH,0,1
+substitution,.,٠,séparateur .,. U+002E FULL STOP,٠ U+0660 ARABIC-INDIC DIGIT ZERO,0,1
+substitution,ا,ث,autre substitution,ا U+0627 ARABIC LETTER ALEF,ث U+062B ARABIC LETTER THEH,0,1
+substitution,ا,چ,autre substitution,ا U+0627 ARABIC LETTER ALEF,چ U+0686 ARABIC LETTER TCHEH,0,1
+substitution,ب,ث,même squelette (points),ب U+0628 ARABIC LETTER BEH,ث U+062B ARABIC LETTER THEH,0,1
+substitution,ة,ن,autre substitution,ة U+0629 ARABIC LETTER TEH MARBUTA,ن U+0646 ARABIC LETTER NOON,0,1
+substitution,ت,ر,autre substitution,ت U+062A ARABIC LETTER TEH,ر U+0631 ARABIC LETTER REH,0,1
+substitution,ث,ك,autre substitution,ث U+062B ARABIC LETTER THEH,ك U+0643 ARABIC LETTER KAF,0,1
+substitution,ج,ش,autre substitution,ج U+062C ARABIC LETTER JEEM,ش U+0634 ARABIC LETTER SHEEN,0,1
+substitution,ح,د,autre substitution,ح U+062D ARABIC LETTER HAH,د U+062F ARABIC LETTER DAL,0,1
+substitution,ح,ص,autre substitution,ح U+062D ARABIC LETTER HAH,ص U+0635 ARABIC LETTER SAD,0,1
+substitution,ح,ى,autre substitution,ح U+062D ARABIC LETTER HAH,ى U+0649 ARABIC LETTER ALEF MAKSURA,0,1
+substitution,ح,چ,même squelette (points),ح U+062D ARABIC LETTER HAH,چ U+0686 ARABIC LETTER TCHEH,0,1
+substitution,خ,ب,autre substitution,خ U+062E ARABIC LETTER KHAH,ب U+0628 ARABIC LETTER BEH,0,1
+substitution,خ,ه,autre substitution,خ U+062E ARABIC LETTER KHAH,ه U+0647 ARABIC LETTER HEH,0,1
+substitution,د,ص,autre substitution,د U+062F ARABIC LETTER DAL,ص U+0635 ARABIC LETTER SAD,0,1
+substitution,د,ك,autre substitution,د U+062F ARABIC LETTER DAL,ك U+0643 ARABIC LETTER KAF,0,1
+substitution,ر,ث,autre substitution,ر U+0631 ARABIC LETTER REH,ث U+062B ARABIC LETTER THEH,0,1
+substitution,ز,ٓ,autre substitution,ز U+0632 ARABIC LETTER ZAIN,◌ٓ U+0653 ARABIC MADDAH ABOVE,0,1
+substitution,س,ح,autre substitution,س U+0633 ARABIC LETTER SEEN,ح U+062D ARABIC LETTER HAH,0,1
+substitution,س,د,autre substitution,س U+0633 ARABIC LETTER SEEN,د U+062F ARABIC LETTER DAL,0,1
+substitution,س,ق,autre substitution,س U+0633 ARABIC LETTER SEEN,ق U+0642 ARABIC LETTER QAF,0,1
+substitution,س,ل,autre substitution,س U+0633 ARABIC LETTER SEEN,ل U+0644 ARABIC LETTER LAM,0,1
+substitution,ش,.,séparateur .,ش U+0634 ARABIC LETTER SHEEN,. U+002E FULL STOP,0,1
+substitution,ص,ف,autre substitution,ص U+0635 ARABIC LETTER SAD,ف U+0641 ARABIC LETTER FEH,0,1
+substitution,ط,ح,autre substitution,ط U+0637 ARABIC LETTER TAH,ح U+062D ARABIC LETTER HAH,0,1
+substitution,ط,ي,autre substitution,ط U+0637 ARABIC LETTER TAH,ي U+064A ARABIC LETTER YEH,0,1
+substitution,ظ,ش,autre substitution,ظ U+0638 ARABIC LETTER ZAH,ش U+0634 ARABIC LETTER SHEEN,0,1
+substitution,ظ,غ,autre substitution,ظ U+0638 ARABIC LETTER ZAH,غ U+063A ARABIC LETTER GHAIN,0,1
+substitution,ع,ج,autre substitution,ع U+0639 ARABIC LETTER AIN,ج U+062C ARABIC LETTER JEEM,0,1
+substitution,ع,ش,autre substitution,ع U+0639 ARABIC LETTER AIN,ش U+0634 ARABIC LETTER SHEEN,0,1
+substitution,ع,ض,autre substitution,ع U+0639 ARABIC LETTER AIN,ض U+0636 ARABIC LETTER DAD,0,1
+substitution,ف,ش,autre substitution,ف U+0641 ARABIC LETTER FEH,ش U+0634 ARABIC LETTER SHEEN,0,1
+substitution,ق,ش,autre substitution,ق U+0642 ARABIC LETTER QAF,ش U+0634 ARABIC LETTER SHEEN,0,1
+substitution,ق,غ,autre substitution,ق U+0642 ARABIC LETTER QAF,غ U+063A ARABIC LETTER GHAIN,0,1
+substitution,ق,ل,autre substitution,ق U+0642 ARABIC LETTER QAF,ل U+0644 ARABIC LETTER LAM,0,1
+substitution,ك,ش,autre substitution,ك U+0643 ARABIC LETTER KAF,ش U+0634 ARABIC LETTER SHEEN,0,1
+substitution,ك,و,autre substitution,ك U+0643 ARABIC LETTER KAF,و U+0648 ARABIC LETTER WAW,0,1
+substitution,ل,ح,autre substitution,ل U+0644 ARABIC LETTER LAM,ح U+062D ARABIC LETTER HAH,0,1
+substitution,ل,ص,autre substitution,ل U+0644 ARABIC LETTER LAM,ص U+0635 ARABIC LETTER SAD,0,1
+substitution,م,خ,autre substitution,م U+0645 ARABIC LETTER MEEM,خ U+062E ARABIC LETTER KHAH,0,1
+substitution,م,ق,autre substitution,م U+0645 ARABIC LETTER MEEM,ق U+0642 ARABIC LETTER QAF,0,1
+substitution,ن,.,séparateur .,ن U+0646 ARABIC LETTER NOON,. U+002E FULL STOP,0,1
+substitution,ه,ث,autre substitution,ه U+0647 ARABIC LETTER HEH,ث U+062B ARABIC LETTER THEH,0,1
+substitution,ه,چ,autre substitution,ه U+0647 ARABIC LETTER HEH,چ U+0686 ARABIC LETTER TCHEH,0,1
+substitution,و,ع,autre substitution,و U+0648 ARABIC LETTER WAW,ع U+0639 ARABIC LETTER AIN,0,1
+substitution,ى,چ,autre substitution,ى U+0649 ARABIC LETTER ALEF MAKSURA,چ U+0686 ARABIC LETTER TCHEH,0,1
+substitution,ي,ز,autre substitution,ي U+064A ARABIC LETTER YEH,ز U+0632 ARABIC LETTER ZAIN,0,1
+substitution,ي,ص,autre substitution,ي U+064A ARABIC LETTER YEH,ص U+0635 ARABIC LETTER SAD,0,1
+substitution,ٓ,ت,autre substitution,◌ٓ U+0653 ARABIC MADDAH ABOVE,ت U+062A ARABIC LETTER TEH,0,1
+substitution,ٓ,ل,autre substitution,◌ٓ U+0653 ARABIC MADDAH ABOVE,ل U+0644 ARABIC LETTER LAM,0,1
+substitution,ٔ,ل,ئ,◌ٔ U+0654 ARABIC HAMZA ABOVE,ل U+0644 ARABIC LETTER LAM,0,1
+substitution,ٔ,و,autre substitution,◌ٔ U+0654 ARABIC HAMZA ABOVE,و U+0648 ARABIC LETTER WAW,0,1
+substitution,ٔ,ي,autre substitution,◌ٔ U+0654 ARABIC HAMZA ABOVE,ي U+064A ARABIC LETTER YEH,0,1
+substitution,ٱ,ل,autre substitution,ٱ U+0671 ARABIC LETTER ALEF WASLA,ل U+0644 ARABIC LETTER LAM,0,1
+substitution,پ,م,autre substitution,پ U+067E ARABIC LETTER PEH,م U+0645 ARABIC LETTER MEEM,0,1
+substitution,چ,ر,autre substitution,چ U+0686 ARABIC LETTER TCHEH,ر U+0631 ARABIC LETTER REH,0,1
+substitution,چ,م,autre substitution,چ U+0686 ARABIC LETTER TCHEH,م U+0645 ARABIC LETTER MEEM,0,1
+substitution,چ,ن,autre substitution,چ U+0686 ARABIC LETTER TCHEH,ن U+0646 ARABIC LETTER NOON,0,1
+substitution, ,ذ,espace,␣ U+0020 SPACE,ذ U+0630 ARABIC LETTER THAL,9,0
+substitution,ب,ى,autre substitution,ب U+0628 ARABIC LETTER BEH,ى U+0649 ARABIC LETTER ALEF MAKSURA,8,0
+substitution,م,ت,autre substitution,م U+0645 ARABIC LETTER MEEM,ت U+062A ARABIC LETTER TEH,8,0
+substitution,ى,ع,autre substitution,ى U+0649 ARABIC LETTER ALEF MAKSURA,ع U+0639 ARABIC LETTER AIN,8,0
+substitution,ن,ك,autre substitution,ن U+0646 ARABIC LETTER NOON,ك U+0643 ARABIC LETTER KAF,7,0
+substitution,ى,ل,autre substitution,ى U+0649 ARABIC LETTER ALEF MAKSURA,ل U+0644 ARABIC LETTER LAM,7,0
+substitution, ,خ,espace,␣ U+0020 SPACE,خ U+062E ARABIC LETTER KHAH,6,0
+substitution, ,س,espace,␣ U+0020 SPACE,س U+0633 ARABIC LETTER SEEN,6,0
+substitution, ,ق,espace,␣ U+0020 SPACE,ق U+0642 ARABIC LETTER QAF,6,0
+substitution,ق,ى,autre substitution,ق U+0642 ARABIC LETTER QAF,ى U+0649 ARABIC LETTER ALEF MAKSURA,6,0
+substitution,ى,ز,autre substitution,ى U+0649 ARABIC LETTER ALEF MAKSURA,ز U+0632 ARABIC LETTER ZAIN,6,0
+substitution,ت,ع,autre substitution,ت U+062A ARABIC LETTER TEH,ع U+0639 ARABIC LETTER AIN,5,0
+substitution,ق,ه,autre substitution,ق U+0642 ARABIC LETTER QAF,ه U+0647 ARABIC LETTER HEH,5,0
+substitution,ه,ك,autre substitution,ه U+0647 ARABIC LETTER HEH,ك U+0643 ARABIC LETTER KAF,5,0
+substitution,ى,ٔ,autre substitution,ى U+0649 ARABIC LETTER ALEF MAKSURA,◌ٔ U+0654 ARABIC HAMZA ABOVE,5,0
+insertion,,ذ,autre insertion,,ذ U+0630 ARABIC LETTER THAL,4,0
+substitution,ا,ت,autre substitution,ا U+0627 ARABIC LETTER ALEF,ت U+062A ARABIC LETTER TEH,4,0
+substitution,ب,خ,autre substitution,ب U+0628 ARABIC LETTER BEH,خ U+062E ARABIC LETTER KHAH,4,0
+substitution,ت,ث,même squelette (points),ت U+062A ARABIC LETTER TEH,ث U+062B ARABIC LETTER THEH,4,0
+substitution,ج,ف,autre substitution,ج U+062C ARABIC LETTER JEEM,ف U+0641 ARABIC LETTER FEH,4,0
+substitution,ح,ع,autre substitution,ح U+062D ARABIC LETTER HAH,ع U+0639 ARABIC LETTER AIN,4,0
+substitution,د,ت,autre substitution,د U+062F ARABIC LETTER DAL,ت U+062A ARABIC LETTER TEH,4,0
+substitution,ر,ه,autre substitution,ر U+0631 ARABIC LETTER REH,ه U+0647 ARABIC LETTER HEH,4,0
+substitution,غ,ق,autre substitution,غ U+063A ARABIC LETTER GHAIN,ق U+0642 ARABIC LETTER QAF,4,0
+substitution,ق,ة,autre substitution,ق U+0642 ARABIC LETTER QAF,ة U+0629 ARABIC LETTER TEH MARBUTA,4,0
+substitution,ك, ,espace,ك U+0643 ARABIC LETTER KAF,␣ U+0020 SPACE,4,0
+substitution,ل,ظ,autre substitution,ل U+0644 ARABIC LETTER LAM,ظ U+0638 ARABIC LETTER ZAH,4,0
+substitution,ه,خ,autre substitution,ه U+0647 ARABIC LETTER HEH,خ U+062E ARABIC LETTER KHAH,4,0
+substitution,و,ت,autre substitution,و U+0648 ARABIC LETTER WAW,ت U+062A ARABIC LETTER TEH,4,0
+substitution,و,ق,autre substitution,و U+0648 ARABIC LETTER WAW,ق U+0642 ARABIC LETTER QAF,4,0
+substitution,ا,ع,autre substitution,ا U+0627 ARABIC LETTER ALEF,ع U+0639 ARABIC LETTER AIN,3,0
+substitution,ج,ه,autre substitution,ج U+062C ARABIC LETTER JEEM,ه U+0647 ARABIC LETTER HEH,3,0
+substitution,خ,ي,autre substitution,خ U+062E ARABIC LETTER KHAH,ي U+064A ARABIC LETTER YEH,3,0
+substitution,ر,ع,autre substitution,ر U+0631 ARABIC LETTER REH,ع U+0639 ARABIC LETTER AIN,3,0
+substitution,ز,ت,autre substitution,ز U+0632 ARABIC LETTER ZAIN,ت U+062A ARABIC LETTER TEH,3,0
+substitution,ش,ب,autre substitution,ش U+0634 ARABIC LETTER SHEEN,ب U+0628 ARABIC LETTER BEH,3,0
+substitution,ش,ف,autre substitution,ش U+0634 ARABIC LETTER SHEEN,ف U+0641 ARABIC LETTER FEH,3,0
+substitution,م,ا,autre substitution,م U+0645 ARABIC LETTER MEEM,ا U+0627 ARABIC LETTER ALEF,3,0
+substitution,ى, ,espace,ى U+0649 ARABIC LETTER ALEF MAKSURA,␣ U+0020 SPACE,3,0
+substitution,ى,غ,autre substitution,ى U+0649 ARABIC LETTER ALEF MAKSURA,غ U+063A ARABIC LETTER GHAIN,3,0
+substitution,ي,س,autre substitution,ي U+064A ARABIC LETTER YEH,س U+0633 ARABIC LETTER SEEN,3,0
+suppression,غ,,autre suppression,غ U+063A ARABIC LETTER GHAIN,,3,0
+suppression,چ,,autre suppression,چ U+0686 ARABIC LETTER TCHEH,,3,0
+insertion,,ٔ,ئ,,◌ٔ U+0654 ARABIC HAMZA ABOVE,2,0
+substitution, ,«,espace,␣ U+0020 SPACE,« U+00AB LEFT-POINTING DOUBLE ANGLE QUOTATION MARK,2,0
+substitution, ,ث,espace,␣ U+0020 SPACE,ث U+062B ARABIC LETTER THEH,2,0
+substitution, ,ص,espace,␣ U+0020 SPACE,ص U+0635 ARABIC LETTER SAD,2,0
+substitution,.,«,séparateur .,. U+002E FULL STOP,« U+00AB LEFT-POINTING DOUBLE ANGLE QUOTATION MARK,2,0
+substitution,.,ا,séparateur .,. U+002E FULL STOP,ا U+0627 ARABIC LETTER ALEF,2,0
+substitution,ا,ز,autre substitution,ا U+0627 ARABIC LETTER ALEF,ز U+0632 ARABIC LETTER ZAIN,2,0
+substitution,ا,غ,autre substitution,ا U+0627 ARABIC LETTER ALEF,غ U+063A ARABIC LETTER GHAIN,2,0
+substitution,ب,ة,autre substitution,ب U+0628 ARABIC LETTER BEH,ة U+0629 ARABIC LETTER TEH MARBUTA,2,0
+substitution,ب,ز,autre substitution,ب U+0628 ARABIC LETTER BEH,ز U+0632 ARABIC LETTER ZAIN,2,0
+substitution,ب,ط,autre substitution,ب U+0628 ARABIC LETTER BEH,ط U+0637 ARABIC LETTER TAH,2,0
+substitution,ت,ة,autre substitution,ت U+062A ARABIC LETTER TEH,ة U+0629 ARABIC LETTER TEH MARBUTA,2,0
+substitution,ت,س,autre substitution,ت U+062A ARABIC LETTER TEH,س U+0633 ARABIC LETTER SEEN,2,0
+substitution,ث,غ,autre substitution,ث U+062B ARABIC LETTER THEH,غ U+063A ARABIC LETTER GHAIN,2,0
+substitution,ث,ن,même squelette (points),ث U+062B ARABIC LETTER THEH,ن U+0646 ARABIC LETTER NOON,2,0
+substitution,ج,ذ,autre substitution,ج U+062C ARABIC LETTER JEEM,ذ U+0630 ARABIC LETTER THAL,2,0
+substitution,ح,ي,autre substitution,ح U+062D ARABIC LETTER HAH,ي U+064A ARABIC LETTER YEH,2,0
+substitution,خ,ز,autre substitution,خ U+062E ARABIC LETTER KHAH,ز U+0632 ARABIC LETTER ZAIN,2,0
+substitution,خ,ض,autre substitution,خ U+062E ARABIC LETTER KHAH,ض U+0636 ARABIC LETTER DAD,2,0
+substitution,خ,ع,autre substitution,خ U+062E ARABIC LETTER KHAH,ع U+0639 ARABIC LETTER AIN,2,0
+substitution,خ,ف,autre substitution,خ U+062E ARABIC LETTER KHAH,ف U+0641 ARABIC LETTER FEH,2,0
+substitution,د,ز,autre substitution,د U+062F ARABIC LETTER DAL,ز U+0632 ARABIC LETTER ZAIN,2,0
+substitution,ر,ف,autre substitution,ر U+0631 ARABIC LETTER REH,ف U+0641 ARABIC LETTER FEH,2,0
+substitution,س,ا,autre substitution,س U+0633 ARABIC LETTER SEEN,ا U+0627 ARABIC LETTER ALEF,2,0
+substitution,ض,ل,autre substitution,ض U+0636 ARABIC LETTER DAD,ل U+0644 ARABIC LETTER LAM,2,0
+substitution,ع,ث,autre substitution,ع U+0639 ARABIC LETTER AIN,ث U+062B ARABIC LETTER THEH,2,0
+substitution,ف,ن,autre substitution,ف U+0641 ARABIC LETTER FEH,ن U+0646 ARABIC LETTER NOON,2,0
+substitution,ك,م,autre substitution,ك U+0643 ARABIC LETTER KAF,م U+0645 ARABIC LETTER MEEM,2,0
+substitution,ل,س,autre substitution,ل U+0644 ARABIC LETTER LAM,س U+0633 ARABIC LETTER SEEN,2,0
+substitution,ل,و,autre substitution,ل U+0644 ARABIC LETTER LAM,و U+0648 ARABIC LETTER WAW,2,0
+substitution,م,ط,autre substitution,م U+0645 ARABIC LETTER MEEM,ط U+0637 ARABIC LETTER TAH,2,0
+substitution,ن,م,autre substitution,ن U+0646 ARABIC LETTER NOON,م U+0645 ARABIC LETTER MEEM,2,0
+substitution,ه,ذ,autre substitution,ه U+0647 ARABIC LETTER HEH,ذ U+0630 ARABIC LETTER THAL,2,0
+substitution,ه,ف,autre substitution,ه U+0647 ARABIC LETTER HEH,ف U+0641 ARABIC LETTER FEH,2,0
+substitution,ه,و,autre substitution,ه U+0647 ARABIC LETTER HEH,و U+0648 ARABIC LETTER WAW,2,0
+substitution,ه,ٔ,autre substitution,ه U+0647 ARABIC LETTER HEH,◌ٔ U+0654 ARABIC HAMZA ABOVE,2,0
+substitution,ه,ٔ,ئ,ه U+0647 ARABIC LETTER HEH,◌ٔ U+0654 ARABIC HAMZA ABOVE,2,0
+substitution,ى,ة,autre substitution,ى U+0649 ARABIC LETTER ALEF MAKSURA,ة U+0629 ARABIC LETTER TEH MARBUTA,2,0
+substitution,ى,ج,autre substitution,ى U+0649 ARABIC LETTER ALEF MAKSURA,ج U+062C ARABIC LETTER JEEM,2,0
+substitution,ى,ح,autre substitution,ى U+0649 ARABIC LETTER ALEF MAKSURA,ح U+062D ARABIC LETTER HAH,2,0
+substitution,ى,ف,autre substitution,ى U+0649 ARABIC LETTER ALEF MAKSURA,ف U+0641 ARABIC LETTER FEH,2,0
+substitution,ي,ع,autre substitution,ي U+064A ARABIC LETTER YEH,ع U+0639 ARABIC LETTER AIN,2,0
+substitution,پ,س,autre substitution,پ U+067E ARABIC LETTER PEH,س U+0633 ARABIC LETTER SEEN,2,0
+substitution,چ,ب,autre substitution,چ U+0686 ARABIC LETTER TCHEH,ب U+0628 ARABIC LETTER BEH,2,0
+substitution,چ,پ,autre substitution,چ U+0686 ARABIC LETTER TCHEH,پ U+067E ARABIC LETTER PEH,2,0
+suppression,ة,,autre suppression,ة U+0629 ARABIC LETTER TEH MARBUTA,,2,0
+insertion,,*,ponctuation,,* U+002A ASTERISK,1,0
+insertion,,.,séparateur .,,. U+002E FULL STOP,1,0
+insertion,,پ,autre insertion,,پ U+067E ARABIC LETTER PEH,1,0
+substitution, ,),espace,␣ U+0020 SPACE,) U+0029 RIGHT PARENTHESIS,1,0
+substitution, ,ء,espace,␣ U+0020 SPACE,ء U+0621 ARABIC LETTER HAMZA,1,0
+substitution, ,ض,espace,␣ U+0020 SPACE,ض U+0636 ARABIC LETTER DAD,1,0
+substitution, ,ٓ,espace,␣ U+0020 SPACE,◌ٓ U+0653 ARABIC MADDAH ABOVE,1,0
+substitution,.,5,séparateur .,. U+002E FULL STOP,5 U+0035 DIGIT FIVE,1,0
+substitution,.,»,séparateur .,. U+002E FULL STOP,» U+00BB RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK,1,0
+substitution,.,ث,séparateur .,. U+002E FULL STOP,ث U+062B ARABIC LETTER THEH,1,0
+substitution,.,ج,séparateur .,. U+002E FULL STOP,ج U+062C ARABIC LETTER JEEM,1,0
+substitution,.,ل,séparateur .,. U+002E FULL STOP,ل U+0644 ARABIC LETTER LAM,1,0
+substitution,.,و,séparateur .,. U+002E FULL STOP,و U+0648 ARABIC LETTER WAW,1,0
+substitution,.,٥,séparateur .,. U+002E FULL STOP,٥ U+0665 ARABIC-INDIC DIGIT FIVE,1,0
+substitution,ء,*,ponctuation,ء U+0621 ARABIC LETTER HAMZA,* U+002A ASTERISK,1,0
+substitution,ء,ب,autre substitution,ء U+0621 ARABIC LETTER HAMZA,ب U+0628 ARABIC LETTER BEH,1,0
+substitution,ء,ي,autre substitution,ء U+0621 ARABIC LETTER HAMZA,ي U+064A ARABIC LETTER YEH,1,0
+substitution,ا,ش,autre substitution,ا U+0627 ARABIC LETTER ALEF,ش U+0634 ARABIC LETTER SHEEN,1,0
+substitution,ا,ط,autre substitution,ا U+0627 ARABIC LETTER ALEF,ط U+0637 ARABIC LETTER TAH,1,0
+substitution,ا,ظ,autre substitution,ا U+0627 ARABIC LETTER ALEF,ظ U+0638 ARABIC LETTER ZAH,1,0
+substitution,ا,ف,autre substitution,ا U+0627 ARABIC LETTER ALEF,ف U+0641 ARABIC LETTER FEH,1,0
+substitution,ا,ٔ,autre substitution,ا U+0627 ARABIC LETTER ALEF,◌ٔ U+0654 ARABIC HAMZA ABOVE,1,0
+substitution,ب,ذ,autre substitution,ب U+0628 ARABIC LETTER BEH,ذ U+0630 ARABIC LETTER THAL,1,0
+substitution,ب,ض,autre substitution,ب U+0628 ARABIC LETTER BEH,ض U+0636 ARABIC LETTER DAD,1,0
+substitution,ب,ٔ,autre substitution,ب U+0628 ARABIC LETTER BEH,◌ٔ U+0654 ARABIC HAMZA ABOVE,1,0
+substitution,ب,۲,chiffre,ب U+0628 ARABIC LETTER BEH,۲ U+06F2 EXTENDED ARABIC-INDIC DIGIT TWO,1,0
+substitution,ت,ح,autre substitution,ت U+062A ARABIC LETTER TEH,ح U+062D ARABIC LETTER HAH,1,0
+substitution,ت,غ,autre substitution,ت U+062A ARABIC LETTER TEH,غ U+063A ARABIC LETTER GHAIN,1,0
+substitution,ت,ف,autre substitution,ت U+062A ARABIC LETTER TEH,ف U+0641 ARABIC LETTER FEH,1,0
+substitution,ت,ه,autre substitution,ت U+062A ARABIC LETTER TEH,ه U+0647 ARABIC LETTER HEH,1,0
+substitution,ث,ي,même squelette (points),ث U+062B ARABIC LETTER THEH,ي U+064A ARABIC LETTER YEH,1,0
+substitution,ج,ا,autre substitution,ج U+062C ARABIC LETTER JEEM,ا U+0627 ARABIC LETTER ALEF,1,0
+substitution,ج,ر,autre substitution,ج U+062C ARABIC LETTER JEEM,ر U+0631 ARABIC LETTER REH,1,0
+substitution,ح,ا,autre substitution,ح U+062D ARABIC LETTER HAH,ا U+0627 ARABIC LETTER ALEF,1,0
+substitution,ح,ر,autre substitution,ح U+062D ARABIC LETTER HAH,ر U+0631 ARABIC LETTER REH,1,0
+substitution,ح,س,autre substitution,ح U+062D ARABIC LETTER HAH,س U+0633 ARABIC LETTER SEEN,1,0
+substitution,ح,ل,autre substitution,ح U+062D ARABIC LETTER HAH,ل U+0644 ARABIC LETTER LAM,1,0
+substitution,ح,ٔ,autre substitution,ح U+062D ARABIC LETTER HAH,◌ٔ U+0654 ARABIC HAMZA ABOVE,1,0
+substitution,خ,ظ,autre substitution,خ U+062E ARABIC LETTER KHAH,ظ U+0638 ARABIC LETTER ZAH,1,0
+substitution,خ,چ,même squelette (points),خ U+062E ARABIC LETTER KHAH,چ U+0686 ARABIC LETTER TCHEH,1,0
+substitution,د,«,ponctuation,د U+062F ARABIC LETTER DAL,« U+00AB LEFT-POINTING DOUBLE ANGLE QUOTATION MARK,1,0
+substitution,د,س,autre substitution,د U+062F ARABIC LETTER DAL,س U+0633 ARABIC LETTER SEEN,1,0
+substitution,د,ق,autre substitution,د U+062F ARABIC LETTER DAL,ق U+0642 ARABIC LETTER QAF,1,0
+substitution,ذ,ق,autre substitution,ذ U+0630 ARABIC LETTER THAL,ق U+0642 ARABIC LETTER QAF,1,0
+substitution,ر,(,ponctuation,ر U+0631 ARABIC LETTER REH,( U+0028 LEFT PARENTHESIS,1,0
+substitution,ر,ج,autre substitution,ر U+0631 ARABIC LETTER REH,ج U+062C ARABIC LETTER JEEM,1,0
+substitution,ر,خ,autre substitution,ر U+0631 ARABIC LETTER REH,خ U+062E ARABIC LETTER KHAH,1,0
+substitution,ر,ذ,autre substitution,ر U+0631 ARABIC LETTER REH,ذ U+0630 ARABIC LETTER THAL,1,0
+substitution,ر,ص,autre substitution,ر U+0631 ARABIC LETTER REH,ص U+0635 ARABIC LETTER SAD,1,0
+substitution,ر,ق,autre substitution,ر U+0631 ARABIC LETTER REH,ق U+0642 ARABIC LETTER QAF,1,0
+substitution,ر,ك,autre substitution,ر U+0631 ARABIC LETTER REH,ك U+0643 ARABIC LETTER KAF,1,0
+substitution,ر,ٔ,autre substitution,ر U+0631 ARABIC LETTER REH,◌ٔ U+0654 ARABIC HAMZA ABOVE,1,0
+substitution,ر,چ,autre substitution,ر U+0631 ARABIC LETTER REH,چ U+0686 ARABIC LETTER TCHEH,1,0
+substitution,ز,ا,autre substitution,ز U+0632 ARABIC LETTER ZAIN,ا U+0627 ARABIC LETTER ALEF,1,0
+substitution,ز,ة,autre substitution,ز U+0632 ARABIC LETTER ZAIN,ة U+0629 ARABIC LETTER TEH MARBUTA,1,0
+substitution,ز,ث,autre substitution,ز U+0632 ARABIC LETTER ZAIN,ث U+062B ARABIC LETTER THEH,1,0
+substitution,ز,خ,autre substitution,ز U+0632 ARABIC LETTER ZAIN,خ U+062E ARABIC LETTER KHAH,1,0
+substitution,ز,ه,autre substitution,ز U+0632 ARABIC LETTER ZAIN,ه U+0647 ARABIC LETTER HEH,1,0
+substitution,ز,ي,autre substitution,ز U+0632 ARABIC LETTER ZAIN,ي U+064A ARABIC LETTER YEH,1,0
+substitution,س,ث,autre substitution,س U+0633 ARABIC LETTER SEEN,ث U+062B ARABIC LETTER THEH,1,0
+substitution,س,ج,autre substitution,س U+0633 ARABIC LETTER SEEN,ج U+062C ARABIC LETTER JEEM,1,0
+substitution,س,ص,autre substitution,س U+0633 ARABIC LETTER SEEN,ص U+0635 ARABIC LETTER SAD,1,0
+substitution,س,ه,autre substitution,س U+0633 ARABIC LETTER SEEN,ه U+0647 ARABIC LETTER HEH,1,0
+substitution,ش, ,espace,ش U+0634 ARABIC LETTER SHEEN,␣ U+0020 SPACE,1,0
+substitution,ش,ا,autre substitution,ش U+0634 ARABIC LETTER SHEEN,ا U+0627 ARABIC LETTER ALEF,1,0
+substitution,ش,ج,autre substitution,ش U+0634 ARABIC LETTER SHEEN,ج U+062C ARABIC LETTER JEEM,1,0
+substitution,ش,ر,autre substitution,ش U+0634 ARABIC LETTER SHEEN,ر U+0631 ARABIC LETTER REH,1,0
+substitution,ش,ص,autre substitution,ش U+0634 ARABIC LETTER SHEEN,ص U+0635 ARABIC LETTER SAD,1,0
+substitution,ش,ى,autre substitution,ش U+0634 ARABIC LETTER SHEEN,ى U+0649 ARABIC LETTER ALEF MAKSURA,1,0
+substitution,ص, ,espace,ص U+0635 ARABIC LETTER SAD,␣ U+0020 SPACE,1,0
+substitution,ص,ا,autre substitution,ص U+0635 ARABIC LETTER SAD,ا U+0627 ARABIC LETTER ALEF,1,0
+substitution,ص,ق,autre substitution,ص U+0635 ARABIC LETTER SAD,ق U+0642 ARABIC LETTER QAF,1,0
+substitution,ص,ه,autre substitution,ص U+0635 ARABIC LETTER SAD,ه U+0647 ARABIC LETTER HEH,1,0
+substitution,ص,و,autre substitution,ص U+0635 ARABIC LETTER SAD,و U+0648 ARABIC LETTER WAW,1,0
+substitution,ض, ,espace,ض U+0636 ARABIC LETTER DAD,␣ U+0020 SPACE,1,0
+substitution,ض,ا,autre substitution,ض U+0636 ARABIC LETTER DAD,ا U+0627 ARABIC LETTER ALEF,1,0
+substitution,ض,ت,autre substitution,ض U+0636 ARABIC LETTER DAD,ت U+062A ARABIC LETTER TEH,1,0
+substitution,ض,ع,autre substitution,ض U+0636 ARABIC LETTER DAD,ع U+0639 ARABIC LETTER AIN,1,0
+substitution,ض,ن,autre substitution,ض U+0636 ARABIC LETTER DAD,ن U+0646 ARABIC LETTER NOON,1,0
+substitution,ط, ,espace,ط U+0637 ARABIC LETTER TAH,␣ U+0020 SPACE,1,0
+substitution,ط,ع,autre substitution,ط U+0637 ARABIC LETTER TAH,ع U+0639 ARABIC LETTER AIN,1,0
+substitution,ط,ف,autre substitution,ط U+0637 ARABIC LETTER TAH,ف U+0641 ARABIC LETTER FEH,1,0
+substitution,ظ,ل,autre substitution,ظ U+0638 ARABIC LETTER ZAH,ل U+0644 ARABIC LETTER LAM,1,0
+substitution,ع, ,espace,ع U+0639 ARABIC LETTER AIN,␣ U+0020 SPACE,1,0
+substitution,ع,ت,autre substitution,ع U+0639 ARABIC LETTER AIN,ت U+062A ARABIC LETTER TEH,1,0
+substitution,ع,ص,autre substitution,ع U+0639 ARABIC LETTER AIN,ص U+0635 ARABIC LETTER SAD,1,0
+substitution,ع,ط,autre substitution,ع U+0639 ARABIC LETTER AIN,ط U+0637 ARABIC LETTER TAH,1,0
+substitution,ع,ظ,autre substitution,ع U+0639 ARABIC LETTER AIN,ظ U+0638 ARABIC LETTER ZAH,1,0
+substitution,ع,ل,autre substitution,ع U+0639 ARABIC LETTER AIN,ل U+0644 ARABIC LETTER LAM,1,0
+substitution,غ,ن,autre substitution,غ U+063A ARABIC LETTER GHAIN,ن U+0646 ARABIC LETTER NOON,1,0
+substitution,ف, ,espace,ف U+0641 ARABIC LETTER FEH,␣ U+0020 SPACE,1,0
+substitution,ف,ا,autre substitution,ف U+0641 ARABIC LETTER FEH,ا U+0627 ARABIC LETTER ALEF,1,0
+substitution,ف,ب,autre substitution,ف U+0641 ARABIC LETTER FEH,ب U+0628 ARABIC LETTER BEH,1,0
+substitution,ف,ة,autre substitution,ف U+0641 ARABIC LETTER FEH,ة U+0629 ARABIC LETTER TEH MARBUTA,1,0
+substitution,ف,ت,autre substitution,ف U+0641 ARABIC LETTER FEH,ت U+062A ARABIC LETTER TEH,1,0
+substitution,ف,ض,autre substitution,ف U+0641 ARABIC LETTER FEH,ض U+0636 ARABIC LETTER DAD,1,0
+substitution,ف,ع,autre substitution,ف U+0641 ARABIC LETTER FEH,ع U+0639 ARABIC LETTER AIN,1,0
+substitution,ف,ى,autre substitution,ف U+0641 ARABIC LETTER FEH,ى U+0649 ARABIC LETTER ALEF MAKSURA,1,0
+substitution,ك,ب,autre substitution,ك U+0643 ARABIC LETTER KAF,ب U+0628 ARABIC LETTER BEH,1,0
+substitution,ك,ة,autre substitution,ك U+0643 ARABIC LETTER KAF,ة U+0629 ARABIC LETTER TEH MARBUTA,1,0
+substitution,ك,ر,autre substitution,ك U+0643 ARABIC LETTER KAF,ر U+0631 ARABIC LETTER REH,1,0
+substitution,ك,س,autre substitution,ك U+0643 ARABIC LETTER KAF,س U+0633 ARABIC LETTER SEEN,1,0
+substitution,ك,ط,autre substitution,ك U+0643 ARABIC LETTER KAF,ط U+0637 ARABIC LETTER TAH,1,0
+substitution,ك,ف,autre substitution,ك U+0643 ARABIC LETTER KAF,ف U+0641 ARABIC LETTER FEH,1,0
+substitution,ك,ى,autre substitution,ك U+0643 ARABIC LETTER KAF,ى U+0649 ARABIC LETTER ALEF MAKSURA,1,0
+substitution,ل,ف,autre substitution,ل U+0644 ARABIC LETTER LAM,ف U+0641 ARABIC LETTER FEH,1,0
+substitution,ل,ق,autre substitution,ل U+0644 ARABIC LETTER LAM,ق U+0642 ARABIC LETTER QAF,1,0
+substitution,ل,ى,autre substitution,ل U+0644 ARABIC LETTER LAM,ى U+0649 ARABIC LETTER ALEF MAKSURA,1,0
+substitution,م,ث,autre substitution,م U+0645 ARABIC LETTER MEEM,ث U+062B ARABIC LETTER THEH,1,0
+substitution,م,ع,autre substitution,م U+0645 ARABIC LETTER MEEM,ع U+0639 ARABIC LETTER AIN,1,0
+substitution,م,پ,autre substitution,م U+0645 ARABIC LETTER MEEM,پ U+067E ARABIC LETTER PEH,1,0
+substitution,ن,ة,autre substitution,ن U+0646 ARABIC LETTER NOON,ة U+0629 ARABIC LETTER TEH MARBUTA,1,0
+substitution,ن,ط,autre substitution,ن U+0646 ARABIC LETTER NOON,ط U+0637 ARABIC LETTER TAH,1,0
+substitution,ن,ع,autre substitution,ن U+0646 ARABIC LETTER NOON,ع U+0639 ARABIC LETTER AIN,1,0
+substitution,ه,.,séparateur .,ه U+0647 ARABIC LETTER HEH,. U+002E FULL STOP,1,0
+substitution,ه,ء,autre substitution,ه U+0647 ARABIC LETTER HEH,ء U+0621 ARABIC LETTER HAMZA,1,0
+substitution,ه,ج,autre substitution,ه U+0647 ARABIC LETTER HEH,ج U+062C ARABIC LETTER JEEM,1,0
+substitution,ه,ض,autre substitution,ه U+0647 ARABIC LETTER HEH,ض U+0636 ARABIC LETTER DAD,1,0
+substitution,ه,ل,autre substitution,ه U+0647 ARABIC LETTER HEH,ل U+0644 ARABIC LETTER LAM,1,0
+substitution,ه,۹,chiffre,ه U+0647 ARABIC LETTER HEH,۹ U+06F9 EXTENDED ARABIC-INDIC DIGIT NINE,1,0
+substitution,و,،,ponctuation,و U+0648 ARABIC LETTER WAW,، U+060C ARABIC COMMA,1,0
+substitution,و,ز,autre substitution,و U+0648 ARABIC LETTER WAW,ز U+0632 ARABIC LETTER ZAIN,1,0
+substitution,و,غ,autre substitution,و U+0648 ARABIC LETTER WAW,غ U+063A ARABIC LETTER GHAIN,1,0
+substitution,ي,»,ponctuation,ي U+064A ARABIC LETTER YEH,» U+00BB RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK,1,0
+substitution,ي,ح,autre substitution,ي U+064A ARABIC LETTER YEH,ح U+062D ARABIC LETTER HAH,1,0
+substitution,ي,خ,autre substitution,ي U+064A ARABIC LETTER YEH,خ U+062E ARABIC LETTER KHAH,1,0
+substitution,ٓ, ,espace,◌ٓ U+0653 ARABIC MADDAH ABOVE,␣ U+0020 SPACE,1,0
+substitution,ٓ,ي,autre substitution,◌ٓ U+0653 ARABIC MADDAH ABOVE,ي U+064A ARABIC LETTER YEH,1,0
+substitution,ٔ,ت,ئ,◌ٔ U+0654 ARABIC HAMZA ABOVE,ت U+062A ARABIC LETTER TEH,1,0
+substitution,ٔ,ث,ئ,◌ٔ U+0654 ARABIC HAMZA ABOVE,ث U+062B ARABIC LETTER THEH,1,0
+substitution,ٔ,ش,ئ,◌ٔ U+0654 ARABIC HAMZA ABOVE,ش U+0634 ARABIC LETTER SHEEN,1,0
+substitution,پ,د,autre substitution,پ U+067E ARABIC LETTER PEH,د U+062F ARABIC LETTER DAL,1,0
+substitution,پ,ه,autre substitution,پ U+067E ARABIC LETTER PEH,ه U+0647 ARABIC LETTER HEH,1,0
+substitution,پ,و,autre substitution,پ U+067E ARABIC LETTER PEH,و U+0648 ARABIC LETTER WAW,1,0
+substitution,پ,ى,autre substitution,پ U+067E ARABIC LETTER PEH,ى U+0649 ARABIC LETTER ALEF MAKSURA,1,0
+substitution,چ, ,espace,چ U+0686 ARABIC LETTER TCHEH,␣ U+0020 SPACE,1,0
+substitution,چ,خ,même squelette (points),چ U+0686 ARABIC LETTER TCHEH,خ U+062E ARABIC LETTER KHAH,1,0
+substitution,چ,ه,autre substitution,چ U+0686 ARABIC LETTER TCHEH,ه U+0647 ARABIC LETTER HEH,1,0
+substitution,چ,و,autre substitution,چ U+0686 ARABIC LETTER TCHEH,و U+0648 ARABIC LETTER WAW,1,0
+suppression,ٱ,,autre suppression,ٱ U+0671 ARABIC LETTER ALEF WASLA,,1,0

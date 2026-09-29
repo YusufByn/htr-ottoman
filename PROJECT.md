@@ -1,7 +1,7 @@
 # Projet HTR ottoman
 
 Résumé du projet et état d'avancement. Mis à jour à chaque étape terminée.
-Dernière mise à jour : 2026-09-28.
+Dernière mise à jour : 2026-09-29.
 
 ## 1. Résumé
 
@@ -61,6 +61,7 @@ Tout modèle dérivé de MAKHZAN est sous CC BY-NC-SA. Détails et MD5 : [README
 | Fine-tuning kraken piloté par une config (`configs/`), garde-fous, courbes : `train` | fait |
 | Comparaison appariée de deux modèles (bootstrap apparié sur les manuscrits) : `compare` | fait |
 | Évaluation pré-enregistrée avec contrôles bloquants (empreintes, découpe, effectifs, baseline refaite à l'octet) : `final_eval` | fait (F9) |
+| Analyse des erreurs de deux modèles sur la validation (catégories, confusions, longueur, manuscrit, pires lignes) : `analysis.error_analysis` | fait (F12, étape 1) |
 | Téléchargement d'Akis (git LFS, SHA-256 vérifié contre le pointeur), table des lignes et inventaire : `data.akis`, `analysis.akis_inventory` | fait (F10, vérification ; Akis écarté, décision 40) |
 
 ## 5. État d'avancement
@@ -88,6 +89,8 @@ Sur le test interne : naskh 35,2 % (7 manuscrits), divani 39,2 % (3), relu deux 
 | **F8** | **16,3 %** | 17,2 % | 15,6 % |
 
 Le CER de kraken (16,35 %) et celui de `evaluate` coïncident à 0,03 point près : le modèle affiné a adopté les conventions de MAKHZAN. Courbes : `reports/figures/f8_finetune_courbes.png`.
+
+**Analyse des erreurs sur la validation (F12, étape 1)**, contribution au CER en points (baseline → F8) : espaces 7,1 → 3,7 ; séparateur « . » 0,56 → 0,46 ; ي / ى 0,66 → 0,42 ; ئ 0,07 → 0,07 ; chiffres et ponctuation 0,04 → 0 ; lettres (substitutions, suppressions, insertions) 19,3 → 11,6. Environ 30 % du gain de la validation vient des espaces, les deux tiers des lettres. Les suppressions dominent toujours les insertions (prédictions 4 % plus courtes que la vérité terrain). Détail : `reports/erreurs/f8_finetune_baseline/val/`.
 
 **Évaluation interne (F9)** : modèle F8 sur le test interne, analyse pré-enregistrée (décisions 37 et 38), seconde et dernière consultation. Différence = CER F8 moins CER baseline, IC 95 % par bootstrap apparié sur les manuscrits. Conclusion selon la règle de la décision 38 : gain si l'IC est entièrement sous 0.
 
@@ -127,6 +130,6 @@ Réduction relative : 28,9 % ; 17 manuscrits améliorés sur 17 (écart de −5,
 
 ## 8. Prochaines étapes
 
-Voir [ROADMAP.md](ROADMAP.md). F10 terminé : aucun jeu externe retenu (décisions 40 et 41). F11 en attente de réponses (Osmanlica.com, auteurs de CHURRO). Tickets dont les dépendances sont remplies : F12 (expériences complémentaires, sur la validation), F13 (analyse d'erreurs, dont les deux points notés en F9), F14 (publication, qui dépend désormais de F9).
+Voir [ROADMAP.md](ROADMAP.md). F10 terminé : aucun jeu externe retenu (décisions 40 et 41). F11 en attente de réponses (Osmanlica.com, auteurs de CHURRO). F12 en cours (étape 1 faite : analyse des erreurs sur la validation ; choix des variantes à venir). Tickets dont les dépendances sont remplies : F13 (analyse d'erreurs, dont les deux points notés en F9), F14 (publication, qui dépend désormais de F9).
 
 Journal des décisions : [DECISIONS.md](DECISIONS.md).

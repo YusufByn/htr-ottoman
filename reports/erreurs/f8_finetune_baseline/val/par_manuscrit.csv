@@ -1,0 +1,3 @@
+doc_id,lignes,caracteres,cer_baseline,cer_f8_finetune,S_baseline,D_baseline,I_baseline,S_f8_finetune,D_f8_finetune,I_f8_finetune
+2937,165,9545,0.275851,0.171713,1568,682,383,874,527,238
+2939,247,11848,0.278950,0.156313,1745,1310,250,912,758,182

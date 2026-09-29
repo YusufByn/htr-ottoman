@@ -1,0 +1,18 @@
+categorie,operation,erreurs_baseline,part_baseline,points_cer_baseline,erreurs_f8_finetune,part_f8_finetune,points_cer_f8_finetune
+espace,substitution,745,0.125463,3.482448,259,0.074191,1.210676
+espace,suppression,560,0.094308,2.617679,433,0.124033,2.024027
+espace,insertion,221,0.037218,1.033048,108,0.030937,0.504838
+séparateur .,substitution,77,0.012967,0.359931,52,0.014895,0.243070
+séparateur .,suppression,41,0.006905,0.191651,46,0.013177,0.215024
+séparateur .,insertion,1,0.000168,0.004674,0,0.000000,0.000000
+chiffre,substitution,2,0.000337,0.009349,0,0.000000,0.000000
+ponctuation,substitution,5,0.000842,0.023372,0,0.000000,0.000000
+ponctuation,insertion,1,0.000168,0.004674,0,0.000000,0.000000
+ئ,substitution,6,0.001010,0.028047,3,0.000859,0.014023
+ئ,suppression,6,0.001010,0.028047,12,0.003437,0.056093
+ئ,insertion,2,0.000337,0.009349,0,0.000000,0.000000
+ي / ى,substitution,141,0.023745,0.659094,89,0.025494,0.416024
+même squelette (points),substitution,564,0.094981,2.636376,479,0.137210,2.239050
+autre substitution,substitution,1773,0.298585,8.287758,904,0.258952,4.225681
+autre suppression,suppression,1385,0.233244,6.474080,794,0.227442,3.711494
+autre insertion,insertion,408,0.068710,1.907166,312,0.089373,1.458421
