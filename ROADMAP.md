@@ -325,17 +325,27 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
 
 ## F12 · Expériences complémentaires
 
-- **Objectif** : à préciser selon les résultats. Pistes :
-  - entraînement avec ou sans les pages en couche gen2 (décision 4) ;
-  - part de *Revnaḳ-ı Būstān* limitée (environ 63 % de l'entraînement) ;
-  - ajout d'ACDC-Training. Attention : il ne contient aucune page ottomane (arabe et persan seulement), il s'agirait donc d'un entraînement multilingue ;
-  - taux d'apprentissage et programme (F8 : la validation progressait encore après 86 époques à 1e-4 constant ; essayer un taux plus élevé, `cosine` ou `reduceonplateau`) ;
-  - ancien ou nouvel extracteur de polygones (décisions 25 et 36 : écart de 0,05 point sur le modèle F8, de 0,8 point sur l'essai).
+- **Objectif** : tester sur la validation trois variantes de F8, une seule variable changée à chaque fois, avec une règle de comparaison fixée d'avance (décision 42).
 - **Dépend de** : F9.
-- **Tâches, critères, points de décision** : à préciser selon les résultats. Chaque expérience ne change qu'un facteur à la fois et est consignée dans EXPERIMENTS.md. Mesure sur la validation, et sur le jeu externe seulement si F11 est rouvert (décision 41) ; jamais sur le test interne, clos (décision 39).
-- **Concept à expliquer** : l'étude d'ablation (ne changer qu'un facteur à la fois).
-- **Fait (2026-09-29)** : étape 1, analyse des erreurs de F8 et de la baseline sur la **validation seulement** (prédictions déjà sauvegardées, aucune prédiction ni aucun entraînement) : `uv run python -m htr_ottoman.analysis.error_analysis`, résultats dans `reports/erreurs/f8_finetune_baseline/val/` (catégories, confusions, longueur, manuscrit, page des pires lignes). Variantes et règle de comparaison proposées à l'utilisateur, en attente de son choix.
-- **Statut** : en cours.
+- **Pistes notées avant l'étape 1** (tri dans la décision 42) :
+  - entraînement avec ou sans les pages en couche gen2 (décision 4) : retenue (C) ;
+  - part de *Revnaḳ-ı Būstān* limitée (environ 63 % de l'entraînement) : écartée ;
+  - ajout d'ACDC-Training (arabe et persan seulement, entraînement multilingue) : renvoyé à F15 ;
+  - taux d'apprentissage et programme (F8 : la validation progressait encore après 86 époques à 1e-4 constant) : taux 3e-4 retenu (A), `cosine` écarté (D) ;
+  - ancien ou nouvel extracteur de polygones (écart de 0,05 point sur F8, décision 36) : écarté.
+- **Tâches** :
+  - [x] Étape 1 : analyse des erreurs de F8 et de la baseline sur la **validation seulement** (prédictions déjà sauvegardées) : `analysis.error_analysis`, `reports/erreurs/f8_finetune_baseline/val/` (2026-09-29).
+  - [x] Bootstrap apparié par page et règle de la décision 42 : `compare_variant`, avec ses tests (2026-09-29).
+  - [x] Décision 42 (variantes, ordre, bruit, règle, limites) ; configs `f8_finetune_seed43.yml` et `f8_finetune_seed44.yml` ; `train` accepte ces seeds pour une copie exacte de F8 seulement (2026-09-29).
+  - [ ] Bruit : F8 relancé avec les seeds 43 et 44, puis `predict` et `evaluate` sur la validation ; écart et seuil S.
+  - [ ] B : augmentation d'images (essai d'une époque d'abord, pour la durée).
+  - [ ] A : taux d'apprentissage 3e-4.
+  - [ ] C : sans les pages gen2 (jeu d'entraînement compilé à part, validation inchangée).
+  - [ ] Pour chaque variante : `compare_variant` contre F8, ligne dans EXPERIMENTS.md.
+- **Critères d'acceptation** : deux répétitions et trois variantes consignées dans EXPERIMENTS.md ; pour chaque variante, la conclusion de la règle de la décision 42, rapportée quel qu'en soit le sens. Mesure sur la validation seulement ; jamais sur le test interne, clos (décision 39) ; sur un jeu externe seulement si F11 est rouvert (décision 41).
+- **Points de décision** : tranchés par la décision 42. Restent : accord de l'utilisateur avant chaque entraînement long ; toute combinaison de variantes gagnantes serait une nouvelle décision.
+- **Concept à expliquer** : l'étude d'ablation (ne changer qu'un facteur à la fois) et le bruit entre deux entraînements (expliqués à l'étape 1).
+- **Statut** : en cours. Prochaine étape : répétitions de F8 (seeds 43 et 44), lancées par l'utilisateur.
 
 ---
 

@@ -62,6 +62,7 @@ Tout modèle dérivé de MAKHZAN est sous CC BY-NC-SA. Détails et MD5 : [README
 | Comparaison appariée de deux modèles (bootstrap apparié sur les manuscrits) : `compare` | fait |
 | Évaluation pré-enregistrée avec contrôles bloquants (empreintes, découpe, effectifs, baseline refaite à l'octet) : `final_eval` | fait (F9) |
 | Analyse des erreurs de deux modèles sur la validation (catégories, confusions, longueur, manuscrit, pires lignes) : `analysis.error_analysis` | fait (F12, étape 1) |
+| Comparaison d'une variante à F8 sur la validation (bruit entre seeds, bootstrap apparié par page, règle de la décision 42) : `compare_variant` | fait (F12), en attente des répétitions |
 | Téléchargement d'Akis (git LFS, SHA-256 vérifié contre le pointeur), table des lignes et inventaire : `data.akis`, `analysis.akis_inventory` | fait (F10, vérification ; Akis écarté, décision 40) |
 
 ## 5. État d'avancement
@@ -130,6 +131,6 @@ Réduction relative : 28,9 % ; 17 manuscrits améliorés sur 17 (écart de −5,
 
 ## 8. Prochaines étapes
 
-Voir [ROADMAP.md](ROADMAP.md). F10 terminé : aucun jeu externe retenu (décisions 40 et 41). F11 en attente de réponses (Osmanlica.com, auteurs de CHURRO). F12 en cours (étape 1 faite : analyse des erreurs sur la validation ; choix des variantes à venir). Tickets dont les dépendances sont remplies : F13 (analyse d'erreurs, dont les deux points notés en F9), F14 (publication, qui dépend désormais de F9).
+Voir [ROADMAP.md](ROADMAP.md). F10 terminé : aucun jeu externe retenu (décisions 40 et 41). F11 en attente de réponses (Osmanlica.com, auteurs de CHURRO). F12 en cours : analyse des erreurs faite ; plan fixé par la décision 42 (répétitions de F8 avec les seeds 43 et 44 pour le bruit, puis trois variantes contre F8 : augmentation, taux 3e-4, sans pages gen2). Tickets dont les dépendances sont remplies : F13 (analyse d'erreurs, dont les deux points notés en F9), F14 (publication, qui dépend désormais de F9).
 
 Journal des décisions : [DECISIONS.md](DECISIONS.md).

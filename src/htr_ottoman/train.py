@@ -10,7 +10,9 @@ Garde-fous avant lancement :
 - réglages de texte identiques à `prepare.KRAKEN_TEXT_OPTIONS` (décision 26) ;
 - validation donnée explicitement, jamais le test interne, ni dans la config ni
   dans les manifestes (décisions 1 et 32) ;
-- seed égale à `splits.SEED` ;
+- seed égale à `splits.SEED`, sauf pour les répétitions de F8 qui mesurent le
+  bruit (seeds 43 et 44, décision 42) : leur config doit être celle de F8 à la
+  seed près ;
 - commande acceptée par ketos (analyse des options sans lancement) ;
 - dossier de sortie absent ou vide : rien n'est écrasé ;
 - tout le travail committé (hors EXPERIMENTS.md) : le commit enregistré décrit
@@ -46,7 +48,7 @@ from pathlib import Path
 import pandas as pd
 import yaml
 
-from htr_ottoman.config import EXPERIMENTS_LOG, FIGURES, MODELS, ROOT, TRAINING_REPORTS
+from htr_ottoman.config import CONFIGS, EXPERIMENTS_LOG, FIGURES, MODELS, ROOT, TRAINING_REPORTS
 from htr_ottoman.prepare import KRAKEN_TEXT_OPTIONS
 from htr_ottoman.splits import SEED
 
@@ -65,6 +67,9 @@ JOURNALS = {EXPERIMENTS_LOG.name}  # modifiés par les lancements, n'empêchent 
 REPLACED = "Replacing with sample"  # kraken remplace en silence une ligne illisible (skill kraken, section 10)
 DETERMINISM_WARNING = "deterministic implementation"
 FORBIDDEN_SPLIT = "test_interne"
+# Répétitions de F8 avec une autre seed, pour mesurer le bruit entre entraînements (F12, décision 42)
+NOISE_SEEDS = (43, 44)
+NOISE_REFERENCE = CONFIGS / "f8_finetune.yml"
 
 
 def load_config(path: Path) -> dict:
@@ -86,8 +91,16 @@ def check(config: dict) -> None:
             raise ValueError(f"train.{key} doit valoir {expected!r} (décision 26), trouvé {train.get(key)!r}")
     if "evaluation-data" not in train:
         raise ValueError("train.evaluation-data manquant : kraken couperait le train au hasard (-p)")
-    if config["ketos"].get("seed") != SEED:
-        raise ValueError(f"ketos.seed doit valoir {SEED} (splits.SEED)")
+    seed = config["ketos"].get("seed")
+    if seed in NOISE_SEEDS:
+        reference = load_config(NOISE_REFERENCE)
+        reference["ketos"]["seed"] = seed
+        if config != reference:
+            raise ValueError(f"Seed {seed} réservée aux répétitions de F8 (décision 42) : "
+                             f"la config doit être {NOISE_REFERENCE.name} à la seed près")
+    elif seed != SEED:
+        raise ValueError(f"ketos.seed doit valoir {SEED} (splits.SEED), ou {NOISE_SEEDS} pour les "
+                         f"répétitions de F8 (décision 42)")
     for key in PATH_KEYS:
         for value in _as_list(train.get(key)):
             if value is not None and not (ROOT / value).exists():

@@ -80,6 +80,33 @@ def test_check_requires_validation(config):
 
 
 @data_available
+@pytest.mark.parametrize("seed", [43, 44])
+def test_noise_configs_are_f8_with_another_seed(config, seed, tmp_path):
+    # répétitions de F8 pour le bruit (décision 42) : seule la seed change
+    path = CONFIGS / f"f8_finetune_seed{seed}.yml"
+    noise = load_config(path)
+    check(noise)
+    assert noise["ketos"]["seed"] == seed and {**noise["ketos"], "seed": 42} == config["ketos"]
+    assert noise["train"] == config["train"]
+    assert output_paths(path, trial=False)["output"] == MODELS / f"f8_finetune_seed{seed}"
+    (tmp_path / "logs").mkdir()
+    global_args, train_args = build_command(noise, tmp_path)
+    validate_with_ketos(global_args, train_args)
+    assert global_args == ["-v", "--device", "mps", "--seed", str(seed), "--deterministic"]
+
+
+@data_available
+@pytest.mark.parametrize("section, key, value", [("train", "lrate", 0.0003), ("train", "augment", True),
+                                                 ("ketos", "deterministic", False)])
+def test_noise_seed_refused_if_anything_else_changes(config, section, key, value):
+    bad = copy.deepcopy(config)
+    bad["ketos"]["seed"] = 43
+    bad[section][key] = value
+    with pytest.raises(ValueError, match="décision 42"):
+        check(bad)
+
+
+@data_available
 def test_ketos_rejects_bad_value(config, tmp_path):
     (tmp_path / "logs").mkdir()
     bad = copy.deepcopy(config)
