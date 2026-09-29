@@ -52,6 +52,7 @@ htr-ottoman/
 ├── reports/              inventaires, métriques (versionné, CC BY-NC-SA)
 │   ├── baseline/         F7 : prédictions et CER du modèle de départ, un dossier par jeu (val/, test_interne/)
 │   ├── f8_finetune/      prédictions et CER du modèle F8 : validation (val/, F8) et test interne (test_interne/, F9, avec run.json et ketos_test.txt)
+│   ├── f8_finetune_seed<N>/  prédictions et CER des répétitions de F8 sur la validation (val/, F12, décision 42)
 │   ├── comparaisons/     comparaisons appariées de deux modèles, <modèle>_<référence>/<jeu>/ (F12 : <variante>_f8_finetune/val/)
 │   ├── erreurs/          analyse des erreurs de deux modèles, <modèle>_<référence>/val/ (F12, validation seulement)
 │   ├── training/         métriques par époque de chaque entraînement retenu (<config>.csv)
