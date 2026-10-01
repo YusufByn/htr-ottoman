@@ -7,9 +7,10 @@ import yaml
 
 from htr_ottoman.compare import pair
 from htr_ottoman.compare_variant import (
-    BETTER, NO_DIFFERENCE, WORSE, conditions, page_ci, run, tables, threshold, training_stop_rule, verdict,
+    BETTER, NO_DIFFERENCE, WORSE, conditions, page_ci, run, tables, threshold, training_launcher, training_stop_rule,
+    verdict,
 )
-from htr_ottoman.config import CONFIGS, REPORTS
+from htr_ottoman.config import CONFIGS, MODELS, REPORTS
 from htr_ottoman.evaluate import bootstrap_ci, score_lines, script_groups
 
 TEXTS = ["كتاب اول", "علي ديلر", "بيله", "قلور ايدى", "باش", "اول كسك"]
@@ -107,16 +108,22 @@ def test_noise_needs_three_runs_on_the_same_lines():
 
 LAG5 = {"quit": "early", "lag": 5, "min-epochs": 5}
 LAG15 = {"quit": "early", "lag": 15, "epochs": 150, "min-epochs": 5}
+KETOS, CAPPED = "uv run ketos", "uv run python -m htr_ottoman.ketos_capped"
 
 
-def _write(tmp_path, name, lines, stop=LAG5):
-    """Évaluation de validation du modèle `name` et sa config d'entraînement (règle d'arrêt `stop`)."""
+def _write(tmp_path, name, lines, stop=LAG5, command=None):
+    """Évaluation de validation du modèle `name`, sa config d'entraînement (règle d'arrêt `stop`) et
+    la commande du lancement (par défaut avec le lanceur de cette règle)."""
     directory = tmp_path / name / "val"
     directory.mkdir(parents=True)
     lines.to_parquet(directory / "lignes.parquet", index=False)
     configs = tmp_path / "configs"
     configs.mkdir(exist_ok=True)
     (configs / f"{name}.yml").write_text(yaml.safe_dump({"ketos": {"seed": 42}, "train": dict(stop)}))
+    launched = tmp_path / "models" / name
+    launched.mkdir(parents=True)
+    default = CAPPED if "epochs" in stop else KETOS
+    (launched / "commande.txt").write_text(f"{command or default} -v --device mps train --quit early\n")
     return directory
 
 
@@ -183,10 +190,45 @@ def test_technical_trial_and_changed_launch_config_are_refused(tmp_path):
     with pytest.raises(ValueError, match="essai technique"):
         run(ref, technical, [ref, s43, s44], tmp_path / "non", **_dirs(tmp_path))
     launched = tmp_path / "models" / "f8_lag15_seed43"
-    launched.mkdir(parents=True)
     (launched / "config.yml").write_text(yaml.safe_dump({"ketos": {"seed": 43}, "train": dict(LAG5)}))
     with pytest.raises(ValueError, match="copiée au lancement"):
         run(ref, None, [ref, s43, s44], tmp_path / "non2", **_dirs(tmp_path))
+
+
+def test_variant_or_reference_not_launched_by_ketos_capped_is_refused(tmp_path):
+    # décision 43 : ketos seul ignore le plafond ; la commande du lancement doit utiliser ketos_capped
+    s43, s44 = (_write(tmp_path, n, NOISY, LAG15) for n in ("f8_lag15_seed43", "f8_lag15_seed44"))
+    ref = _write(tmp_path, "f8_lag15_seed42", NOISY, LAG15)
+    variant = _write(tmp_path, "f12_b", PERFECT, LAG15, command=KETOS)
+    with pytest.raises(ValueError, match="ketos_capped"):
+        run(ref, variant, [ref, s43, s44], tmp_path / "non", **_dirs(tmp_path))
+    good = _write(tmp_path, "f12_a", PERFECT, LAG15)
+    (tmp_path / "models" / "f8_lag15_seed42" / "commande.txt").write_text(f"{KETOS} -v train\n")
+    with pytest.raises(ValueError, match="f8_lag15_seed42 .*ketos_capped"):
+        run(ref, good, [ref, s43, s44], tmp_path / "non2", **_dirs(tmp_path))
+    (tmp_path / "models" / "f8_lag15_seed42" / "commande.txt").unlink()
+    with pytest.raises(FileNotFoundError, match="Commande du lancement"):
+        run(ref, good, [ref, s43, s44], tmp_path / "non3", **_dirs(tmp_path))
+    (tmp_path / "models" / "f8_lag15_seed42" / "commande.txt").write_text(f"{CAPPED}_bis -v train\n")  # autre module
+    with pytest.raises(ValueError, match="ketos_capped"):
+        run(ref, good, [ref, s43, s44], tmp_path / "non4", **_dirs(tmp_path))
+
+
+def test_lag5_noise_still_launched_by_ketos(tmp_path):
+    # bruit de F8 (lag 5, sans plafond) : lancé par ketos, toujours accepté en bruit seul
+    ref, s43, s44 = (_write(tmp_path, n, NOISY) for n in ("f8_finetune", "f8_finetune_seed43", "f8_finetune_seed44"))
+    run(ref, None, [ref, s43, s44], tmp_path / "ok", **_dirs(tmp_path))
+    (tmp_path / "models" / "f8_finetune_seed44" / "commande.txt").write_text(f"{CAPPED} -v train\n")
+    with pytest.raises(ValueError, match="uv run ketos"):
+        run(ref, None, [ref, s43, s44], tmp_path / "non", **_dirs(tmp_path))
+
+
+@pytest.mark.skipif(not (MODELS / "f12_b_augment" / "commande.txt").exists(), reason="modèles absents")
+def test_launchers_of_the_trained_models():
+    for name in ("f8_lag15_seed42", "f8_lag15_seed43", "f8_lag15_seed44", "f12_b_augment"):
+        assert training_launcher(name) == CAPPED
+    for name in ("f8_finetune", "f8_finetune_seed43", "f8_finetune_seed44"):
+        assert training_launcher(name) == KETOS
 
 
 def test_stop_rules_of_the_versioned_configs():
@@ -200,3 +242,4 @@ def test_stop_rules_of_the_versioned_configs():
         with pytest.raises(ValueError, match="essai technique"):
             training_stop_rule(name)
     assert training_stop_rule("f12_b_augment") == LAG15  # variante B : même règle d'arrêt que la référence
+    assert training_stop_rule("f12_a_lr3e-4") == LAG15  # variante A : idem

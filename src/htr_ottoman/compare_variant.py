@@ -21,7 +21,9 @@
   doivent avoir la règle d'arrêt (quit, lag, plafond, min-epochs) de la
   référence, lue dans configs/<modèle>.yml (et identique à la copie
   models/<modèle>/config.yml faite au lancement, si elle existe). Un essai
-  technique (`essai_technique_*`) est toujours refusé.
+  technique (`essai_technique_*`) est toujours refusé. La commande du lancement
+  (models/<modèle>/commande.txt, obligatoire) doit commencer par le lanceur que
+  `train` choisit pour cette config : `ketos_capped` pour la règle de F12.
 - Sans --model : bruit seul (bruit.csv, CER de chaque répétition, et seuil.csv,
   écart et seuil S), sans comparer aucune variante.
 
@@ -29,6 +31,7 @@ Usage : uv run python -m htr_ottoman.compare_variant --reference reports/f8_fine
 Bruit seul : uv run python -m htr_ottoman.compare_variant --reference reports/f8_finetune/val --noise reports/f8_finetune/val reports/f8_finetune_seed43/val reports/f8_finetune_seed44/val --output-dir reports/bruit/f8_finetune
 """
 import argparse
+import shlex
 from pathlib import Path
 
 import pandas as pd
@@ -36,7 +39,7 @@ import pandas as pd
 from htr_ottoman.analysis.error_analysis import check_split
 from htr_ottoman.compare import compare, pair, paired_bootstrap_ci
 from htr_ottoman.config import CONFIGS, MODELS
-from htr_ottoman.train import TECHNICAL_PREFIX, load_config, stop_rule
+from htr_ottoman.train import TECHNICAL_PREFIX, launcher, load_config, stop_rule
 
 MIN_THRESHOLD = 0.005  # 0,5 point de CER
 NOISE_FACTOR = 2
@@ -65,14 +68,29 @@ def training_stop_rule(name: str, configs_dir: Path = CONFIGS, models_dir: Path 
     return stop_rule(config)
 
 
+def training_launcher(name: str, configs_dir: Path = CONFIGS, models_dir: Path = MODELS) -> str:
+    """Lanceur du modèle `name`, lu dans models/<name>/commande.txt : celui que `train` choisit pour
+    configs/<name>.yml (ketos_capped pour la règle de F12, sans quoi le plafond serait ignoré)."""
+    expected = shlex.join(launcher(load_config(configs_dir / f"{name}.yml"))[0])
+    path = models_dir / name / "commande.txt"
+    if not path.exists():
+        raise FileNotFoundError(f"Commande du lancement de {name} introuvable : {path}")
+    if not path.read_text().startswith(expected + " "):
+        raise ValueError(f"{name} : {path} n'est pas lancée par « {expected} » (décision 43)")
+    return expected
+
+
 def check_stop_rules(reference: str, others: list[str], **dirs) -> dict:
-    """Refuse tout modèle dont la règle d'arrêt diffère de celle de la référence (décision 43)."""
+    """Refuse tout modèle dont la règle d'arrêt diffère de celle de la référence (décision 43), ou
+    dont la commande du lancement n'utilise pas le lanceur de cette règle."""
     expected = training_stop_rule(reference, **dirs)
     for name in others:
         rule = training_stop_rule(name, **dirs)
         if rule != expected:
             raise ValueError(f"{name} : règle d'arrêt {rule} différente de celle de la référence {reference} "
                              f"{expected} (décision 43)")
+    for name in [reference, *others]:
+        training_launcher(name, **dirs)
     return expected
 
 
