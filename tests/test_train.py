@@ -172,6 +172,7 @@ def test_read_metrics_and_plot(tmp_path):
 LAG15 = {seed: CONFIGS / f"f8_lag15_seed{seed}.yml" for seed in (42, 43, 44)}
 TECHNICAL = CONFIGS / "essai_technique_plafond.yml"
 TECHNICAL_B = CONFIGS / "essai_technique_b_augment.yml"
+TECHNICAL_A = CONFIGS / "essai_technique_a_lr3e-4.yml"
 
 
 @data_available
@@ -214,7 +215,7 @@ def _f12(**train):
     ({"lag": 5}, "variante", "réservé à la règle d'arrêt de F12"),    # plafond avec lag 5
     ({"epochs": 100}, "variante", "la règle de F12 est 150"),         # autre plafond, hors essai technique
     ({"lrate": 0.0003}, "f8_lag15_seed42", "décision 43"),            # la référence ne change que seed, lag, plafond
-    ({"epochs": 2, "lrate": 0.0003}, "essai_technique_x", "à un plafond plus petit près"),
+    ({"epochs": 2, "lrate": 0.0005}, "essai_technique_x", "à un plafond plus petit près"),  # taux d'aucune variante
     ({"epochs": 150}, "essai_technique_x", "plafond plus petit"),
     ({"epochs": 1, "augment": True, "lrate": 0.0003}, "essai_technique_x", "à un plafond plus petit près"),  # B + autre chose
     ({"epochs": 150, "augment": True}, "essai_technique_x", "plafond plus petit"),  # B au plafond de F12
@@ -232,30 +233,42 @@ def test_f12_variant_and_technical_trial_accepted():
     assert technical == _f12(epochs=2) and cap_of(technical) == 2
 
 
+VARIANTS = {  # variante de F12 : seule différence avec f8_lag15_seed42 (décision 42)
+    "f12_b_augment": {"augment": True},
+    "f12_a_lr3e-4": {"lrate": 0.0003},
+}
+
+
 @data_available
-def test_variant_b_is_reference_with_augmentation(tmp_path):
-    path = CONFIGS / "f12_b_augment.yml"
+@pytest.mark.parametrize("name, change", VARIANTS.items())
+def test_variant_is_reference_with_one_change(name, change, tmp_path):
+    path = CONFIGS / f"{name}.yml"
     variant = load_config(path)
     check(variant, path)
-    assert variant == _f12(augment=True)  # seule différence avec f8_lag15_seed42 (décision 42)
+    assert variant == _f12(**change)
+    assert variant["ketos"]["seed"] == 42 and stop_rule(variant) == {"quit": "early", "lag": 15, "epochs": 150,
+                                                                    "min-epochs": 5}
     assert launcher(variant)[0] == ["uv", "run", "python", "-m", "htr_ottoman.ketos_capped"] and cap_of(variant) == 150
     (tmp_path / "logs").mkdir()
     global_args, train_args = build_command(variant, tmp_path)
     validate_with_ketos(global_args, train_args)
-    assert "--augment" in train_args
+    assert ("--augment" in train_args) == bool(change.get("augment"))  # A : sans augmentation
+    pairs = dict(zip(train_args, train_args[1:]))
+    assert float(pairs["--lrate"]) == change.get("lrate", 0.0001)
 
 
 @data_available
-def test_technical_trial_of_a_variant(tmp_path):
+@pytest.mark.parametrize("path, change", [(TECHNICAL_B, {"augment": True}), (TECHNICAL_A, {"lrate": 0.0003})])
+def test_technical_trial_of_a_variant(path, change, tmp_path):
     # décision 43, complément du 2026-10-01 : essai technique d'une variante versionnée, plafond plus petit
-    technical = load_config(TECHNICAL_B)
-    check(technical, TECHNICAL_B)
-    assert technical == _f12(augment=True, epochs=1)
+    technical = load_config(path)
+    check(technical, path)
+    assert technical == _f12(**change, epochs=1)
     assert launcher(technical)[0] == ["uv", "run", "python", "-m", "htr_ottoman.ketos_capped"] and cap_of(technical) == 1
     (tmp_path / "logs").mkdir()
     validate_with_ketos(*build_command(technical, tmp_path))
-    paths = output_paths(TECHNICAL_B, trial=False)
-    assert paths["output"] == MODELS / "essai_technique_b_augment"
+    paths = output_paths(path, trial=False)
+    assert paths["output"] == MODELS / path.stem
     assert all(p.is_relative_to(paths["output"]) for p in paths.values())
 
 
