@@ -1,0 +1,3 @@
+doc_id,manuscrits,lignes,caracteres,erreurs_reference,substitutions_reference,suppressions_reference,insertions_reference,cer_reference,erreurs_modele,substitutions_modele,suppressions_modele,insertions_modele,cer_modele,difference,ic95_bas,ic95_haut,reduction_relative,manuscrits_ameliores
+2937,1,165,9545,1567,855,485,227,0.164170,1527,813,474,240,0.159979,-0.004191,,,0.025526,1
+2939,1,247,11848,1771,879,695,197,0.149477,1758,882,693,183,0.148379,-0.001097,,,0.007340,1
