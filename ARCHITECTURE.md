@@ -30,7 +30,7 @@ data/raw/makhzan/  (zip + TSV, lecture seule)
 
   compare_variant (F12, validation seulement) : variante contre F8, bruit des seeds 42 à 44,
   bootstrap apparié par page, règle de la décision 42 ──> reports/comparaisons/<variante>_f8_finetune/val/
-                                                    (sans variante : bruit seul ──> reports/bruit/f8_finetune/)
+                                                    (sans variante : bruit seul ──> reports/bruit/f8_finetune/, reports/bruit/f8_lag15_seed42/)
   reports/training/*.csv ──> analysis.seed_curves ──> reports/bruit/f8_finetune/, reports/figures/f12_bruit_seeds.png
   reports/training/*.csv ──> analysis.same_curve  (contrôle de déterminisme : mêmes métriques époque par époque)
   train (configs lag 15 de F12, décision 43) ──> ketos_capped (ketos train + plafond d'époques) ──> models/
@@ -59,7 +59,7 @@ htr-ottoman/
 │   ├── f8_finetune_seed<N>/  prédictions et CER des répétitions de F8 sur la validation (val/, F12, décision 42)
 │   ├── comparaisons/     comparaisons appariées de deux modèles, <modèle>_<référence>/<jeu>/ (F12 : <variante>_f8_finetune/val/)
 │   ├── erreurs/          analyse des erreurs de deux modèles, <modèle>_<référence>/val/ (F12, validation seulement)
-│   ├── bruit/            F12 : bruit entre répétitions de F8 (f8_finetune/ : CER par seed, écart et seuil S, diagnostic des courbes)
+│   ├── bruit/            F12 : bruit entre répétitions de F8 (f8_finetune/ : lag 5, CER par seed, écart et seuil S, diagnostic des courbes ; f8_lag15_seed42/ : lag 15, CER par seed, écart et seuil S)
 │   ├── training/         métriques par époque de chaque entraînement retenu (<config>.csv)
 │   └── figures/          graphiques générés par les modules d'analyse
 ├── scripts/              utilitaires (vérification d'environnement)
@@ -101,8 +101,8 @@ htr-ottoman/
 | Prédiction | `predict` | modèle, ALTO normalisés d'un jeu (`data/processed/makhzan/alto/`, segmentation de la vérité terrain, décision 31 ; découpe « anciens polygones » imposée, décision 36) | parquet (part_id, line_id, pred) ; baseline : `reports/baseline/<jeu>/predictions.parquet` ; modèle F8 : `reports/f8_finetune/<jeu>/` | fait |
 | Évaluation | `evaluate` | prédictions, table des lignes, `splits/` | dossier de CSV (global, par écriture, naskh contre autres, relecture, couche modèle, manuscrit, multilinguisme ; tableaux à un seul groupe omis) + `lignes.parquet` ; baseline : `reports/baseline/<jeu>/` ; résultat consigné dans `EXPERIMENTS.md` | fait |
 | Comparaison appariée | `compare` | deux dossiers de `evaluate` sur le même jeu (`lignes.parquet`) | CSV de différences de CER avec IC (bootstrap apparié) et conclusion (décision 38) ; F9 : `reports/comparaisons/f8_finetune_baseline/test_interne/` | fait (F9) |
-| Comparaison d'une variante | `compare_variant` | dossiers de `evaluate` sur la validation : F8, la variante, les répétitions de F8 (seeds 42, 43, 44) | `reports/comparaisons/<variante>_f8_finetune/val/` : `global.csv` (différence, IC par page, écart de bruit, seuil S, conditions (a), (b), (c), conclusion), `par_manuscrit.csv`, `bruit.csv` ; sans variante : `reports/bruit/f8_finetune/bruit.csv` (CER global et par manuscrit de chaque seed) et `seuil.csv` (écart, S) | bruit fait (F12 : écart 1,43 point, S = 2,86 points) ; aucune variante comparée |
-| Contrôle de déterminisme | `analysis.same_curve` | deux fichiers de métriques par époque (`reports/training/<config>.csv`, `models/<config>/metriques.csv`) | sortie console : époques comparées, première différence, écarts maximaux ; code de sortie 1 si les courbes diffèrent | fait (F12) ; prévu pour f8_lag15_seed42 contre F8 jusqu'à l'époque 91 |
+| Comparaison d'une variante | `compare_variant` | dossiers de `evaluate` sur la validation : F8, la variante, les répétitions de F8 (seeds 42, 43, 44) | `reports/comparaisons/<variante>_f8_finetune/val/` : `global.csv` (différence, IC par page, écart de bruit, seuil S, conditions (a), (b), (c), conclusion), `par_manuscrit.csv`, `bruit.csv` ; sans variante : `reports/bruit/f8_finetune/bruit.csv` (CER global et par manuscrit de chaque seed) et `seuil.csv` (écart, S) | bruit fait (F12, lag 5 : écart 1,43 point, S = 2,86 points ; lag 15, `reports/bruit/f8_lag15_seed42/` : écart 0,21 point, S = 0,5 point, plancher) ; aucune variante comparée |
+| Contrôle de déterminisme | `analysis.same_curve` | deux fichiers de métriques par époque (`reports/training/<config>.csv`, `models/<config>/metriques.csv`) | sortie console : époques comparées, première différence, écarts maximaux ; code de sortie 1 si les courbes diffèrent | fait (F12) ; f8_lag15_seed42 identique à F8 sur 91 époques |
 | Diagnostic des courbes des seeds | `analysis.seed_curves` | `reports/training/f8_finetune*.csv` (métriques par époque déjà écrites par `train`) | `reports/bruit/f8_finetune/` : `epoques_egales.csv`, `oscillations.csv`, `arrets.csv` ; `reports/figures/f12_bruit_seeds.png` | fait (F12) |
 | Analyse des erreurs | `analysis.error_analysis` | deux dossiers de `evaluate` sur la validation (`lignes.parquet`), jeu compilé `val.arrow` (images des lignes) | `reports/erreurs/f8_finetune_baseline/val/` : catégories d'erreurs (global, par opération, par manuscrit), confusions de caractères, CER par longueur de ligne et par manuscrit, pires lignes (CSV et page HTML autonome) | fait (F12, étape 1) |
 | Téléchargement d'Akis | `data.akis` (`download`, `extract`) | pointeur git LFS du dépôt `verimsu/Akis-Ottoman-Dataset` au commit `c7a6e5b`, serveur LFS de GitHub | `data/raw/akis/` (zip, README, LICENSE, SHA-256 vérifiés, lecture seule), `data/interim/akis/` (images/, annotations/, files.txt) | fait (F10) |
@@ -220,6 +220,7 @@ uv run python -m htr_ottoman.analysis.seed_curves                # diagnostic de
 uv run python -m htr_ottoman.train configs/essai_technique_plafond.yml   # essai technique, 2 époques, models/ seulement
 uv run python -m htr_ottoman.train configs/f8_lag15_seed42.yml           # puis seed43, seed44
 uv run python -m htr_ottoman.analysis.same_curve --reference reports/training/f8_finetune.csv --run reports/training/f8_lag15_seed42.csv --until 91
+uv run python -m htr_ottoman.compare_variant --reference reports/f8_lag15_seed42/val --noise reports/f8_lag15_seed42/val reports/f8_lag15_seed43/val reports/f8_lag15_seed44/val --output-dir reports/bruit/f8_lag15_seed42
 # F9 : lancé une seule fois (final_eval configs/f9_test_interne.yml), qui refuse désormais de relancer ; tableaux redonnés par :
 uv run python -m htr_ottoman.evaluate reports/f8_finetune/test_interne/predictions.parquet --split test_interne --output-dir reports/f8_finetune/test_interne
 uv run python -m htr_ottoman.compare --reference reports/baseline/test_interne --model reports/f8_finetune/test_interne --output-dir reports/comparaisons/f8_finetune_baseline/test_interne

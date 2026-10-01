@@ -62,7 +62,7 @@ Tout modèle dérivé de MAKHZAN est sous CC BY-NC-SA. Détails et MD5 : [README
 | Comparaison appariée de deux modèles (bootstrap apparié sur les manuscrits) : `compare` | fait |
 | Évaluation pré-enregistrée avec contrôles bloquants (empreintes, découpe, effectifs, baseline refaite à l'octet) : `final_eval` | fait (F9) |
 | Analyse des erreurs de deux modèles sur la validation (catégories, confusions, longueur, manuscrit, pires lignes) : `analysis.error_analysis` | fait (F12, étape 1) |
-| Comparaison d'une variante à F8 sur la validation (bruit entre seeds, bootstrap apparié par page, règle de la décision 42) : `compare_variant` | fait (F12) ; bruit mesuré |
+| Comparaison d'une variante à F8 sur la validation (bruit entre seeds, bootstrap apparié par page, règle de la décision 42) : `compare_variant` | fait (F12) ; bruit mesuré (lag 5, puis lag 15 : S = 0,5 point) |
 | Diagnostic des courbes de validation des répétitions (époques égales, oscillations, arrêts simulés) : `analysis.seed_curves` | fait (F12) |
 | Arrêt anticipé avec plafond d'époques (lag 15, 150 époques), que kraken 7.1.1 ne permet pas seul : `ketos_capped`, choisi par `train` | fait (F12, décision 43) |
 | Contrôle de déterminisme (mêmes métriques époque par époque) : `analysis.same_curve` | fait (F12) |
@@ -97,6 +97,8 @@ Le CER de kraken (16,35 %) et celui de `evaluate` coïncident à 0,03 point prè
 **Analyse des erreurs sur la validation (F12, étape 1)**, contribution au CER en points (baseline → F8) : espaces 7,1 → 3,7 ; séparateur « . » 0,56 → 0,46 ; ي / ى 0,66 → 0,42 ; ئ 0,07 → 0,07 ; chiffres et ponctuation 0,04 → 0 ; lettres (substitutions, suppressions, insertions) 19,3 → 11,6. Environ 30 % du gain de la validation vient des espaces, les deux tiers des lettres. Les suppressions dominent toujours les insertions (prédictions 4 % plus courtes que la vérité terrain). Détail : `reports/erreurs/f8_finetune_baseline/val/`.
 
 **Bruit entre entraînements (F12, décision 42)** : F8 répété à l'identique avec deux autres seeds. CER de validation : seed 42 (F8) 16,32 %, seed 43 16,84 %, seed 44 17,75 % ; écart 1,43 point, seuil S = 2,86 points. À époque égale, les trois courbes restent à 0,2 à 0,4 point l'une de l'autre : l'écart final vient surtout du moment où l'arrêt anticipé (5 époques sans progrès) s'est déclenché (époque 49 pour la seed 44, 76 et 91 pour les autres). Détail : `reports/bruit/f8_finetune/`, `reports/figures/f12_bruit_seeds.png`.
+
+**Bruit avec la règle d'arrêt de F12 (décision 43 : lag 15, plafond 150)** : CER de validation de « F8 lag 15 » : seed 42 15,60 %, seed 43 15,58 %, seed 44 15,40 % ; écart 0,21 point, 2 × écart 0,41 point, **seuil S = 0,5 point** (plancher). Une variante doit donc faire au moins 107 erreurs de moins que la seed 42 (3 338 sur 21 393 caractères), avec un IC par page sous 0 et une baisse dans les deux manuscrits. Seeds 43 et 44 coupées par le plafond alors qu'elles progressaient. Détail : `reports/bruit/f8_lag15_seed42/`.
 
 **Évaluation interne (F9)** : modèle F8 sur le test interne, analyse pré-enregistrée (décisions 37 et 38), seconde et dernière consultation. Différence = CER F8 moins CER baseline, IC 95 % par bootstrap apparié sur les manuscrits. Conclusion selon la règle de la décision 38 : gain si l'IC est entièrement sous 0.
 
@@ -136,6 +138,6 @@ Réduction relative : 28,9 % ; 17 manuscrits améliorés sur 17 (écart de −5,
 
 ## 8. Prochaines étapes
 
-Voir [ROADMAP.md](ROADMAP.md). F10 terminé : aucun jeu externe retenu (décisions 40 et 41). F11 en attente de réponses (Osmanlica.com, auteurs de CHURRO). F12 en cours : analyse des erreurs et bruit avec lag 5 faits ; plan fixé par les décisions 42 et 43 (nouvelle règle d'arrêt, lag 15 et plafond 150 ; référence « F8 lag 15 » avec les seeds 42, 43, 44 ; puis trois variantes contre sa seed 42 : augmentation, taux 3e-4, sans pages gen2). Tickets dont les dépendances sont remplies : F13 (analyse d'erreurs, dont les deux points notés en F9), F14 (publication, qui dépend désormais de F9).
+Voir [ROADMAP.md](ROADMAP.md). F10 terminé : aucun jeu externe retenu (décisions 40 et 41). F11 en attente de réponses (Osmanlica.com, auteurs de CHURRO). F12 en cours : analyse des erreurs, bruit avec lag 5, référence « F8 lag 15 » (seeds 42, 43, 44) et nouveau S (0,5 point) faits ; plan fixé par les décisions 42 et 43 (nouvelle règle d'arrêt, lag 15 et plafond 150 ; référence « F8 lag 15 » avec les seeds 42, 43, 44 ; puis trois variantes contre sa seed 42 : augmentation, taux 3e-4, sans pages gen2). Tickets dont les dépendances sont remplies : F13 (analyse d'erreurs, dont les deux points notés en F9), F14 (publication, qui dépend désormais de F9).
 
 Journal des décisions : [DECISIONS.md](DECISIONS.md).
