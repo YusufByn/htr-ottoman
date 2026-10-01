@@ -18,8 +18,9 @@ Garde-fous avant lancement :
   permis qu'avec la règle de F12, lag 15 et plafond 150 (décision 43), et un
   lag 15 exige ce plafond ; les configs `f8_lag15_seed<N>` doivent être celle
   de F8 avec cette règle et la seed N ; un essai technique
-  (`essai_technique_*.yml`) doit être `f8_lag15_seed42` à un plafond plus
-  petit près ;
+  (`essai_technique_*.yml`) doit être `f8_lag15_seed42` ou une variante
+  versionnée (`configs/f12_*.yml`) à un plafond plus petit près (décision 43,
+  complément du 2026-10-01) ;
 - commande acceptée par ketos (analyse des options sans lancement) ;
 - dossier de sortie absent ou vide : rien n'est écrasé ;
 - tout le travail committé (hors EXPERIMENTS.md) : le commit enregistré décrit
@@ -87,6 +88,7 @@ NOISE_REFERENCE = CONFIGS / "f8_finetune.yml"
 F12_STOP = {"quit": "early", "lag": 15, "epochs": 150}
 F12_REFERENCE = re.compile(r"f8_lag15_seed(\d+)")  # F8 avec la règle d'arrêt de F12, seed N
 TECHNICAL_PREFIX = "essai_technique_"  # essais techniques : jamais utilisés dans F12, sorties dans models/<config>/
+F12_VARIANTS = "f12_*.yml"  # configs des variantes de F12 (décision 42), base possible d'un essai technique
 STOP_KEYS = ("quit", "lag", "epochs", "min-epochs")
 PLANNED = "(prévu)"  # marque d'une ligne d'EXPERIMENTS.md écrite avant le lancement
 
@@ -115,6 +117,12 @@ def stop_rule(config: dict) -> dict:
     return {key: config["train"].get(key) for key in STOP_KEYS}
 
 
+def technical_bases(configs_dir: Path = CONFIGS) -> list[dict]:
+    """Configs qu'un essai technique peut reprendre à un plafond plus petit près : f8_lag15_seed42 et
+    les variantes de F12 (configs/f12_*.yml ; versionnées, car `git_commit` refuse de lancer sinon)."""
+    return [f8_config(SEED, F12_STOP)] + [load_config(p) for p in sorted(configs_dir.glob(F12_VARIANTS))]
+
+
 def check_stop_rule(config: dict, path: Path | None = None) -> None:
     """Plafond seulement avec la règle de F12, lag 15 seulement avec le plafond (décision 43)."""
     train, name = config["train"], path.stem if path else ""
@@ -128,8 +136,9 @@ def check_stop_rule(config: dict, path: Path | None = None) -> None:
         cap = train.get("epochs")
         if not (capped and isinstance(cap, int) and 0 < cap < F12_STOP["epochs"]):
             raise ValueError("Essai technique : règle de F12 avec un plafond plus petit que 150")
-        if config != f8_config(SEED, {**F12_STOP, "epochs": cap}):
-            raise ValueError("Essai technique : la config doit être f8_lag15_seed42 à un plafond plus petit près")
+        if config not in [{**base, "train": {**base["train"], "epochs": cap}} for base in technical_bases()]:
+            raise ValueError("Essai technique : la config doit être f8_lag15_seed42 ou une variante "
+                             f"configs/{F12_VARIANTS} à un plafond plus petit près")
     elif capped and train.get("epochs") != F12_STOP["epochs"]:
         raise ValueError(f"Plafond de {train.get('epochs')} époques : la règle de F12 est {F12_STOP['epochs']} "
                          f"(décision 43)")

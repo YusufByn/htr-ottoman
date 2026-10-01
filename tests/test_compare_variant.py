@@ -195,6 +195,8 @@ def test_stop_rules_of_the_versioned_configs():
         assert training_stop_rule(f"f8_lag15_seed{seed}") == LAG15
     with pytest.raises(FileNotFoundError):
         training_stop_rule("baseline")  # pas d'entraînement : jamais une variante de F12
-    assert (CONFIGS / "essai_technique_plafond.yml").exists()
-    with pytest.raises(ValueError, match="essai technique"):
-        training_stop_rule("essai_technique_plafond")
+    for name in ("essai_technique_plafond", "essai_technique_b_augment"):
+        assert (CONFIGS / f"{name}.yml").exists()
+        with pytest.raises(ValueError, match="essai technique"):
+            training_stop_rule(name)
+    assert training_stop_rule("f12_b_augment") == LAG15  # variante B : même règle d'arrêt que la référence

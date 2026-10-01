@@ -1,0 +1,33 @@
+# F12, variante B : augmentation d'images (décision 42), règle d'arrêt de F12 (lag 15, plafond 150, décision 43).
+# Config f8_lag15_seed42 avec augment: true comme seule différence (vérifié par tests/test_train.py).
+# Recette DefaultAugmenter de kraken 7.1.1, sur le train seulement ; comparée à f8_lag15_seed42 par compare_variant.
+# Lancement : uv run python -m htr_ottoman.train configs/f12_b_augment.yml
+# Clés : noms longs des options de ketos sans les tirets (uv run ketos --help, uv run ketos train --help).
+# Chemins relatifs à la racine du projet. Sortie, journal TensorBoard et -v sont ajoutés par le module.
+
+ketos:                    # options globales, placées avant `train`
+  device: mps             # puce graphique du Mac
+  seed: 42                # = splits.SEED : ordre des lignes, dropout
+  deterministic: true     # signale les calculs non reproductibles (mode avertissement)
+
+train:
+  load: models/openiti_ottoman_print/ottoman_best.mlmodel   # fine-tuning : poids du modèle de départ
+  format-type: binary
+  training-data: data/processed/makhzan/train.lst           # 2 757 lignes (décision 33)
+  evaluation-data: data/processed/makhzan/val.lst           # validation imposée, jamais -p
+  resize: fail            # codec du modèle de départ inchangé (décision 33)
+  normalization: NFD      # réglages de texte du modèle de départ (décision 26)
+  normalize-whitespace: true
+  reorder: true
+  base-dir: auto
+  batch-size: 16          # comme le modèle de départ
+  pad: 16
+  optimizer: Adam
+  lrate: 0.0001           # 10 fois moins que le modèle de départ (décision 34)
+  schedule: constant
+  quit: early             # arrêt anticipé sur la précision caractère de validation
+  lag: 15                 # 15 époques sans progrès (décision 43)
+  epochs: 150             # plafond (décision 43) : ignoré par ketos seul, appliqué par htr_ottoman.ketos_capped
+  min-epochs: 5
+  freq: 1.0               # validation à chaque époque
+  augment: true           # variante B : seule différence avec f8_lag15_seed42 (décision 42)

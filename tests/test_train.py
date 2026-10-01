@@ -7,8 +7,8 @@ import pytest
 
 from htr_ottoman.config import BASE_MODEL, CONFIGS, MAKHZAN_PROCESSED, MODELS, REPORTS
 from htr_ottoman.train import (add_experiment_row, build_command, cap_of, check, experiment_row, launcher,
-                               load_config, output_paths, plot_curves, read_metrics, stop_reason, stop_rule, to_args,
-                               uncommitted, validate_with_ketos)
+                               load_config, output_paths, plot_curves, read_metrics, stop_reason, stop_rule,
+                               technical_bases, to_args, uncommitted, validate_with_ketos)
 
 F8_CONFIG = CONFIGS / "f8_finetune.yml"
 data_available = pytest.mark.skipif(
@@ -171,6 +171,7 @@ def test_read_metrics_and_plot(tmp_path):
 
 LAG15 = {seed: CONFIGS / f"f8_lag15_seed{seed}.yml" for seed in (42, 43, 44)}
 TECHNICAL = CONFIGS / "essai_technique_plafond.yml"
+TECHNICAL_B = CONFIGS / "essai_technique_b_augment.yml"
 
 
 @data_available
@@ -215,6 +216,8 @@ def _f12(**train):
     ({"lrate": 0.0003}, "f8_lag15_seed42", "décision 43"),            # la référence ne change que seed, lag, plafond
     ({"epochs": 2, "lrate": 0.0003}, "essai_technique_x", "à un plafond plus petit près"),
     ({"epochs": 150}, "essai_technique_x", "plafond plus petit"),
+    ({"epochs": 1, "augment": True, "lrate": 0.0003}, "essai_technique_x", "à un plafond plus petit près"),  # B + autre chose
+    ({"epochs": 150, "augment": True}, "essai_technique_x", "plafond plus petit"),  # B au plafond de F12
 ])
 def test_stop_rule_guards(changes, name, message):
     with pytest.raises(ValueError, match=message):
@@ -227,6 +230,43 @@ def test_f12_variant_and_technical_trial_accepted():
     technical = load_config(TECHNICAL)
     check(technical, TECHNICAL)
     assert technical == _f12(epochs=2) and cap_of(technical) == 2
+
+
+@data_available
+def test_variant_b_is_reference_with_augmentation(tmp_path):
+    path = CONFIGS / "f12_b_augment.yml"
+    variant = load_config(path)
+    check(variant, path)
+    assert variant == _f12(augment=True)  # seule différence avec f8_lag15_seed42 (décision 42)
+    assert launcher(variant)[0] == ["uv", "run", "python", "-m", "htr_ottoman.ketos_capped"] and cap_of(variant) == 150
+    (tmp_path / "logs").mkdir()
+    global_args, train_args = build_command(variant, tmp_path)
+    validate_with_ketos(global_args, train_args)
+    assert "--augment" in train_args
+
+
+@data_available
+def test_technical_trial_of_a_variant(tmp_path):
+    # décision 43, complément du 2026-10-01 : essai technique d'une variante versionnée, plafond plus petit
+    technical = load_config(TECHNICAL_B)
+    check(technical, TECHNICAL_B)
+    assert technical == _f12(augment=True, epochs=1)
+    assert launcher(technical)[0] == ["uv", "run", "python", "-m", "htr_ottoman.ketos_capped"] and cap_of(technical) == 1
+    (tmp_path / "logs").mkdir()
+    validate_with_ketos(*build_command(technical, tmp_path))
+    paths = output_paths(TECHNICAL_B, trial=False)
+    assert paths["output"] == MODELS / "essai_technique_b_augment"
+    assert all(p.is_relative_to(paths["output"]) for p in paths.values())
+
+
+@data_available
+def test_technical_bases_are_reference_and_f12_variants(tmp_path):
+    reference = load_config(LAG15[42])
+    assert technical_bases(tmp_path) == [reference]  # aucune variante : f8_lag15_seed42 seul
+    (tmp_path / "f12_z.yml").write_text((CONFIGS / "f12_b_augment.yml").read_text())
+    (tmp_path / "autre.yml").write_text((CONFIGS / "f12_b_augment.yml").read_text())  # hors f12_* : ignoré
+    assert technical_bases(tmp_path) == [reference, _f12(augment=True)]
+    assert _f12(augment=True) in technical_bases()  # configs/f12_b_augment.yml
 
 
 @data_available
