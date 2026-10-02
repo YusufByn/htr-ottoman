@@ -173,6 +173,10 @@ LAG15 = {seed: CONFIGS / f"f8_lag15_seed{seed}.yml" for seed in (42, 43, 44)}
 TECHNICAL = CONFIGS / "essai_technique_plafond.yml"
 TECHNICAL_B = CONFIGS / "essai_technique_b_augment.yml"
 TECHNICAL_A = CONFIGS / "essai_technique_a_lr3e-4.yml"
+TECHNICAL_C = CONFIGS / "essai_technique_c_sans_gen2.yml"
+C_TRAIN = "data/processed/makhzan/train_sans_gen2.lst"  # variante C : train de F8 sans les pages gen2
+c_available = pytest.mark.skipif(not (MAKHZAN_PROCESSED / "train_sans_gen2.lst").exists(),
+                                 reason="jeu de C absent : uv run python -m htr_ottoman.prepare_sans_gen2")
 
 
 @data_available
@@ -236,11 +240,15 @@ def test_f12_variant_and_technical_trial_accepted():
 VARIANTS = {  # variante de F12 : seule différence avec f8_lag15_seed42 (décision 42)
     "f12_b_augment": {"augment": True},
     "f12_a_lr3e-4": {"lrate": 0.0003},
+    "f12_c_sans_gen2": {"training-data": C_TRAIN},
 }
 
 
 @data_available
-@pytest.mark.parametrize("name, change", VARIANTS.items())
+@pytest.mark.parametrize("name, change", [
+    pytest.param(name, change, marks=c_available) if name == "f12_c_sans_gen2" else (name, change)
+    for name, change in VARIANTS.items()
+])
 def test_variant_is_reference_with_one_change(name, change, tmp_path):
     path = CONFIGS / f"{name}.yml"
     variant = load_config(path)
@@ -255,10 +263,43 @@ def test_variant_is_reference_with_one_change(name, change, tmp_path):
     assert ("--augment" in train_args) == bool(change.get("augment"))  # A : sans augmentation
     pairs = dict(zip(train_args, train_args[1:]))
     assert float(pairs["--lrate"]) == change.get("lrate", 0.0001)
+    assert pairs["--training-data"] == change.get("training-data", "data/processed/makhzan/train.lst")
+    assert pairs["--evaluation-data"] == "data/processed/makhzan/val.lst"
+
+
+# Empreintes des jeux de F8 compilés le 2026-09-28 (reports/train_sans_gen2.csv), avant F8 : la validation de C
+# doit être le même fichier, au même contenu, que celle de la référence.
+VAL_SHA256 = "aeb0188cec9cbbd75241ffd36c317d64897e4a060a345e16b6308859491022a7"
+TRAIN_SHA256 = "1c88a502281e7342e0d5e3e63f72785a8112f2267b722d725c96f849f3763e69"
+
+
+def _differences(a: dict, b: dict) -> set[tuple[str, str]]:
+    return {(section, key) for section in a for key in set(a[section]) | set(b[section])
+            if a[section].get(key) != b[section].get(key)}
 
 
 @data_available
-@pytest.mark.parametrize("path, change", [(TECHNICAL_B, {"augment": True}), (TECHNICAL_A, {"lrate": 0.0003})])
+@c_available
+def test_variant_c_changes_only_training_data():
+    from htr_ottoman.prepare_sans_gen2 import sha256
+
+    reference, variant = load_config(LAG15[42]), load_config(CONFIGS / "f12_c_sans_gen2.yml")
+    assert _differences(reference, variant) == {("train", "training-data")}
+    assert variant["train"]["training-data"] == C_TRAIN
+    assert (MAKHZAN_PROCESSED / "train_sans_gen2.lst").read_text() == "data/processed/makhzan/train_sans_gen2.arrow\n"
+    # validation : même manifeste, même fichier compilé, même empreinte que la référence
+    assert variant["train"]["evaluation-data"] == reference["train"]["evaluation-data"] == "data/processed/makhzan/val.lst"
+    assert (MAKHZAN_PROCESSED / "val.lst").read_text() == "data/processed/makhzan/val.arrow\n"
+    assert sha256(MAKHZAN_PROCESSED / "val.arrow") == VAL_SHA256
+    assert sha256(MAKHZAN_PROCESSED / "train.arrow") == TRAIN_SHA256  # train de F8 non modifié
+
+
+@data_available
+@pytest.mark.parametrize("path, change", [
+    (TECHNICAL_B, {"augment": True}),
+    (TECHNICAL_A, {"lrate": 0.0003}),
+    pytest.param(TECHNICAL_C, {"training-data": C_TRAIN}, marks=c_available),
+])
 def test_technical_trial_of_a_variant(path, change, tmp_path):
     # décision 43, complément du 2026-10-01 : essai technique d'une variante versionnée, plafond plus petit
     technical = load_config(path)

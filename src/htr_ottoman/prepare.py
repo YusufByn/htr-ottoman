@@ -23,6 +23,7 @@ import json
 import os
 import unicodedata
 import xml.etree.ElementTree as ET
+from pathlib import Path
 
 import pandas as pd
 import pyarrow as pa
@@ -64,6 +65,11 @@ def select_lines() -> pd.DataFrame:
     return lines
 
 
+def processed_alto_path(doc_id: int, alto_path: str) -> Path:
+    """Chemin de l'ALTO normalisé d'une page (data/processed/makhzan/alto/<DocID>/<fichier>)."""
+    return ALTO_DIR / str(doc_id) / Path(alto_path).name
+
+
 def write_page_alto(page_lines: pd.DataFrame) -> str:
     """Écrit l'ALTO normalisé d'une page et renvoie son chemin (relatif à ROOT)."""
     first = page_lines.iloc[0]
@@ -91,7 +97,7 @@ def write_page_alto(page_lines: pd.DataFrame) -> str:
         string.set("CONTENT", kept[line_id])
         tl.append(string)
 
-    dest = ALTO_DIR / str(first["doc_id"]) / src.name
+    dest = processed_alto_path(first["doc_id"], first["alto_path"])
     dest.parent.mkdir(parents=True, exist_ok=True)
     image = ROOT / first["image_path"]
     file_name = root.find(f".//{q('sourceImageInformation')}/{q('fileName')}")

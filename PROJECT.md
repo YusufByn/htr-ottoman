@@ -66,6 +66,7 @@ Tout modèle dérivé de MAKHZAN est sous CC BY-NC-SA. Détails et MD5 : [README
 | Diagnostic des courbes de validation des répétitions (époques égales, oscillations, arrêts simulés) : `analysis.seed_curves` | fait (F12) |
 | Arrêt anticipé avec plafond d'époques (lag 15, 150 époques), que kraken 7.1.1 ne permet pas seul : `ketos_capped`, choisi par `train` | fait (F12, décision 43) |
 | Contrôle de déterminisme (mêmes métriques époque par époque) : `analysis.same_curve` | fait (F12) |
+| Jeu d'entraînement sans les pages gen2 (variante C, décision 42), compilé à part : `prepare_sans_gen2` | fait (F12) : 2 503 lignes (254 retirées, 18 pages) |
 | Téléchargement d'Akis (git LFS, SHA-256 vérifié contre le pointeur), table des lignes et inventaire : `data.akis`, `analysis.akis_inventory` | fait (F10, vérification ; Akis écarté, décision 40) |
 
 ## 5. État d'avancement
@@ -138,6 +139,6 @@ Réduction relative : 28,9 % ; 17 manuscrits améliorés sur 17 (écart de −5,
 
 ## 8. Prochaines étapes
 
-Voir [ROADMAP.md](ROADMAP.md). F10 terminé : aucun jeu externe retenu (décisions 40 et 41). F11 en attente de réponses (Osmanlica.com, auteurs de CHURRO). F12 en cours : analyse des erreurs, bruit avec lag 5, référence « F8 lag 15 » (seeds 42, 43, 44) et nouveau S (0,5 point) faits ; plan fixé par les décisions 42 et 43 (nouvelle règle d'arrêt, lag 15 et plafond 150 ; référence « F8 lag 15 » avec les seeds 42, 43, 44 ; puis trois variantes contre sa seed 42 : augmentation, taux 3e-4, sans pages gen2). Tickets dont les dépendances sont remplies : F13 (analyse d'erreurs, dont les deux points notés en F9), F14 (publication, qui dépend désormais de F9).
+Voir [ROADMAP.md](ROADMAP.md). F10 terminé : aucun jeu externe retenu (décisions 40 et 41). F11 en attente de réponses (Osmanlica.com, auteurs de CHURRO). F12 en cours : analyse des erreurs, bruit avec lag 5, référence « F8 lag 15 » (seeds 42, 43, 44) et nouveau S (0,5 point) faits ; plan fixé par les décisions 42 et 43 (nouvelle règle d'arrêt, lag 15 et plafond 150 ; référence « F8 lag 15 » avec les seeds 42, 43, 44 ; puis trois variantes contre sa seed 42 : augmentation, taux 3e-4, sans pages gen2). B et A entraînées et comparées (pas de différence établie pour l'une ni l'autre) ; C préparée (jeu compilé, config), essai technique et run à lancer. Tickets dont les dépendances sont remplies : F13 (analyse d'erreurs, dont les deux points notés en F9), F14 (publication, qui dépend désormais de F9).
 
 Journal des décisions : [DECISIONS.md](DECISIONS.md).

@@ -1,0 +1,33 @@
+# ESSAI TECHNIQUE, jamais utilisé dans F12 : mesure la durée d'une époque de la variante C (sans les pages gen2)
+# et vérifie la chaîne (ketos_capped). Config f12_c_sans_gen2 avec un plafond de 1 époque (vérifié par
+# htr_ottoman.train, décision 43, complément du 2026-10-01). Sortie : models/essai_technique_c_sans_gen2/, rien dans
+# reports/ ; refusé par compare_variant.
+# Lancement : uv run python -m htr_ottoman.train configs/essai_technique_c_sans_gen2.yml
+# Clés : noms longs des options de ketos sans les tirets (uv run ketos --help, uv run ketos train --help).
+# Chemins relatifs à la racine du projet. Sortie, journal TensorBoard et -v sont ajoutés par le module.
+
+ketos:                    # options globales, placées avant `train`
+  device: mps             # puce graphique du Mac
+  seed: 42                # = splits.SEED : ordre des lignes, dropout
+  deterministic: true     # signale les calculs non reproductibles (mode avertissement)
+
+train:
+  load: models/openiti_ottoman_print/ottoman_best.mlmodel   # fine-tuning : poids du modèle de départ
+  format-type: binary
+  training-data: data/processed/makhzan/train_sans_gen2.lst # variante C : seule différence, 2 503 lignes (décision 42)
+  evaluation-data: data/processed/makhzan/val.lst           # validation imposée, jamais -p
+  resize: fail            # codec du modèle de départ inchangé (décision 33)
+  normalization: NFD      # réglages de texte du modèle de départ (décision 26)
+  normalize-whitespace: true
+  reorder: true
+  base-dir: auto
+  batch-size: 16          # comme le modèle de départ
+  pad: 16
+  optimizer: Adam
+  lrate: 0.0001           # 10 fois moins que le modèle de départ (décision 34)
+  schedule: constant
+  quit: early             # arrêt anticipé sur la précision caractère de validation
+  lag: 15                 # 15 époques sans progrès (décision 43)
+  epochs: 1               # plafond de l'essai technique (1 époque), appliqué par htr_ottoman.ketos_capped
+  min-epochs: 5
+  freq: 1.0               # validation à chaque époque
