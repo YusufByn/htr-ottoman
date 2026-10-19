@@ -368,6 +368,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
 
 ## F14 · Publication
 
+- **Modèle publié** : fixé par la décision 44 : F8 (lag 5, seed 42), `models/f8_finetune/best_0.8365.safetensors` (époque 86), le seul modèle affiné évalué sur le test interne (F9 : 26,3 %). F8 lag 15 seed 42 n'est pas publié ; il est mentionné dans la carte du modèle et les limites, et sert de point de départ à F15.
 - **Objectif** : à préciser selon les résultats. Pistes :
   - README final ;
   - carte du modèle (*model card*) ;
