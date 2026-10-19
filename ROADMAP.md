@@ -387,6 +387,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
   - [ ] Q4, ي de fin de mot dans Doc 2937 (lecture à l'aveugle).
   - [ ] Q1, conventions contre lecture (mode exploratoire du test interne).
   - [ ] Q6, Doc 3179 (mode exploratoire du test interne).
+  - [ ] Reporter dans le ticket F15, en une seule fois à la fin de F13, toutes les pistes pour F15 notées pendant F13 (EXPERIMENTS.md, PROJECT.md), sans rien appliquer.
 - **Critères d'acceptation** : pour chaque question, tableaux et CSV de jugement versionnés, ligne dans EXPERIMENTS.md, lecture descriptive sans conclusion au-delà des chiffres et des jugements.
 - **Points de décision** : interprétation de chaque question après la lecture de l'utilisateur ; toute règle de normalisation ou de données suggérée est renvoyée à F15 (nouvelle décision).
 - **Concept à expliquer** : l'alignement de deux chaînes et la matrice de confusion au niveau des caractères (au début de Q1).
