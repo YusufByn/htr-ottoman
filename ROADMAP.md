@@ -380,7 +380,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
   - **Ordre** : Q2, Q7, Q5, Q3, Q4, Q1, Q6 (vérité terrain d'abord, puis validation, puis test interne en mode exploratoire).
 - **Tâches** :
   - [x] Cadrage et plan (2026-10-19) ; complément du 2026-10-19 à la décision 39.
-  - [ ] Q2, écart `ketos test` / `evaluate`.
+  - [x] Q2, écart `ketos test` / `evaluate` (2026-10-19) : les 2 caractères sont 2 ZWNJ (U+200C) de la vérité terrain, dans 2 lignes de Doc 3215 (ta'liq), retirés par le réordonnancement BiDi de kraken (`--reorder` ; classe BiDi BN, que l'algorithme retire) ; NFD et `-n` les gardent ; aucun écart sur la validation (pas de ZWNJ). `analysis.ketos_char_count`, `reports/f13/q2_ketos_evaluate/`.
   - [ ] Q7, caractères du train absents de la validation.
   - [ ] Q5, « . » sans encre (lecture à l'aveugle).
   - [ ] Q3, encre rouge en niveaux de gris (lecture à l'aveugle).
@@ -390,7 +390,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
 - **Critères d'acceptation** : pour chaque question, tableaux et CSV de jugement versionnés, ligne dans EXPERIMENTS.md, lecture descriptive sans conclusion au-delà des chiffres et des jugements.
 - **Points de décision** : interprétation de chaque question après la lecture de l'utilisateur ; toute règle de normalisation ou de données suggérée est renvoyée à F15 (nouvelle décision).
 - **Concept à expliquer** : l'alignement de deux chaînes et la matrice de confusion au niveau des caractères (au début de Q1).
-- **Statut** : en cours (cadrage fait le 2026-10-19). Prochaine étape : Q2, avec l'accord de l'utilisateur.
+- **Statut** : en cours (cadrage et Q2 faits le 2026-10-19). Prochaine étape : Q7, avec l'accord de l'utilisateur.
 
 ---
 

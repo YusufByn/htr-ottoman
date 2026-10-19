@@ -1,0 +1,3 @@
+jeu,doc_id,part_id,line_id,ecriture,caracteres_evaluate,caracteres_ketos,perdus,ajoutes,transformation,note
+test_interne,3215,754507,eSc_line_0a375fbe,taliq,52,51,U+200C ZERO WIDTH NON-JOINER ×1,,BiDi,"exploratoire, décision 39 (vérité terrain seulement)"
+test_interne,3215,754509,eSc_line_d15bf1ef,taliq,55,54,U+200C ZERO WIDTH NON-JOINER ×1,,BiDi,"exploratoire, décision 39 (vérité terrain seulement)"
