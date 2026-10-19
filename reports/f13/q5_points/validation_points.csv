@@ -1,0 +1,10 @@
+modele,doc_id,reference,lus,oublies_supprimes,oublies_remplaces,ajoutes_inseres,ajoutes_a_la_place,ecrits
+baseline,2937,86,4,27,55,1,0,5
+baseline,2939,37,0,14,23,0,1,1
+baseline,tout,123,4,41,78,1,1,6
+f8_finetune,2937,86,12,36,38,0,0,12
+f8_finetune,2939,37,14,10,13,0,2,16
+f8_finetune,tout,123,26,46,51,0,2,28
+f8_lag15_seed42,2937,86,11,41,34,3,0,14
+f8_lag15_seed42,2939,37,15,9,13,0,1,16
+f8_lag15_seed42,tout,123,26,50,47,3,1,30
