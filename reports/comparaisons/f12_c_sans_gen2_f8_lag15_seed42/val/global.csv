@@ -1,0 +1,2 @@
+groupe,pages,manuscrits,lignes,caracteres,cer_reference,cer_modele,difference,ic95_pages_bas,ic95_pages_haut,ecart_bruit,seuil,a_baisse_sup_seuil,b_ic_sous_0,c_baisse_chaque_manuscrit,a_hausse_sup_seuil,b_ic_au_dessus_0,c_hausse_chaque_manuscrit,conclusion
+tout,19,2.000000,412.000000,21393.000000,0.156032,0.161688,0.005656,0.002272,0.009012,0.002057,0.005000,False,False,False,True,True,True,régression
