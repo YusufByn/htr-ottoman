@@ -1,0 +1,17 @@
+case,taille_case,n_case,poids,oui,non,incertain,oui (brut),non (brut),incertain (brut),lecture
+ى × confondu,2,2,1.0,2,0,0,1.0,0.0,0.0,lecture 1
+ى × correct,84,10,8.4,3,6,1,0.3,0.6,0.1,lecture 1
+ي × confondu,82,18,4.555555555555555,11,4,3,0.611,0.222,0.167,lecture 1
+ي × correct,112,10,11.2,8,1,1,0.8,0.1,0.1,lecture 1
+ى × confondu,2,2,1.0,2,0,0,1.0,0.0,0.0,lecture 2
+ى × correct,84,10,8.4,3,6,1,0.3,0.6,0.1,lecture 2
+ي × confondu,82,18,4.555555555555555,11,2,5,0.611,0.111,0.278,lecture 2
+ي × correct,112,10,11.2,8,1,1,0.8,0.1,0.1,lecture 2
+ى × confondu,2,2,1.0,2,0,0,1.0,0.0,0.0,lecture 3
+ى × correct,84,10,8.4,3,6,1,0.3,0.6,0.1,lecture 3
+ي × confondu,82,18,4.555555555555555,11,1,6,0.611,0.056,0.333,lecture 3
+ي × correct,112,10,11.2,8,1,1,0.8,0.1,0.1,lecture 3
+ى × confondu,2,2,1.0,2,0,0,1.0,0.0,0.0,cinq en non
+ى × correct,84,10,8.4,3,7,0,0.3,0.7,0.0,cinq en non
+ي × confondu,82,18,4.555555555555555,11,4,3,0.611,0.222,0.167,cinq en non
+ي × correct,112,10,11.2,8,2,0,0.8,0.2,0.0,cinq en non
