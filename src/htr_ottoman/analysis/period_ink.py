@@ -45,6 +45,8 @@ PERIOD = "."
 N_SAMPLE = 40
 SMALL_DOC = 5  # manuscrits pris en entier dans l'échantillon
 QUESTION = "Y a-t-il de l'encre à cet endroit ?"
+INSTRUCTIONS = ("Encre rouge ou noire = oui",
+                "Si l'endroit est introuvable, répondre incertain avec le commentaire : boîte décalée")
 ANSWERS = ("oui", "non", "incertain")
 OUTPUT = REPORTS / "f13" / "q5_points"
 PAGE = OUTPUT / "lecture_a_l_aveugle.html"
@@ -220,6 +222,7 @@ def write_page(items: list[dict], path: Path) -> None:
     parts = [PAGE_HEAD,
              "<header><h1>F13, Q5 : « . » sans encre (lecture à l'aveugle)</h1>",
              f"<p><span id=\"progress\"></span> · <button id=\"download\">Télécharger mes réponses (CSV)</button></p></header>",
+             "<ul class=\"consignes\">" + "".join(f"<li><b>{html.escape(c)}</b></li>" for c in INSTRUCTIONS) + "</ul>",
              "<p class=\"note\">Pour chaque ligne du train, la boîte bleue entoure l'emplacement <b>estimé</b> du « . » "
              "surligné dans la transcription (estimé d'après sa place dans le texte : la boîte peut être décalée ; "
              "repérez l'endroit exact grâce aux mots qui l'entourent). Aucune prédiction de modèle n'est affichée. "
