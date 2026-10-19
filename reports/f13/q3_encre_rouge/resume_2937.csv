@@ -1,0 +1,4 @@
+modele,reference,lu,supprimé,remplacé,remplace_le_plus_par
+baseline,86,4,27,55,ه ×20 ت ×7 د ×6
+f8_finetune,86,12,36,38,ه ×17 ت ×4 م ×2
+f8_lag15_seed42,86,11,41,34,ه ×16 م ×4 ت ×2

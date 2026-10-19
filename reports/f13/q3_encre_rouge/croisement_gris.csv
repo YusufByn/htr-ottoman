@@ -1,0 +1,10 @@
+modele,réponse gris,lu,supprimé,remplacé
+baseline,invisible,1,1,1
+baseline,visible,1,11,23
+baseline,à peine visible,0,0,2
+f8_finetune,invisible,2,0,1
+f8_finetune,visible,5,17,13
+f8_finetune,à peine visible,0,0,2
+f8_lag15_seed42,invisible,2,0,1
+f8_lag15_seed42,visible,5,20,10
+f8_lag15_seed42,à peine visible,0,0,2
