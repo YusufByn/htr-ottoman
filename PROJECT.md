@@ -101,6 +101,16 @@ Le CER de kraken (16,35 %) et celui de `evaluate` coïncident à 0,03 point prè
 
 **Bruit avec la règle d'arrêt de F12 (décision 43 : lag 15, plafond 150)** : CER de validation de « F8 lag 15 » : seed 42 15,60 %, seed 43 15,58 %, seed 44 15,40 % ; écart 0,21 point, 2 × écart 0,41 point, **seuil S = 0,5 point** (plancher). Une variante doit donc faire au moins 107 erreurs de moins que la seed 42 (3 338 sur 21 393 caractères), avec un IC par page sous 0 et une baisse dans les deux manuscrits. Seeds 43 et 44 coupées par le plafond alors qu'elles progressaient. Détail : `reports/bruit/f8_lag15_seed42/`.
 
+**Variantes de F12 (décisions 42 et 43)** : trois variantes de F8 lag 15 seed 42, une seule variable changée chacune, comparées à elle sur la validation par `compare_variant` (S = 0,5 point). Référence : 15,60 % (3 338 erreurs).
+
+| Variante | CER validation | Différence [IC 95 % par page] | Doc 2937 / Doc 2939 | Verdict |
+|----------|---------------:|-------------------------------|---------------------|---------|
+| B, augmentation d'images | 15,36 % | −0,25 point [−0,54 ; +0,12] | baisse / baisse | pas de différence établie |
+| A, taux 3e-4 | 15,14 % | −0,46 point [−0,78 ; −0,12] | baisse / baisse | pas de différence établie (à 8 erreurs du seuil de gain) |
+| C, sans les pages gen2 | 16,17 % | +0,57 point [+0,23 ; +0,90] | hausse / hausse | régression |
+
+Aucune variante n'est établie meilleure ; « pas de différence établie » veut dire que la règle ne permet pas de conclure. Pour C, l'effet des pages gen2 et celui de la baisse du volume (254 lignes et 2 manuscrits en moins) sont confondus. D'après la décision 44, le modèle publié en F14 reste F8 (lag 5). Synthèse complète, contrôles, limites et pistes pour F15 : [SYNTHESE_F12.md](SYNTHESE_F12.md).
+
 **Évaluation interne (F9)** : modèle F8 sur le test interne, analyse pré-enregistrée (décisions 37 et 38), seconde et dernière consultation. Différence = CER F8 moins CER baseline, IC 95 % par bootstrap apparié sur les manuscrits. Conclusion selon la règle de la décision 38 : gain si l'IC est entièrement sous 0.
 
 | Groupe | Manuscrits | Lignes | Baseline | F8 | Différence [IC 95 %] | Conclusion |
@@ -128,6 +138,7 @@ Réduction relative : 28,9 % ; 17 manuscrits améliorés sur 17 (écart de −5,
 - **Peu de données** : 2 757 lignes d'entraînement compilées.
 - **CER de reconnaissance seule** : mesuré sur la segmentation de la vérité terrain (décision 31), il est plus bas que celui d'une chaîne complète sur une page brute.
 - **Origine du gain de F9 non établie** : une partie peut venir de l'adoption des conventions de transcription de MAKHZAN (espaces, séparateurs, choix de lettres) plutôt que d'une meilleure lecture ; le gain presque uniforme entre écritures invite à le mesurer (F13, sur les prédictions sauvegardées).
+- **Comparaisons de F12 limitées** (SYNTHESE_F12.md) : validation de 2 manuscrits, 100 % naskh, avec un bootstrap par page un peu optimiste ; un seul entraînement par variante ; plafond de 150 époques atteint en progrès par B, C et les seeds 43 et 44 de la référence ; tous les entraînements sur un seul Mac, reproductibilité non vérifiée sur une autre machine.
 - **Test interne clos** (décision 39) : les modèles suivants (F12, F15) ne pourront être comparés à F8 que sur la validation, et sur un jeu externe seulement si F11 est rouvert (décision 41).
 - **Écart de 2 caractères** entre `ketos test` (21 209) et `evaluate` (21 211) sur le test interne, non expliqué (F13).
 - **Ventilations du test interne** : écriture et relecture se recouvrent (manuscrits différents dans chaque groupe) et la plupart des écritures n'ont que 1 ou 2 manuscrits, sans intervalle. Ces écarts sont des indications, pas des effets démontrés.
