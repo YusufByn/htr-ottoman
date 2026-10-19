@@ -1,0 +1,21 @@
+groupe,codepoint,caractere,nom,dans_codec,occurrences_train,occurrences_val,occurrences_test_interne,manuscrits_test_interne
+test sans train,U+0662,٢,ARABIC-INDIC DIGIT TWO,True,0,0,6,3186 3215 3601
+test sans train,U+0663,٣,ARABIC-INDIC DIGIT THREE,True,0,0,4,3215
+test sans train,U+0664,٤,ARABIC-INDIC DIGIT FOUR,True,0,0,2,3186 3215
+test sans train,U+0666,٦,ARABIC-INDIC DIGIT SIX,True,0,0,2,3215
+test sans train,U+0667,٧,ARABIC-INDIC DIGIT SEVEN,True,0,0,3,3215 3383
+test sans train,U+0668,٨,ARABIC-INDIC DIGIT EIGHT,True,0,0,3,3215 3383 3601
+test sans train,U+0669,٩,ARABIC-INDIC DIGIT NINE,True,0,0,5,3215 3383
+test sans train,U+066E,ٮ,ARABIC LETTER DOTLESS BEH,False,0,0,6,3178
+test sans train,U+06A1,ڡ,ARABIC LETTER DOTLESS FEH,False,0,0,9,3178 3185 3186 3230
+test sans train,U+06BA,ں,ARABIC LETTER NOON GHUNNA,True,0,0,6,3178 3228
+test sans train,U+06D5,ە,ARABIC LETTER AE,True,0,0,11,3185 3208 3212 3230
+test sans train,U+200C,‌,ZERO WIDTH NON-JOINER,False,0,0,2,3215
+train sans validation,U+060C,،,ARABIC COMMA,True,30,0,36,102 3186 3212 3383
+train sans validation,U+0655,ٕ,ARABIC HAMZA BELOW,True,31,0,0,
+train sans validation,U+0660,٠,ARABIC-INDIC DIGIT ZERO,True,1,0,5,3215 3601
+train sans validation,U+0661,١,ARABIC-INDIC DIGIT ONE,True,2,0,10,3215 3601
+train sans validation,U+0665,٥,ARABIC-INDIC DIGIT FIVE,True,1,0,3,3215
+train sans validation,U+0698,ژ,ARABIC LETTER JEH,True,2,0,0,
+train sans validation,U+06AD,ڭ,ARABIC LETTER NG,True,11,0,2,3213
+train sans validation,U+06AF,گ,ARABIC LETTER GAF,True,15,0,0,
