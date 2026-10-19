@@ -20,7 +20,7 @@ Statuts : à faire, en cours, en attente, fait. Dernière mise à jour : 2026-09
 | F10 | Jeu de test externe (aucun retenu, décisions 40 et 41) | F1, F5 | fait |
 | F11 | Évaluation externe | F7, F9, F10 | en attente |
 | F12 | Expériences complémentaires | F9 | fait |
-| F13 | Analyse d'erreurs | F9 | à faire |
+| F13 | Analyse d'erreurs | F9 | en cours |
 | F14 | Publication | F9 (F11 s'il est rouvert) | à faire |
 | F15 | v1.0 : modèle naskh utilisable | F14 | à faire |
 
@@ -356,14 +356,41 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
 
 ## F13 · Analyse d'erreurs
 
-- **Objectif** : à préciser selon les résultats. Pistes : un notebook d'analyse, la comparaison ligne à ligne avec la baseline (`reports/baseline/<jeu>/lignes.parquet`), les confusions de caractères les plus fréquentes, des exemples d'images de lignes avec vérité terrain et prédiction.
+- **Objectif** : analyse descriptive des erreurs, sur les prédictions déjà sauvegardées : aucune nouvelle prédiction sur le test interne, aucun choix de modèle ni de réglage (décisions 37 et 39).
 - **Dépend de** : F9.
 - **Points notés en F9** (à traiter sur les prédictions déjà sauvegardées, sans nouvelle prédiction sur le test interne, décision 39 ; analyses exploratoires, décision 37) :
   - (a) Mesurer quelle part du gain de F9 vient des conventions de transcription (espaces, séparateurs, choix de lettres) plutôt que de la lecture. Indice : le gain est presque uniforme entre écritures (naskh −11,5 points, autres écritures −10,2 ; de −5,6 à −14,7 selon le manuscrit).
   - (b) Expliquer l'écart de 2 caractères entre `ketos test` (21 209) et `evaluate` (21 211) sur le test interne.
-- **Tâches, critères, points de décision** : à préciser selon les résultats. Les calculs sont dans `htr_ottoman.analysis` ; le notebook ne fait qu'afficher.
-- **Concept à expliquer** : l'alignement de deux chaînes et la matrice de confusion au niveau des caractères.
-- **Statut** : à faire.
+- **Plan** (fixé le 2026-10-19, avant toute analyse) :
+  - **Jeux et modèles** :
+    - validation : baseline, F8 (lag 5) et F8 lag 15 seed 42, prédictions sauvegardées (`reports/baseline/val/`, `reports/f8_finetune/val/`, `reports/f8_lag15_seed42/val/`) ; pas B, A ni C ;
+    - test interne : baseline et F8 (lag 5) seulement, prédictions sauvegardées (`reports/baseline/test_interne/`, `reports/f8_finetune/test_interne/`), en mode exploratoire (complément du 2026-10-19 à la décision 39), descriptif seulement ;
+    - train : vérité terrain et images seulement (Q5), aucune prédiction.
+  - **Q1, conventions contre lecture** (point (a)) : contribution au CER, en points, de chaque catégorie d'erreur de `analysis.error_analysis`, pour la baseline et F8 (lag 5) : global, naskh contre autres écritures, par manuscrit ; test interne, mis à côté de la validation (F12, étape 1). Catégories de convention : espace, séparateur « . », ي / ى, ئ, chiffre, ponctuation ; catégories de lecture : même squelette (points), autre substitution, autre suppression, autre insertion. Échantillon : 15 erreurs par catégorie (toutes s'il y en a moins), tirées parmi les erreurs des deux modèles sur le test interne, pour juger si la catégorie automatique est juste.
+  - **Q2, écart `ketos test` / `evaluate`** (point (b)) : transformations de `ketos test` (NFD, `-n`, BiDi) appliquées à la vérité terrain de `test_interne.arrow`, comparée ligne à ligne à celle d'`evaluate` (21 209 contre 21 211 caractères). Vérité terrain seulement ; pas d'échantillon.
+  - **Q3, encre rouge en niveaux de gris** : pour chaque « . » de Doc 2937 (points rouges, 93 occurrences, décision 21), lu, supprimé ou remplacé, par modèle (validation) ; image en couleur et image en gris reçue par le modèle. En descriptif : Doc 3230 (؞, 23 occurrences), test interne, baseline et F8 (lag 5). Échantillon : 30 à 40 lignes de 2937, lecture à l'aveugle.
+  - **Q4, ي de fin de mot dans Doc 2937** : confusions ي / ى par sens et par position (fin de mot, milieu), par modèle, 2937 contre 2939 (validation). Échantillon : 30 à 40 occurrences en fin de mot dans 2937, lecture à l'aveugle (points visibles ou non sur l'image), pour séparer convention de transcription et erreur de lecture.
+  - **Q5, « . » sans encre** : nombre de « . » par manuscrit du train ; part de « . » sans encre visible ; « . » ajoutés et oubliés par chaque modèle sur la validation. Échantillon : 30 à 40 « . » du train (Doc 82 et autres manuscrits), lecture à l'aveugle.
+  - **Q6, Doc 3179** (test interne, naskh et chikasté mêlés, 56,5 % pour la baseline, 49,5 % pour F8 (lag 5)) : catégories d'erreurs, S / D / I, CER par ligne, longueur des lignes, comparaison aux autres manuscrits, liste des pires lignes. Échantillon : 30 lignes tirées au hasard, pour nommer les causes (écriture, mise en page, encre, transcription).
+  - **Q7, caractères du train absents de la validation** (٠ ڭ ، ٥ ١ ژ, et گ, U+0655 pour le train de F8) : occurrences par jeu ; sur le test interne, combien la baseline et F8 (lag 5) en lisent correctement ; et l'inverse, les caractères du test interne absents du train (ٮ ڡ ں ە, ZWNJ, chiffres). Effectifs très petits (36 au plus) : indications seulement. Pas d'échantillon.
+  - **Échantillons** : tirés avec la seed 42. Pour chacun, une page HTML autonome et un CSV à remplir par l'utilisateur (identifiant, jugement, commentaire), versionné.
+  - **Lecture à l'aveugle** (Q3, Q4, Q5) : la page où l'utilisateur juge l'image n'affiche aucune prédiction ; une seconde page, avec les prédictions, n'est produite qu'une fois le CSV entièrement rempli.
+  - **Sorties** : `reports/f13/<question>/` (tableaux, pages, CSV de jugement) ; les sorties tirées du test interne portent la mention « exploratoire, décision 39 ». Calculs dans `htr_ottoman.analysis`.
+  - **Garde-fous** : le mode exploratoire de `error_analysis` est une option explicite, ne lit que les `lignes.parquet` sauvegardés et n'appelle jamais `predict` ; un test vérifie que `predict` refuse toujours le test interne (en plus de `tests/test_predict.py::test_internal_test_is_closed`). Aucun résultat ne modifie `normalize`, la vérité terrain, un modèle ou un groupe ; une règle suggérée par F13 serait une nouvelle décision pour F15, jamais appliquée aux chiffres de F9.
+  - **Ordre** : Q2, Q7, Q5, Q3, Q4, Q1, Q6 (vérité terrain d'abord, puis validation, puis test interne en mode exploratoire).
+- **Tâches** :
+  - [x] Cadrage et plan (2026-10-19) ; complément du 2026-10-19 à la décision 39.
+  - [ ] Q2, écart `ketos test` / `evaluate`.
+  - [ ] Q7, caractères du train absents de la validation.
+  - [ ] Q5, « . » sans encre (lecture à l'aveugle).
+  - [ ] Q3, encre rouge en niveaux de gris (lecture à l'aveugle).
+  - [ ] Q4, ي de fin de mot dans Doc 2937 (lecture à l'aveugle).
+  - [ ] Q1, conventions contre lecture (mode exploratoire du test interne).
+  - [ ] Q6, Doc 3179 (mode exploratoire du test interne).
+- **Critères d'acceptation** : pour chaque question, tableaux et CSV de jugement versionnés, ligne dans EXPERIMENTS.md, lecture descriptive sans conclusion au-delà des chiffres et des jugements.
+- **Points de décision** : interprétation de chaque question après la lecture de l'utilisateur ; toute règle de normalisation ou de données suggérée est renvoyée à F15 (nouvelle décision).
+- **Concept à expliquer** : l'alignement de deux chaînes et la matrice de confusion au niveau des caractères (au début de Q1).
+- **Statut** : en cours (cadrage fait le 2026-10-19). Prochaine étape : Q2, avec l'accord de l'utilisateur.
 
 ---
 
