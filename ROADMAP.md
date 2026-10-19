@@ -19,7 +19,7 @@ Statuts : à faire, en cours, en attente, fait. Dernière mise à jour : 2026-09
 | F9 | Évaluation interne du modèle affiné | F5, F8 | fait |
 | F10 | Jeu de test externe (aucun retenu, décisions 40 et 41) | F1, F5 | fait |
 | F11 | Évaluation externe | F7, F9, F10 | en attente |
-| F12 | Expériences complémentaires | F9 | en cours |
+| F12 | Expériences complémentaires | F9 | fait |
 | F13 | Analyse d'erreurs | F9 | à faire |
 | F14 | Publication | F9 (F11 s'il est rouvert) | à faire |
 | F15 | v1.0 : modèle naskh utilisable | F14 | à faire |
@@ -350,7 +350,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
 - **Critères d'acceptation** : deux répétitions et trois variantes consignées dans EXPERIMENTS.md ; pour chaque variante, la conclusion de la règle de la décision 42, rapportée quel qu'en soit le sens. Mesure sur la validation seulement ; jamais sur le test interne, clos (décision 39) ; sur un jeu externe seulement si F11 est rouvert (décision 41).
 - **Points de décision** : tranchés par les décisions 42 et 43 (règle d'arrêt : lag 15, plafond 150, plus aucune modification dans F12). Restent : accord de l'utilisateur avant chaque entraînement long ; toute combinaison de variantes gagnantes serait une nouvelle décision.
 - **Concept à expliquer** : l'étude d'ablation (ne changer qu'un facteur à la fois) et le bruit entre deux entraînements (expliqués à l'étape 1).
-- **Statut** : en cours. Prochaine étape : variante B (augmentation d'images), essai d'une époque d'abord, avec l'accord de l'utilisateur.
+- **Statut** : fait (2026-10-19). Aucune variante établie meilleure (B et A : pas de différence établie ; C : régression) ; modèle publié fixé par la décision 44. Synthèse : [SYNTHESE_F12.md](SYNTHESE_F12.md). Prochain ticket : F13.
 
 ---
 
