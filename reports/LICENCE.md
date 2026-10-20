@@ -12,7 +12,7 @@ Ce que contiennent ces fichiers :
 
 - **texte de la vérité terrain** de MAKHZAN, normalisé par `htr_ottoman.normalize` : `lignes.parquet` des dossiers d'évaluation (`baseline/`, `f8_finetune/`, `f8_finetune_seed43/`, `f8_finetune_seed44/`, `f8_lag15_seed*/`, `f12_*/`), `erreurs/`, `f13/` ;
 - **prédictions** des modèles sur les lignes de MAKHZAN (`predictions.parquet`) ;
-- **images de lignes** de MAKHZAN, intégrées dans les pages de lecture de F13 : `f13/q3_encre_rouge/`, `f13/q4_ya_final/`, `f13/q5_points/`, `f13/q6_doc3179/` (`lecture_a_l_aveugle.html`) ;
+- **images de lignes** de MAKHZAN, intégrées dans les pages HTML : pages de lecture de F13 (`f13/q3_encre_rouge/`, `f13/q4_ya_final/`, `f13/q5_points/`, `f13/q6_doc3179/`, `lecture_a_l_aveugle.html`) et pires lignes de la validation (`erreurs/f8_finetune_baseline/val/pires_lignes.html`) ;
 - **métadonnées et statistiques** : inventaires (`ottoman_inventory.csv`, `ottoman_characters.csv`), couverture du codec (`codec_coverage.csv`), jeux préparés (`processed_datasets.csv`, `train_sans_gen2.csv`), CER et comparaisons (`*/global.csv`, `par_*.csv`, `comparaisons/`, `bruit/`), courbes et métriques d'entraînement (`training/`, `figures/`), analyses de F13 (`f13/`).
 
 Les fichiers de découpage `splits/` (identifiants et métadonnées des pages de MAKHZAN) sont sous la même licence.
