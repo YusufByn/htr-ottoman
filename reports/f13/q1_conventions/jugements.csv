@@ -1,0 +1,101 @@
+identifiant,réponse,commentaire
+q1_001,oui,
+q1_002,non,décalage
+q1_003,non,zone brouillée 
+q1_004,non,décalage
+q1_005,non,décalage
+q1_006,non,décalage
+q1_007,non,"décalage, zone brouillée"
+q1_008,non,décalage
+q1_009,non,zone brouillée
+q1_010,oui,
+q1_011,non,point supprimé avec un espace
+q1_012,non,"point lu comme une lettre, avec un espace supprimé"
+q1_013,non,point supprimé avec un espace
+q1_014,non,point supprimé avec un espace
+q1_015,non,"décalage, fin de ligne"
+q1_016,non,point supprimé avec un espace
+q1_017,non,"zone brouillée, fin de ligne"
+q1_018,non,"point lu ه, zone brouillée"
+q1_019,oui,
+q1_020,oui,
+q1_021,oui,
+q1_022,oui,
+q1_023,oui,
+q1_024,oui,
+q1_025,oui,
+q1_026,oui,"nombre entier supprimé, voisines du même nombre ignorées"
+q1_027,non,chiffre supprimé avec l’espace qui suit
+q1_028,oui,"ligne entière supprimée (10), voisine du même nombre ignorée"
+q1_029,oui,
+q1_030,non,"zone brouillée, ligne de lettres lue comme un chiffre"
+q1_031,non,signe supprimé avec un espace
+q1_032,non,"décalage, fin de ligne."
+q1_033,non,"virgule lue ه, zone brouillée"
+q1_034,non,"zone brouillée, lettre lue comme une parenthèse"
+q1_035,non,"virgule lue ه, avec un espace supprimé"
+q1_036,oui,lettre lue comme une parenthèse
+q1_037,non,zone brouillée
+q1_038,oui,"oui par la règle ; le و vient peut-être du mot suivant (deux cases), alignement ambigu"
+q1_039,non,signe supprimé avec un espace et ر
+q1_040,non,"décalage, signe supprimé avec un espace"
+q1_041,non,lettre ئ entière supprimée
+q1_042,non,lettre ئ entière supprimée
+q1_043,oui,petite marque
+q1_044,non,"lettres lues ئ, zone brouillée"
+q1_045,non,"lettre ئ entière supprimée, zone brouillée"
+q1_046,non,"ئ lu ن, zone brouillée, fin de ligne"
+q1_047,non,"décalage, hamza déplacée de ا vers ي"
+q1_048,non,zone brouillée
+q1_049,non,"un ي supprimé avec la hamza, madda supprimée aussi"
+q1_050,non,zone brouillée
+q1_051,non,"voisine ح lue ج, autre erreur de points collée"
+q1_052,oui,
+q1_053,non,voisine م lue ه
+q1_054,non,zone brouillée
+q1_055,oui,
+q1_056,non,"voisine ن lue ي, autre erreur de points collée"
+q1_057,oui,
+q1_058,oui,"fin de ligne, pas de voisine à gauche"
+q1_059,oui,
+q1_060,oui,
+q1_061,oui,
+q1_062,oui,
+q1_063,oui,
+q1_064,oui,
+q1_065,oui,
+q1_066,non,zone brouillée
+q1_067,oui,
+q1_068,oui,"début de ligne, pas de voisine à droite"
+q1_069,non,"voisine ب lue ي, autre erreur de points collée"
+q1_070,oui,"ligne abîmée, voisines justes"
+q1_071,oui,formes proches (ك / ل)
+q1_072,oui,
+q1_073,non,zone brouillée
+q1_074,non,une lettre lue comme deux
+q1_075,non,"zone brouillée, fin de ligne"
+q1_076,non,zone brouillée
+q1_077,non,décalage
+q1_078,oui,"oui par la règle ; le ك vient peut-être du mot précédent, alignement ambigu"
+q1_079,non,zone brouillée 
+q1_080,non,"zone brouillée, début de ligne"
+q1_081,non,zone brouillée
+q1_082,non,zone brouillée
+q1_083,oui,
+q1_084,non,suppression en bloc ; le خ prédit est peut-être le ح décalé
+q1_085,non,"décalage, le ز est peut-être le ن mal lu, espace supprimé"
+q1_086,non,petite marque
+q1_087,non,zone brouillée
+q1_088,oui,
+q1_089,oui,"début de ligne, pas de voisine à droite"
+q1_090,non,zone brouillée
+q1_091,oui,
+q1_092,non,zone brouillée
+q1_093,non,zone brouillée
+q1_094,non,petite marque
+q1_095,non,"décalage, ع lu ه puis espace inséré"
+q1_096,oui,
+q1_097,non,"vérité terrain vide, ligne à vérifier"
+q1_098,non,"une lettre lue comme plusieurs, espace inséré"
+q1_099,non,lettre doublée
+q1_100,non,"décalage, ي lu ه puis espace inséré"
