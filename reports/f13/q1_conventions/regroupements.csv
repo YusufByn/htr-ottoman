@@ -1,0 +1,6 @@
+regroupement,groupe,catégories,points test interne baseline,points test interne f8_finetune,gain test interne,part du gain test interne,points validation baseline,points validation f8_finetune,gain validation,part du gain validation,oui / tirées,mention
+plan (124a7c8),conventions,"espace, séparateur ., ي / ى, ئ, chiffre, ponctuation",7.547969,5.289708,2.258261,0.211013,8.451363,4.683775,3.767588,0.329383,21 / 60,"exploratoire, décision 39"
+plan (124a7c8),lecture,"même squelette (points), autre substitution, autre suppression, autre insertion",29.484701,21.040968,8.443733,0.788987,19.305380,11.634646,7.670734,0.670617,16 / 40,"exploratoire, décision 39"
+précision du 2026-10-20 (9563904),conventions,"séparateur ., ponctuation, ئ, ي / ى",0.891046,0.806185,0.084861,0.007929,1.308840,0.944234,0.364606,0.031876,11 / 40,"exploratoire, décision 39"
+précision du 2026-10-20 (9563904),lecture,"chiffre, même squelette (points), autre substitution, autre suppression, autre insertion",29.616708,21.215406,8.401302,0.785022,19.314729,11.634646,7.680083,0.671434,24 / 50,"exploratoire, décision 39"
+précision du 2026-10-20 (9563904),espace (à part),espace,6.524916,4.309085,2.215831,0.207048,7.133174,3.739541,3.393633,0.296690,2 / 10,"exploratoire, décision 39"
