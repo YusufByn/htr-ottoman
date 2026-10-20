@@ -1,0 +1,12 @@
+categorie,erreurs_baseline,part_baseline,points_cer_baseline,erreurs_f8_finetune,part_f8_finetune,points_cer_f8_finetune,mention
+espace,1384,0.176194,6.524916,914,0.163653,4.309085,"exploratoire, décision 39"
+séparateur .,62,0.007893,0.292301,61,0.010922,0.287587,"exploratoire, décision 39"
+chiffre,28,0.003565,0.132007,37,0.006625,0.174438,"exploratoire, décision 39"
+ponctuation,55,0.007002,0.259299,36,0.006446,0.169723,"exploratoire, décision 39"
+ئ,34,0.004328,0.160294,25,0.004476,0.117863,"exploratoire, décision 39"
+ي / ى,38,0.004838,0.179152,49,0.008774,0.231012,"exploratoire, décision 39"
+même squelette (points),486,0.061871,2.291264,537,0.096150,2.531705,"exploratoire, décision 39"
+autre substitution,2580,0.328453,12.163500,1797,0.321755,8.472019,"exploratoire, décision 39"
+autre suppression,2887,0.367537,13.610862,1831,0.327842,8.632313,"exploratoire, décision 39"
+autre insertion,301,0.038320,1.419075,298,0.053357,1.404931,"exploratoire, décision 39"
+total,7855,1.000000,37.032672,5585,1.000000,26.330677,"exploratoire, décision 39"

@@ -1,0 +1,5 @@
+longueur,lignes,caracteres,cer_baseline,cer_f8_finetune,taux_suppression_baseline,longueur_predite_baseline,taux_suppression_f8_finetune,longueur_predite_f8_finetune,mention
+< 40,210,3959,0.402627,0.320030,0.200556,0.821672,0.143218,0.884567,"exploratoire, décision 39"
+40-49,140,6343,0.330128,0.217405,0.151506,0.867255,0.090493,0.925114,"exploratoire, décision 39"
+50-59,154,8325,0.369610,0.255135,0.169489,0.847087,0.109910,0.904865,"exploratoire, décision 39"
+>= 60,40,2584,0.421827,0.315402,0.179954,0.842879,0.140093,0.876161,"exploratoire, décision 39"
