@@ -387,11 +387,11 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
   - [x] Q4, ي de fin de mot dans Doc 2937 (lecture à l'aveugle). Partie avant la lecture faite (2026-10-19) : page `reports/f13/q4_ya_final/lecture_a_l_aveugle.html`, `analysis.final_ya` ; agrandissement ×3 (×2 testé sur q4_01 : deux points difficiles à distinguer, page de 1 000 px de large). Lecture de l'utilisateur faite (2026-10-19, `jugements.csv`, 40 réponses) : 24 oui, 11 non, 5 incertain. Trois lectures (2 : boîte décalée ; 3 : « autre lettre ? », règle fixée après la lecture 2) et contrôle de sensibilité ; seuls les « oui » stables. Conclusion (2026-10-19, `analysis.final_ya_errors`) : deux points vus sous la fin du mot dans 11 des 18 confusions ي → ى de F8 (lag 5) tirées, aucun point vu dans 1 à 4 ; 3 des 10 ى lus ى avec points visibles ; estimation pondérée 0,60 avec points vus pour les 280 fins de mot (EXPERIMENTS.md).
   - [x] Q1, conventions contre lecture (mode exploratoire du test interne). Étape 1 faite (2026-10-20) : mode exploratoire d'`analysis.error_analysis` (`--exploratoire-test-interne`) : lit les deux seuls `lignes.parquet` de F9 après vérification de leur SHA-256, n'écrit que sous `reports/f13/`, ne charge aucun modèle et n'appelle ni `predict` ni ketos, comptes et catégories seulement (ni IC, ni bootstrap, ni verdict), mention « exploratoire, décision 39 » ; tests dans `tests/test_error_analysis.py`. Lancé le 2026-10-20 : `reports/f13/q1_conventions/test_interne/` (7 CSV, mention « exploratoire, décision 39 » ; totaux 7 855 et 5 585 erreurs, égaux à ceux d'`evaluate`). Page de lecture faite (2026-10-20) : `reports/f13/q1_conventions/lecture/lecture.html`, `analysis.category_check` (100 erreurs, 10 par catégorie, texte seulement). Lecture de l'utilisateur faite (2026-10-20, `reports/f13/q1_conventions/jugements.csv`, commit 85ecff7) : 37 oui, 63 non, 0 incertain ; précisions prises pendant la lecture dans le plan (complément du 2026-10-20). Analyse faite (2026-10-20, `analysis.category_check_results`) : tableaux 1 à 4 (83e811d), annexe stricte (0f17955) et variante ; conclusion descriptive dans EXPERIMENTS.md (taux d'accord brut 0,37, pondéré 0,32 ; environ 79 % du gain sur le test interne vient des catégories de lecture sous les deux regroupements).
   - [x] Q6, Doc 3179 (mode exploratoire du test interne). Partie avant la lecture faite (2026-10-20) : page `reports/f13/q6_doc3179/lecture_a_l_aveugle.html`, `analysis.doc3179` (13 lignes, toutes prises). Image 1 retrouvée par la position dans `test_interne.arrow` (ordre de compilation vérifié texte par texte : une ligne de Doc 3179 a la même vérité terrain qu'une ligne de Doc 3184). Une première génération a chargé le modèle de départ pour lire son codec (via `select_lines`), sans aucune prédiction ; la page a été régénérée avec `select_lines(with_codec=False)` et le chargement de modèle interdit, sorties identiques à l'octet. Lecture de l'utilisateur faite (2026-10-20, `jugements.csv`, 666e109). Tableaux du plan faits (2026-10-20, `analysis.doc3179_results`, 1bc6c36). Conclusion descriptive dans EXPERIMENTS.md : aucune cause établie sur ces 13 lignes.
-  - [ ] Reporter dans le ticket F15, en une seule fois à la fin de F13, toutes les pistes pour F15 notées pendant F13 (EXPERIMENTS.md, PROJECT.md), sans rien appliquer.
+  - [x] Reporter dans le ticket F15, en une seule fois à la fin de F13, toutes les pistes pour F15 notées pendant F13 (EXPERIMENTS.md, PROJECT.md), sans rien appliquer. Fait le 2026-10-20 : section « Pistes issues de F13 » du ticket F15, renvoi à SYNTHESE_F12.md pour les pistes de F12 ; ligne ajoutée au ticket F14 (codec lu sans charger le modèle).
 - **Critères d'acceptation** : pour chaque question, tableaux et CSV de jugement versionnés, ligne dans EXPERIMENTS.md, lecture descriptive sans conclusion au-delà des chiffres et des jugements.
 - **Points de décision** : interprétation de chaque question après la lecture de l'utilisateur ; toute règle de normalisation ou de données suggérée est renvoyée à F15 (nouvelle décision).
 - **Concept à expliquer** : l'alignement de deux chaînes et la matrice de confusion au niveau des caractères (au début de Q1).
-- **Statut** : en cours (cadrage, Q2, Q7, Q5, Q3 et Q4 faits le 2026-10-19, Q1 et Q6 le 2026-10-20). Reste : report des pistes F15 dans le ticket F15, en une seule fois, et clôture de F13, avec l'accord de l'utilisateur.
+- **Statut** : en cours (cadrage, Q2, Q7, Q5, Q3 et Q4 faits le 2026-10-19, Q1 et Q6 le 2026-10-20). Pistes F15 reportées le 2026-10-20. Reste : synthèse et clôture de F13, avec l'accord de l'utilisateur.
 
 ---
 
@@ -403,6 +403,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
   - carte du modèle (*model card*) ;
   - dépôt du modèle sous CC BY-NC-SA (hérité de MAKHZAN), avec le drapeau `use_legacy_polygons` corrigé (décision 36) ;
   - référencement sur HTR-United.
+  - lire le codec du modèle de départ sans le charger, dans tous les modules : `prepare.select_lines` le charge via `base_model.codec_chars` (écarts de Q2, 11b9416, et de Q6, 5236bc4 ; option `with_codec=False` ajoutée en Q6 ; source possible : `reports/codec_coverage.csv`).
 - **Dépend de** : F9 ; F11 s'il est rouvert (décision 41).
 - **Tâches, critères, points de décision** : à préciser selon les résultats. Il faudra au moins choisir le lieu du dépôt (Zenodo, par exemple) et la licence du code.
 - **Concept à expliquer** : ce que contient une carte de modèle, et comment les licences des données se transmettent au modèle.
@@ -422,6 +423,23 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
     3. meilleurs réglages trouvés en F12.
   - Consigner chaque expérience dans EXPERIMENTS.md.
   - Publier le modèle sous CC BY-NC-SA (hérité de MAKHZAN), avec une fiche : données et licences, protocole, CER par écriture, limites, citation.
+- **Pistes issues de F13** (reportées le 2026-10-20, à la fin de F13 ; hypothèses non testées, rien n'est appliqué ; toute règle de normalisation ou de données serait une nouvelle décision, jamais appliquée aux chiffres de F9) :
+  - *Données* :
+    - chiffres : sur le test interne, F8 (lag 5) en lit moins que la baseline (6 sur 43 contre 18) ; chiffres rares dans le train (4) ; hypothèse non établie d'un oubli par l'affinage ; données ou exemples synthétiques contenant des chiffres (proposition ajoutée au report, absente de la conclusion de Q7) (Q7, 5a91fec) ;
+    - séparateurs « . » : peu d'exemples dans le train (329, dont 236 dans Doc 3262) ; sur la validation, les « . » visibles sont souvent non écrits ou lus ه ; ressemblance entre un rond rouge et un ه final (Q3, 04f9e98 ; Q5, 013367f) ;
+    - virgule ، : souvent lue ه (9 sur 36), lien possible avec les séparateurs (Q7, 5a91fec) ;
+    - yāʾ final : train à 82 % de ى en fin de mot (3 037 contre 668 ; 7 manuscrits sur 11), F8 écrit ى pour des yāʾ finaux aux points visibles (Q4, 6736239) ;
+    - écriture mêlée naskh et chikasté (entraînement 100 % naskh) ; pages à l'encre dégradée dans l'entraînement (Q6, 6c08707).
+  - *Conventions et normalisation* :
+    - ي / ى en fin de mot : une règle les fusionnant dans l'évaluation masquerait des erreurs de lecture ; toute règle serait une nouvelle décision (Q4, 6736239) ;
+    - ە presque toujours supprimée (10 sur 11) : convention de transcription possible ; règle de normalisation éventuelle, par décision, jamais rétroactive (Q7, 5a91fec).
+  - *Alignement et catégories* :
+    - un alignement qui traite un signe et son espace collé ensemble ; une catégorie ئ distinguant la hamza seule de la lettre entière (Q1, d1d9526) ;
+    - ه / ة : à examiner, Q1 n'apporte rien de plus (Q1, d1d9526 ; piste non définie dans une conclusion antérieure).
+  - *Relecture avec un lecteur de l'ottoman* :
+    - relecture ciblée de la vérité terrain de Doc 2937 (ى aux points visibles) ; place des points du yāʾ final (Q4, 6736239) ;
+    - espaces de Doc 3179 (Q6, 6c08707).
+- **Pistes issues de F12** : SYNTHESE_F12.md, section 7 (e3424f6) : plafond d'époques, taux 3e-4, augmentation, témoin pour les pages gen2, validation plus large et plusieurs seeds.
 - **Critères d'acceptation** :
   - CER inférieur à 10 % (`evaluate`) sur le nouveau jeu de test réservé, mesuré une seule fois.
   - Modèle publié sous CC BY-NC-SA, avec sa fiche.
