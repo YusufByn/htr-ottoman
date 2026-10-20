@@ -1,0 +1,12 @@
+categorie,points_cer Doc 3179 baseline,points_cer Doc 3179 f8_finetune,points_cer autres manuscrits baseline,points_cer autres manuscrits f8_finetune,mention
+espace,7.859532,8.862876,6.486198,4.176976,"exploratoire, décision 39"
+séparateur .,0.167224,0.000000,0.295930,0.295930,"exploratoire, décision 39"
+chiffre,0.167224,0.000000,0.130985,0.179498,"exploratoire, décision 39"
+ponctuation,0.334448,0.000000,0.257119,0.174647,"exploratoire, décision 39"
+ئ,0.167224,0.000000,0.160093,0.121283,"exploratoire, décision 39"
+ي / ى,0.000000,0.000000,0.184350,0.237714,"exploratoire, décision 39"
+même squelette (points),1.672241,1.672241,2.309222,2.556639,"exploratoire, décision 39"
+autre substitution,23.745819,20.903010,11.827488,8.111386,"exploratoire, décision 39"
+autre suppression,20.066890,16.555184,13.423568,8.402464,"exploratoire, décision 39"
+autre insertion,2.341137,1.505017,1.392325,1.402028,"exploratoire, décision 39"
+total,56.521739,49.498328,36.467278,25.658565,"exploratoire, décision 39"

@@ -1,0 +1,9 @@
+line_id,identifiant,line_index,caracteres,cer_baseline,S_baseline,D_baseline,I_baseline,erreurs_baseline,cer_f8_finetune,S_f8_finetune,D_f8_finetune,I_f8_finetune,erreurs_f8_finetune,mention
+eSc_line_02e834b6,q6_11,12,57,0.736842,22,20,0,42,0.684211,13,24,2,39,"exploratoire, décision 39"
+eSc_line_6c10269a,q6_03,11,48,0.625000,10,20,0,30,0.666667,11,20,1,32,"exploratoire, décision 39"
+eSc_line_b1da97ee,q6_12,1,22,0.636364,5,9,0,14,0.590909,8,5,0,13,"exploratoire, décision 39"
+eSc_line_6abd803d,q6_07,7,52,0.634615,17,16,0,33,0.557692,19,10,0,29,"exploratoire, décision 39"
+eSc_line_384a32b4,q6_02,8,58,0.620690,20,16,0,36,0.534483,20,11,0,31,"exploratoire, décision 39"
+eSc_line_acddb4e9,q6_01,10,53,0.528302,17,8,3,28,0.490566,13,12,1,26,"exploratoire, décision 39"
+eSc_line_cd8b7680,q6_04,5,48,0.541667,18,7,1,26,0.479167,16,7,0,23,"exploratoire, décision 39"
+eSc_line_fe0d604c,q6_08,9,54,0.555556,17,12,1,30,0.462963,12,12,1,25,"exploratoire, décision 39"

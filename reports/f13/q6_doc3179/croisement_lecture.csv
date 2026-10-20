@@ -1,0 +1,6 @@
+question,réponse,lignes,caracteres,identifiants,cer_baseline,cer_f8_finetune,mention
+D,oui,10,474,q6_02 q6_03 q6_04 q6_06 q6_07 q6_08 q6_09 q6_10 q6_11 q6_13,0.573840,0.506329,"exploratoire, décision 39"
+D,non,3,124,q6_01 q6_05 q6_12,0.532258,0.451613,"exploratoire, décision 39"
+E,oui,2,97,q6_04 q6_05,0.515464,0.412371,"exploratoire, décision 39"
+E,non,10,448,q6_02 q6_03 q6_06 q6_07 q6_08 q6_09 q6_10 q6_11 q6_12 q6_13,0.580357,0.513393,"exploratoire, décision 39"
+E,incertain,1,53,q6_01,0.528302,0.490566,"exploratoire, décision 39"
