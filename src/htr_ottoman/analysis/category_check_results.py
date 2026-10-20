@@ -14,9 +14,15 @@ faite, aucun modèle. Comptes et taux seulement : ni IC, ni verdict.
 - Par modèle : comptes seulement (pas de taux par modèle, précision du 2026-10-20).
 - Sommes de points de CER par groupe, sous les deux regroupements : celui du plan
   (124a7c8) et celui de la précision du 2026-10-20 (9563904, espace à part).
+- Annexe, tableau 5, ajouté après avoir vu les tableaux 1 à 4 : les « non » de chaque
+  catégorie ventilés selon le commentaire, par simple présence d'un libellé fixé avant
+  la lecture (COMMENT_TYPES ; casse ignorée) ; un « non » peut porter plusieurs
+  libellés (compté dans chacun) ; sans aucun libellé : « autre / sans commentaire »,
+  dont les commentaires bruts sont listés à part.
 
 Sorties (reports/f13/q1_conventions/, mention « exploratoire, décision 39 ») :
-accord_par_categorie.csv, accord_par_modele.csv, accord_global.csv, regroupements.csv.
+accord_par_categorie.csv, accord_par_modele.csv, accord_global.csv, regroupements.csv ;
+annexe_non_par_commentaire.csv et annexe_commentaires_autre.csv (tableau 5).
 
 Usage : uv run python -m htr_ottoman.analysis.category_check_results
 """
@@ -31,6 +37,10 @@ JUDGMENTS = Q1 / "jugements.csv"
 TEST = Q1 / "test_interne" / "categories.csv"
 VALIDATION = REPORTS / "erreurs" / "f8_finetune_baseline" / "val" / "categories.csv"
 MODELS = ("baseline", "f8_finetune")
+# Types de commentaire fixés avant la lecture (9563904), plus celui du complément 7c2a99d
+COMMENT_TYPES = ("décalage", "zone brouillée", "petite marque", "signe supprimé avec un espace")
+OTHER = "autre / sans commentaire"
+ANNEX_NOTE = "ajouté après avoir vu les tableaux 1 à 4"
 GROUPINGS = {
     "plan (124a7c8)": {
         "conventions": ["espace", "séparateur .", "ي / ى", "ئ", "chiffre", "ponctuation"],
@@ -98,6 +108,20 @@ def groupings(categories: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def non_by_comment(table: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Tableau 5 : « non » par catégorie et par libellé présent dans le commentaire, et commentaires « autre »."""
+    non = table[table["réponse"] == "non"].copy()
+    comments = non["commentaire"].str.lower()
+    found = pd.DataFrame({t: comments.str.contains(t, regex=False) for t in COMMENT_TYPES}, index=non.index)
+    found[OTHER] = ~found.any(axis=1)
+    counts = found.groupby(non["categorie"]).sum().reindex(CATEGORIES, fill_value=0).astype(int)
+    counts.insert(0, "non", non.groupby("categorie").size().reindex(CATEGORIES, fill_value=0))
+    counts["plusieurs libellés"] = found[list(COMMENT_TYPES)].sum(axis=1).gt(1).groupby(non["categorie"]).sum() \
+        .reindex(CATEGORIES, fill_value=0).astype(int)
+    other = non.loc[found[OTHER], ["identifiant", "categorie", "commentaire"]].reset_index(drop=True)
+    return counts, other
+
+
 def main() -> None:
     table = judged()
     categories = by_category(table)
@@ -111,6 +135,14 @@ def main() -> None:
     with pd.option_context("display.width", 250, "display.max_columns", 30):
         for out in (categories, models, total, groups):
             print(out.to_string(float_format=lambda x: f"{x:.3f}"), "\n")
+    annex, other = non_by_comment(table)
+    annex.assign(note=ANNEX_NOTE, mention=MENTION).to_csv(Q1 / "annexe_non_par_commentaire.csv",
+                                                          lineterminator="\n")
+    other.assign(note=ANNEX_NOTE, mention=MENTION).to_csv(Q1 / "annexe_commentaires_autre.csv", index=False,
+                                                          lineterminator="\n")
+    with pd.option_context("display.width", 250, "display.max_columns", 30):
+        print(annex.to_string(), "\n")
+        print(other.to_string(index=False), "\n")
     print(f"-> {Q1.relative_to(ROOT)}")
 
 

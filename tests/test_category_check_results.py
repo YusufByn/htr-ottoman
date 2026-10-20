@@ -3,8 +3,9 @@ import pandas as pd
 import pytest
 
 import htr_ottoman.analysis.category_check_results as results
-from htr_ottoman.analysis.category_check_results import (GROUPINGS, JUDGMENTS, TEST, VALIDATION, by_category,
-                                                         by_model, groupings, judged, overall)
+from htr_ottoman.analysis.category_check_results import (GROUPINGS, JUDGMENTS, OTHER, TEST, VALIDATION,
+                                                         by_category, by_model, groupings, judged, non_by_comment,
+                                                         overall)
 from htr_ottoman.analysis.error_analysis import CATEGORIES
 
 data_available = pytest.mark.skipif(not all(p.exists() for p in (JUDGMENTS, TEST, VALIDATION)),
@@ -42,3 +43,17 @@ def test_tables():
     for grouping, g in groups.groupby("regroupement"):
         assert g["points test interne f8_finetune"].sum() == pytest.approx(26.331, abs=1e-3)  # F9 : 26,3 %
         assert g["part du gain validation"].sum() == pytest.approx(1)
+
+
+def test_non_by_comment_uses_label_presence_only():
+    table = pd.DataFrame({
+        "identifiant": ["a", "b", "c", "d", "e"],
+        "categorie": ["espace", "espace", "ponctuation", "ponctuation", "espace"],
+        "réponse": ["non", "non", "non", "non", "oui"],
+        "commentaire": ["Décalage, zone brouillée", "", "signe supprimé avec un espace", "point supprimé avec un espace",
+                        "décalage"],
+    })
+    counts, other = non_by_comment(table)
+    assert counts.loc["espace", ["non", "décalage", "zone brouillée", OTHER, "plusieurs libellés"]].tolist() == [2, 1, 1, 1, 1]
+    assert counts.loc["ponctuation", ["non", "signe supprimé avec un espace", OTHER]].tolist() == [2, 1, 1]
+    assert other["identifiant"].tolist() == ["b", "d"]  # libellé absent : « autre », sans interprétation
