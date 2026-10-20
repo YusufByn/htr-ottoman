@@ -67,6 +67,8 @@ Tout modèle dérivé de MAKHZAN est sous CC BY-NC-SA. Détails et MD5 : [README
 | Arrêt anticipé avec plafond d'époques (lag 15, 150 époques), que kraken 7.1.1 ne permet pas seul : `ketos_capped`, choisi par `train` | fait (F12, décision 43) |
 | Contrôle de déterminisme (mêmes métriques époque par époque) : `analysis.same_curve` | fait (F12) |
 | Jeu d'entraînement sans les pages gen2 (variante C, décision 42), compilé à part : `prepare_sans_gen2` | fait (F12) : 2 503 lignes (254 retirées, 18 pages) |
+| Mode exploratoire du test interne (prédictions sauvegardées de F9 seulement, SHA-256 vérifiés, jamais `predict`, sorties sous `reports/f13/`) : `analysis.error_analysis --exploratoire-test-interne` | fait (F13, décision 39 et complément du 2026-10-19) |
+| Pages de lecture humaine (échantillon seed 42, page HTML autonome, réponses gardées dans le navigateur, CSV de jugements versionné) et analyses après lecture : `analysis.period_ink` / `period_errors` (Q5), `red_ink` / `red_ink_errors` (Q3), `final_ya` / `final_ya_errors` (Q4), `category_check` / `category_check_results` (Q1), `doc3179` / `doc3179_results` (Q6) ; `ketos_char_count` (Q2), `rare_chars` (Q7) | fait (F13) |
 | Téléchargement d'Akis (git LFS, SHA-256 vérifié contre le pointeur), table des lignes et inventaire : `data.akis`, `analysis.akis_inventory` | fait (F10, vérification ; Akis écarté, décision 40) |
 
 ## 5. État d'avancement
@@ -124,6 +126,16 @@ Aucune variante n'est établie meilleure ; « pas de différence établie » veu
 
 Réduction relative : 28,9 % ; 17 manuscrits améliorés sur 17 (écart de −5,6 à −14,7 points). Par écriture, sans IC ni conclusion (baseline → F8) : divani 39,2 → 28,2 %, nastaliq 41,2 → 29,6, taliq 35,1 → 24,9, riqa 26,4 → 18,8, naskh_varied 46,1 → 40,5, naskh_shikaste_mixed 56,5 → 49,5. Test d'oubli des écritures non naskh (décision 37) : oubli non établi. Substitutions, suppressions, insertions : 2 793 / 2 418 / 374 contre 3 820 / 3 631 / 404. `ketos test` : 26,31 % contre 26,33 % pour `evaluate`. Détail : `reports/comparaisons/f8_finetune_baseline/test_interne/` et [EXPERIMENTS.md](EXPERIMENTS.md).
 
+**Analyse d'erreurs (F13)**, descriptive, sans IC ni verdict ; test interne en mode exploratoire (décision 39) ; synthèse complète dans [SYNTHESE_F13.md](SYNTHESE_F13.md) :
+
+- **Q2** : l'écart de 2 caractères entre `ketos test` et `evaluate` sur le test interne vient de 2 ZWNJ retirés par le réordonnancement BiDi de kraken ; 5 erreurs d'écart restent non expliquées (0,02 point).
+- **Q7** : 8 caractères du train absents de la validation, 12 caractères du test interne absents du train (dont 3 hors codec) ; sur le test interne, F8 (lag 5) lit 6 chiffres sur 43 (baseline 18). Hypothèse non établie : oubli par l'affinage.
+- **Q5** : 35 des 40 « . » tirés dans le train ont une marque visible ; l'hypothèse de la décision 21 (« . » souvent sans encre) n'est pas confirmée.
+- **Q3** : les points rouges de Doc 2937 restent visibles dans l'image reçue par le modèle ; F8 (lag 5) n'en lit que 5 sur 35, souvent remplacés par ه : les oublis relèvent de la lecture, pas de l'image.
+- **Q4** : dans 11 des 18 confusions ي → ى tirées dans Doc 2937, deux points sont visibles sous la fin du mot ; convention différente entre Doc 2937 (ي 209, ى 106 en fin de mot) et Doc 2939 (ى 375, ي 4).
+- **Q1** : environ 79 % du gain de F8 (lag 5) sur le test interne vient des catégories de lecture des lettres (67 % en validation), environ 21 % des espaces, environ 1 % des conventions au sens strict ; les catégories automatiques ne sont justes que pour les erreurs isolées (accord 0,37 brut, 0,32 pondéré) : ce sont des ordres de grandeur.
+- **Q6** : Doc 3179, pire manuscrit du test interne (49,5 %), a une encre dégradée sur presque toute sa page ; aucune cause établie sur ses 13 lignes.
+
 ## 7. Limites et questions ouvertes
 
 - **Poids de *Revnaḳ-ı Būstān*** : environ 63 % des lignes d'entraînement (1 755 / 2 771), surtout Doc 3263. Expérience possible plus tard pour limiter sa part.
@@ -138,10 +150,11 @@ Réduction relative : 28,9 % ; 17 manuscrits améliorés sur 17 (écart de −5,
 - **Conventions d'encodage du modèle de départ** : il écrit ی et ک (imprimé OpenITI) là où MAKHZAN écrit ي/ى et ك. Sans les règles 4 et 5, sa baseline serait pénalisée d'environ 8 points (décision 29) ; tout CER calculé sans `normalize`, comme celui de `ketos test`, n'est pas comparable.
 - **Peu de données** : 2 757 lignes d'entraînement compilées.
 - **CER de reconnaissance seule** : mesuré sur la segmentation de la vérité terrain (décision 31), il est plus bas que celui d'une chaîne complète sur une page brute.
-- **Origine du gain de F9 non établie** : une partie peut venir de l'adoption des conventions de transcription de MAKHZAN (espaces, séparateurs, choix de lettres) plutôt que d'une meilleure lecture ; le gain presque uniforme entre écritures invite à le mesurer (F13, sur les prédictions sauvegardées).
+- **Origine du gain de F9 non établie** : une partie peut venir de l'adoption des conventions de transcription de MAKHZAN (espaces, séparateurs, choix de lettres) plutôt que d'une meilleure lecture ; le gain presque uniforme entre écritures invite à le mesurer. F13 (Q1) : environ 79 % du gain sur le test interne vient des catégories de lecture des lettres, sous deux regroupements ; mais les catégories automatiques ne sont justes que pour les erreurs isolées, et la part des espaces (environ 21 %) ne sépare pas convention et lecture sans image : ordres de grandeur.
 - **Comparaisons de F12 limitées** (SYNTHESE_F12.md) : validation de 2 manuscrits, 100 % naskh, avec un bootstrap par page un peu optimiste ; un seul entraînement par variante ; plafond de 150 époques atteint en progrès par B, C et les seeds 43 et 44 de la référence ; tous les entraînements sur un seul Mac, reproductibilité non vérifiée sur une autre machine.
 - **Test interne clos** (décision 39) : les modèles suivants (F12, F15) ne pourront être comparés à F8 que sur la validation, et sur un jeu externe seulement si F11 est rouvert (décision 41).
 - **Écart de 2 caractères** entre `ketos test` (21 209) et `evaluate` (21 211) sur le test interne, expliqué en F13 (Q2) : le réordonnancement BiDi de kraken (`--reorder`) retire les 2 ZWNJ de la vérité terrain (2 lignes de Doc 3215), qu'`evaluate` compte ; aucun écart sur la validation, qui n'a pas de ZWNJ. `evaluate` reste le CER de référence (décision 29). Reste un écart de 5 erreurs (5 580 contre 5 585, 0,02 point), dont au plus 2 dues aux ZWNJ, le reste probablement à l'alignement : non vérifiable sans relancer `ketos test` sur le test interne, interdit par la décision 39.
+- **Analyse d'erreurs de F13** (SYNTHESE_F13.md) : un seul lecteur, qui ne lit pas l'ottoman ; échantillons de 10 à 40 entrées (13 lignes en Q6) ; emplacements estimés ; critères parfois précisés pendant la lecture, lecture de Q1 aidée par le chat Claude du projet ; le modèle de départ a été chargé pour lire son codec (sans prédiction) par plusieurs modules, dont `ketos_char_count` sur le test interne (Q2) ; à corriger en F14.
 - **Ventilations du test interne** : écriture et relecture se recouvrent (manuscrits différents dans chaque groupe) et la plupart des écritures n'ont que 1 ou 2 manuscrits, sans intervalle. Ces écarts sont des indications, pas des effets démontrés.
 - **Drapeau « anciens polygones »** : kraken 7.1.1 le perd en convertissant le modèle entraîné ; `predict` impose la découpe du projet, et le modèle publié devra être corrigé (décision 36, F14).
 - **Durée d'entraînement** : 4 h 38 pour F8 sur MacBook Air (MPS), dont 7 min de chargement par lancement ; les époques ont ralenti de 111 à 151 s après la première, cause non établie.
@@ -151,6 +164,6 @@ Réduction relative : 28,9 % ; 17 manuscrits améliorés sur 17 (écart de −5,
 
 ## 8. Prochaines étapes
 
-Voir [ROADMAP.md](ROADMAP.md). F10 terminé : aucun jeu externe retenu (décisions 40 et 41). F11 en attente de réponses (Osmanlica.com, auteurs de CHURRO). F12 terminé (2026-10-19) : bruit mesuré (lag 5, puis lag 15 avec plafond 150, S = 0,5 point) et trois variantes comparées à F8 lag 15 seed 42 ; aucune n'est établie meilleure (B et A : pas de différence établie ; C : régression) ; synthèse dans [SYNTHESE_F12.md](SYNTHESE_F12.md). Modèle publié en F14 : F8 (lag 5), décision 44. **Prochain ticket : F13.** Tickets dont les dépendances sont remplies : F13 (analyse d'erreurs, dont les deux points notés en F9), F14 (publication, qui dépend désormais de F9).
+Voir [ROADMAP.md](ROADMAP.md). F10 terminé : aucun jeu externe retenu (décisions 40 et 41). F11 en attente de réponses (Osmanlica.com, auteurs de CHURRO). F12 terminé (2026-10-19) : bruit mesuré (lag 5, puis lag 15 avec plafond 150, S = 0,5 point) et trois variantes comparées à F8 lag 15 seed 42 ; aucune n'est établie meilleure (B et A : pas de différence établie ; C : régression) ; synthèse dans [SYNTHESE_F12.md](SYNTHESE_F12.md). Modèle publié en F14 : F8 (lag 5), décision 44. F13 terminé (2026-10-20) : analyse d'erreurs descriptive en sept questions (Q1 à Q7), synthèse dans [SYNTHESE_F13.md](SYNTHESE_F13.md), pistes reportées dans le ticket F15. **Prochain ticket : F14** (publication).
 
 Journal des décisions : [DECISIONS.md](DECISIONS.md).
