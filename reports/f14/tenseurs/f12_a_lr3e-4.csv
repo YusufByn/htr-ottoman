@@ -1,0 +1,11 @@
+best,checkpoint,epoque,tenseurs_best,tenseurs_checkpoint,communs,identiques,tous_identiques
+best_0.8489.safetensors,checkpoint_58-0.8471.ckpt,59,34,34,34,0,False
+best_0.8489.safetensors,checkpoint_67-0.8464.ckpt,68,34,34,34,0,False
+best_0.8489.safetensors,checkpoint_69-0.8467.ckpt,70,34,34,34,0,False
+best_0.8489.safetensors,checkpoint_70-0.8471.ckpt,71,34,34,34,0,False
+best_0.8489.safetensors,checkpoint_71-0.8489.ckpt,72,34,34,34,34,True
+best_0.8489.safetensors,checkpoint_72-0.8464.ckpt,73,34,34,34,0,False
+best_0.8489.safetensors,checkpoint_77-0.8478.ckpt,78,34,34,34,0,False
+best_0.8489.safetensors,checkpoint_81-0.8478.ckpt,82,34,34,34,0,False
+best_0.8489.safetensors,checkpoint_85-0.8464.ckpt,86,34,34,34,0,False
+best_0.8489.safetensors,checkpoint_86-0.8487.ckpt,87,34,34,34,0,False
