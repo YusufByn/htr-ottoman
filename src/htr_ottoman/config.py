@@ -40,4 +40,4 @@ BASE_MODEL_CODEC = REPORTS / "codec_modele_depart.json"  # codec du modèle de d
 # F14 : modèle publié (décision 44), copie de F8 (lag 5) au drapeau « anciens polygones » corrigé (décisions 36 et 45)
 PUBLISHED_SOURCE = MODELS / "f8_finetune" / "best_0.8365.safetensors"
 PUBLICATION_DIR = MODELS / "f14_publication"
-PUBLISHED_MODEL = PUBLICATION_DIR / "f8_finetune_legacy_polygons.safetensors"  # nom provisoire (arrêt B)
+PUBLISHED_MODEL = PUBLICATION_DIR / "ota_naskh_makhzan_v0.1.0.safetensors"  # nom fixé le 2026-10-20 (décision 45, complément)
