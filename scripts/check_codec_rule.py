@@ -3,7 +3,8 @@
 Compare `select_lines(with_codec=True)` et `select_lines(with_codec=False)` sur le train
 et la validation. Les lignes du test interne sont retirées de la table avant l'appel :
 le modèle de départ (chargé pour lire son codec) ne voit jamais le test interne (décision 39).
-Aucune prédiction. Ticket F14, complément du 2026-10-20.
+Aucune prédiction. Ticket F14, complément du 2026-10-20. Depuis F14, le codec est lu dans
+reports/codec_modele_depart.json : plus aucun modèle chargé ni kraken importé.
 """
 import pandas as pd
 

@@ -34,3 +34,10 @@ def test_codec(model):
     assert len(codec) == 196
     assert all(len(k) == 1 for k in codec)
     assert {"ا", "ٓ", "ٔ", ".", " "} <= set(codec)  # alif, madda, hamza, point, espace
+
+
+def test_codec_file_matches_loaded_model(model):
+    # F14 : le codec versionné (lu sans charger le modèle) est celui du modèle chargé
+    from htr_ottoman.base_model import codec_chars, codec_labels
+
+    assert codec_chars() == frozenset(codec_labels(model))

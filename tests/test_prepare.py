@@ -1,4 +1,6 @@
 """Tests de la préparation pour kraken (htr_ottoman.prepare), sautés si les jeux ne sont pas compilés."""
+import subprocess
+import sys
 import unicodedata
 
 import pandas as pd
@@ -99,3 +101,17 @@ def test_kraken_reads_sample(name):
     if not BASE_MODEL.exists():
         pytest.skip("modèle de départ absent")
     assert verify_with_kraken(name, limit=20) == 20
+
+
+def test_select_lines_never_imports_kraken():
+    # F14 : codec lu dans reports/codec_modele_depart.json, aucun modèle chargé
+    code = """
+import sys
+from htr_ottoman.prepare import select_lines
+lines = select_lines()
+print(sorted(lines[lines["exclusion"].isna()].groupby("split").size().items()), "kraken" in sys.modules)
+"""
+    result = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True)
+    assert result.returncode == 0, result.stderr[-2000:]
+    assert result.stdout.split()[-1] == "False"
+    assert "('test_interne', 544), ('train', 2757), ('val', 412)" in result.stdout

@@ -35,3 +35,4 @@ AKIS_LINES = AKIS_INTERIM / "akis_lines.parquet"  # une ligne par image de ligne
 # Modèle de départ : OpenITI ottoman imprimé (DOI 10.5281/zenodo.7050342, CC0)
 BASE_MODEL_DIR = MODELS / "openiti_ottoman_print"
 BASE_MODEL = BASE_MODEL_DIR / "ottoman_best.mlmodel"
+BASE_MODEL_CODEC = REPORTS / "codec_modele_depart.json"  # codec du modèle de départ, lu sans charger le modèle (F14)
