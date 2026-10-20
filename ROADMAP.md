@@ -435,7 +435,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
     - ە presque toujours supprimée (10 sur 11) : convention de transcription possible ; règle de normalisation éventuelle, par décision, jamais rétroactive (Q7, 5a91fec).
   - *Alignement et catégories* :
     - un alignement qui traite un signe et son espace collé ensemble ; une catégorie ئ distinguant la hamza seule de la lettre entière (Q1, d1d9526) ;
-    - ه / ة : à examiner, Q1 n'apporte rien de plus (Q1, d1d9526 ; piste non définie dans une conclusion antérieure).
+    - ه / ة : à examiner, Q1 n'apporte rien de plus (Q1, d1d9526 ; piste non définie dans une conclusion antérieure ; origine : remarque faite dans le chat pendant la lecture de Q1 ; le commentaire de q1_064 est vide, 85ecff7).
   - *Relecture avec un lecteur de l'ottoman* :
     - relecture ciblée de la vérité terrain de Doc 2937 (ى aux points visibles) ; place des points du yāʾ final (Q4, 6736239) ;
     - espaces de Doc 3179 (Q6, 6c08707).
