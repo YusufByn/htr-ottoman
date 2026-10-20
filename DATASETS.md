@@ -64,6 +64,7 @@ Critères : 1 manuscrit ottoman, 2 vérité terrain humaine en écriture arabe, 
 - **Recouvrement** : provenance des documents non indiquée, donc recouvrement avec MAKHZAN invérifiable. Il est faible a priori : les 30 manuscrits ottomans de MAKHZAN sont tous des œuvres titrées, alors que RikaOCR décrit les 85 unités comme des documents. Aucun risque avec le modèle de départ, qui est un modèle d'imprimé.
 - **Remarques** : l'écriture rik'a est absente de l'entraînement du projet (100 % naskh). RikaOCR s'en sert comme données d'entraînement.
 - **Statut** : le plus proche des critères au niveau de la ligne. Mail envoyé le 2026-09-28 à bilgi@osmanlica.com (licence, droit de publier des scores, origine de la vérité terrain, provenance des documents, citation) ; en attente de réponse. Décision 41.
+- **Complément (2026-10-20)** : aucune réponse d'Osmanlica.com au 2026-10-20 (mail du 2026-09-28). F11 est clos sans jeu externe (ROADMAP, ticket F11). Licence et origine de la vérité terrain restent inconnues : le jeu n'est pas utilisé. Une réponse tardive ne rouvrirait pas F11 ; elle alimenterait F15, avec un pré-enregistrement committé avant toute utilisation, et aucune donnée ne serait utilisée sans réponse écrite.
 - **Autres jeux du même fournisseur**, non retenus : deux jeux imprimés naskh (21 pages, 376 lignes ; 21 pages, 436 lignes) ; un jeu de translittération (103 pages, 2 314 lignes, sans description des images).
 
 ### 3.4 CHURRO, sous-ensemble ottoman : mémoires d'Osman Ağa de Timişoara
@@ -77,6 +78,7 @@ Critères : 1 manuscrit ottoman, 2 vérité terrain humaine en écriture arabe, 
 - **Recouvrement** : aucun avec MAKHZAN (cote, bibliothèque et titre vérifiés dans les métadonnées de MAKHZAN 2026.1.2 : ses deux seuls documents de la British Library sont en persan et en arabe). Aucun avec le modèle de départ.
 - **Limites** : un seul manuscrit d'une seule main, donc pas d'intervalle de confiance par manuscrit ; alignement texte-lignes à faire, ou CER par page qui inclurait les erreurs de segmentation (contraire à la décision 31).
 - **Statut** : mail envoyé le 2026-09-28 à Merve Tekgürler, Sina J. Semnani en copie (licence du sous-ensemble ottoman, compte tenu des sources contradictoires ; existence d'une transcription alignée par ligne ; fidélité à la page de la transcription issue de l'édition de 1980) ; en attente de réponse. Décision 41.
+- **Complément (2026-10-20)** : aucune réponse des auteurs de CHURRO au 2026-10-20 (mail du 2026-09-28). F11 est clos sans jeu externe (ROADMAP, ticket F11). Licence du sous-ensemble ottoman et fidélité de la vérité terrain à la page restent inconnues : le jeu n'est pas utilisé. Une réponse tardive ne rouvrirait pas F11 ; elle alimenterait F15, avec un pré-enregistrement committé avant toute utilisation, et aucune donnée ne serait utilisée sans réponse écrite.
 
 ### 3.5 RikaOCR
 

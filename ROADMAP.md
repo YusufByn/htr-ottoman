@@ -18,7 +18,7 @@ Statuts : à faire, en cours, en attente, fait. Dernière mise à jour : 2026-09
 | F8 | Premier fine-tuning | F7 | fait |
 | F9 | Évaluation interne du modèle affiné | F5, F8 | fait |
 | F10 | Jeu de test externe (aucun retenu, décisions 40 et 41) | F1, F5 | fait |
-| F11 | Évaluation externe | F7, F9, F10 | en attente |
+| F11 | Évaluation externe | F7, F9, F10 | clos le 2026-10-20 sans jeu externe |
 | F12 | Expériences complémentaires | F9 | fait |
 | F13 | Analyse d'erreurs | F9 | fait |
 | F14 | Publication | F9 (F11 s'il est rouvert) | à faire |
@@ -320,6 +320,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
 - **Points de décision** : aucun réglage ne doit dépendre de ces résultats (évaluation finale uniquement).
 - **Concept à expliquer** : validité externe, et comment comparer honnêtement avec des résultats publiés.
 - **Statut** : en attente (décision 41). Aucun jeu externe ne remplit les critères ; le test interne (F9) est le résultat principal de généralisation. Mails envoyés le 2026-09-28, réponses attendues d'Osmanlica.com (jeu rik'a : licence, droit de publier des scores, origine de la vérité terrain, provenance des documents) et des auteurs de CHURRO (licence du sous-ensemble ottoman, contradictoire selon les sources ; transcription alignée par ligne ; fidélité à la page de l'édition de Kreutel, 1980). À rouvrir avec un pré-enregistrement si une réponse permet un test propre.
+- **Statut (2026-10-20)** : clos le 2026-10-20 sans jeu externe (remplace le statut « en attente » ci-dessus, gardé pour l'historique). Raison : aucune réponse au 2026-10-20, ni d'Osmanlica.com ni des auteurs de CHURRO, aux mails du 2026-09-28 ; sans réponse écrite, la licence et l'origine de la vérité terrain de ces deux jeux restent inconnues, et aucune donnée n'est utilisée. Le test interne (F9) reste le résultat principal de généralisation (décision 41). **Règle** : une réponse tardive ne rouvre pas F11 ; elle alimente F15, et le jeu ne peut servir qu'après un pré-enregistrement committé avant toute utilisation. Aucune donnée n'est utilisée sans réponse écrite. Détails : DATASETS.md, sections 3.3 et 3.4 (compléments du 2026-10-20).
 
 ---
 
