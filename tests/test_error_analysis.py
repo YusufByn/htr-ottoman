@@ -1,11 +1,20 @@
-"""Tests de htr_ottoman.analysis.error_analysis : alignement, catégories, garde-fou, tableaux versionnés."""
+"""Tests de htr_ottoman.analysis.error_analysis : alignement, catégories, garde-fous, tableaux versionnés,
+mode exploratoire du test interne (F13, décision 39)."""
 import pandas as pd
 import pytest
 
+import json
+import re
+import shutil
+import subprocess
+import sys
+
+import htr_ottoman.analysis.error_analysis as error_analysis
 from htr_ottoman.analysis.error_analysis import (
-    _marked, align, category, check_split, line_errors, tables, write_tables,
+    EXPLORATORY_INPUTS, MENTION, _marked, align, analyse, category, check_split, line_errors, tables, write_html,
+    write_tables,
 )
-from htr_ottoman.config import REPORTS
+from htr_ottoman.config import MAKHZAN_PROCESSED, REPORTS
 from htr_ottoman.evaluate import edit_counts
 from htr_ottoman.normalize import normalize
 
@@ -87,3 +96,107 @@ def test_versioned_tables_are_reproduced(tmp_path):
     write_tables(out, tmp_path)
     for path in tmp_path.glob("*.csv"):
         assert path.read_bytes() == (OUTPUT / path.name).read_bytes(), path.name
+
+
+@pytest.mark.skipif(not all((d / "lignes.parquet").exists() for d in VAL.values())
+                    or not (MAKHZAN_PROCESSED / "val.arrow").exists(), reason="évaluations ou jeu compilé absents")
+def test_versioned_page_is_reproduced(tmp_path):
+    names = ("baseline", "f8_finetune")
+    out = tables(pd.read_parquet(VAL["baseline"] / "lignes.parquet"),
+                 pd.read_parquet(VAL["f8_finetune"] / "lignes.parquet"), names)
+    write_html(out["pires_lignes"], names, tmp_path)
+    assert (tmp_path / "pires_lignes.html").read_bytes() == (OUTPUT / "pires_lignes.html").read_bytes()
+
+
+# Mode exploratoire du test interne (F13, complément du 2026-10-19 à la décision 39)
+TEST_DIRS = list(EXPLORATORY_INPUTS)
+f9_available = pytest.mark.skipif(not all((d / "lignes.parquet").exists() for d in TEST_DIRS),
+                                  reason="prédictions sauvegardées de F9 absentes")
+FORBIDDEN_MODULES = ("htr_ottoman.predict", "kraken", "torch")
+CHILD = """
+import json, os, subprocess, sys
+from pathlib import Path
+def forbidden(*args, **kwargs):
+    raise RuntimeError("sous-processus interdit en mode exploratoire")
+subprocess.Popen = subprocess.run = subprocess.call = subprocess.check_output = os.system = forbidden
+import htr_ottoman.analysis.error_analysis as ea
+root = Path(sys.argv[1])
+ea.EXPLORATORY_ROOT = root
+reference, model = ea.EXPLORATORY_INPUTS
+ea.analyse(reference, model, root / "q1" / "test_interne", exploratory=True)
+print(json.dumps(sorted(m for m in %r if m in sys.modules)))
+""" % (FORBIDDEN_MODULES,)
+
+
+@pytest.fixture(scope="module")
+def exploratory_run(tmp_path_factory):
+    """Le mode exploratoire en entier, dans un autre processus : aucun sous-processus permis."""
+    root = tmp_path_factory.mktemp("f13")
+    result = subprocess.run([sys.executable, "-c", CHILD, str(root)], capture_output=True, text=True)
+    assert result.returncode == 0, result.stderr[-2000:]
+    return root / "q1" / "test_interne", json.loads(result.stdout.strip().splitlines()[-1])
+
+
+@f9_available
+def test_exploratory_never_predicts(exploratory_run):
+    output, loaded = exploratory_run
+    assert loaded == []  # ni predict, ni kraken, ni torch importés ; aucun sous-processus (ketos) lancé
+    assert sorted(p.name for p in output.iterdir()) == sorted(
+        f"{n}.csv" for n in ("categories", "categories_par_manuscrit", "categories_par_operation", "operations",
+                             "par_longueur", "par_manuscrit", "pires_lignes"))  # pas de page : aucune image lue
+
+
+@f9_available
+def test_exploratory_counts_only(exploratory_run):
+    output, _ = exploratory_run
+    forbidden = {"ic", "bootstrap", "verdict", "intervalle", "borne", "seuil", "difference", "différence", "p"}
+    for path in output.glob("*.csv"):
+        table = pd.read_csv(path)
+        assert (table["mention"] == MENTION).all(), path.name
+        tokens = {t for c in table.columns for t in re.split(r"[_ .]", c.lower())}
+        assert not tokens & forbidden, (path.name, tokens & forbidden)
+    total = pd.read_csv(output / "categories.csv", index_col=0).loc["total"]
+    lines = {d.parent.name: pd.read_parquet(d / "lignes.parquet") for d in TEST_DIRS}
+    assert total["erreurs_baseline"] == lines["baseline"]["errors"].sum()  # mêmes erreurs qu'evaluate
+    assert total["erreurs_f8_finetune"] == lines["f8_finetune"]["errors"].sum()
+
+
+@f9_available
+def test_exploratory_refuses_output_outside_f13(tmp_path):
+    for output in (tmp_path / "q1", REPORTS / "erreurs" / "test_interne"):
+        with pytest.raises(ValueError, match="n'écrit que sous"):
+            analyse(*TEST_DIRS, output, exploratory=True)
+        assert not output.exists()
+
+
+@f9_available
+def test_exploratory_refuses_other_inputs(tmp_path, monkeypatch):
+    monkeypatch.setattr(error_analysis, "EXPLORATORY_ROOT", tmp_path)
+    for reference, model in [(VAL["baseline"], VAL["f8_finetune"]), (TEST_DIRS[1], TEST_DIRS[0]),
+                             (TEST_DIRS[0], REPORTS / "f8_lag15_seed42" / "val")]:
+        with pytest.raises(ValueError, match="seules les prédictions sauvegardées de F9"):
+            analyse(reference, model, tmp_path / "q1", exploratory=True)
+
+
+@f9_available
+def test_internal_test_refused_without_option(tmp_path):
+    with pytest.raises(ValueError, match="décision 39"):
+        analyse(*TEST_DIRS, tmp_path / "q1")
+    assert not (tmp_path / "q1").exists()
+
+
+@f9_available
+def test_exploratory_refuses_modified_file(tmp_path, monkeypatch):
+    copies = {}
+    for directory, sha in EXPLORATORY_INPUTS.items():
+        copy = tmp_path / directory.parent.name / directory.name
+        copy.mkdir(parents=True)
+        shutil.copy(directory / "lignes.parquet", copy / "lignes.parquet")
+        copies[copy] = sha
+    with open(list(copies)[0] / "lignes.parquet", "ab") as f:
+        f.write(b"\0")  # un octet de plus : l'empreinte ne correspond plus
+    monkeypatch.setattr(error_analysis, "EXPLORATORY_INPUTS", copies)
+    monkeypatch.setattr(error_analysis, "EXPLORATORY_ROOT", tmp_path)
+    monkeypatch.setattr(error_analysis.pd, "read_parquet", lambda *a, **k: pytest.fail("lecture avant le contrôle"))
+    with pytest.raises(ValueError, match="SHA-256"):
+        analyse(*copies, tmp_path / "q1", exploratory=True)

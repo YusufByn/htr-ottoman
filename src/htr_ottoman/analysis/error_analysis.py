@@ -19,6 +19,13 @@ chaque erreur (substitution, suppression, insertion) est classée.
   autre insertion.
 - Validation seulement : F12 règle sur la validation, jamais sur le test
   interne, clos (décision 39). Toute autre entrée est refusée.
+- Mode exploratoire du test interne (F13, complément du 2026-10-19 à la décision
+  39), seulement avec l'option --exploratoire-test-interne : lit les deux seuls
+  `lignes.parquet` de F9 (baseline et F8 (lag 5), EXPLORATORY_INPUTS), après
+  vérification de leur SHA-256 ; n'écrit que sous reports/f13/ ; ne charge aucun
+  modèle, n'appelle jamais `predict` ni ketos. Comptes et catégories seulement (ni
+  IC, ni bootstrap, ni verdict), chaque CSV avec la colonne `mention`
+  (« exploratoire, décision 39 ») ; pas de page des pires lignes (pas d'images lues).
 
 Sorties (dossier --output-dir) : categories.csv, categories_par_operation.csv,
 categories_par_manuscrit.csv, operations.csv, par_longueur.csv,
@@ -26,9 +33,11 @@ par_manuscrit.csv, pires_lignes.csv et pires_lignes.html (page autonome : images
 des lignes intégrées, découpées comme pour le modèle, lues dans le jeu compilé).
 
 Usage : uv run python -m htr_ottoman.analysis.error_analysis --reference reports/baseline/val --model reports/f8_finetune/val --output-dir reports/erreurs/f8_finetune_baseline/val
+Mode exploratoire : uv run python -m htr_ottoman.analysis.error_analysis --exploratoire-test-interne --output-dir reports/f13/<question>/test_interne
 """
 import argparse
 import base64
+import hashlib
 import html
 import io
 import itertools
@@ -41,10 +50,18 @@ import pyarrow as pa
 from PIL import Image
 
 from htr_ottoman.compare import pair
-from htr_ottoman.config import MAKHZAN_PROCESSED, ROOT
+from htr_ottoman.config import MAKHZAN_PROCESSED, REPORTS, ROOT
 from htr_ottoman.normalize import ALEF_MAKSURA, YEH
 
 SPLIT = "val"
+EXPLORATORY_SPLIT = "test_interne"
+EXPLORATORY_ROOT = REPORTS / "f13"  # seul endroit où le mode exploratoire écrit
+# Prédictions sauvegardées de F9 (commits 0ac13a3 et b800850), seules lues par le mode exploratoire
+EXPLORATORY_INPUTS = {
+    REPORTS / "baseline" / EXPLORATORY_SPLIT: "1ecd2d7aecb45cdfcf94738d52f4e03b50adac650b8c3f05b576a80ae8bc0527",
+    REPORTS / "f8_finetune" / EXPLORATORY_SPLIT: "c71cfb0d08ac36ca446221313adb2bcb25df6aca268b65bb595cc132394be645",
+}
+MENTION = "exploratoire, décision 39"
 SUBSTITUTION, DELETION, INSERTION = "substitution", "suppression", "insertion"
 SPACE, VERSE_SEPARATOR, HAMZA_ABOVE = " ", ".", "ٔ"
 # Lettres de même squelette : seuls les points (ou le trait de گ) les distinguent,
@@ -129,12 +146,31 @@ def line_errors(reference: str, hypothesis: str) -> list[dict]:
     return errors
 
 
-def check_split(lines: pd.DataFrame, source: str) -> None:
-    """Refuse tout autre jeu que la validation (F12, décision 39)."""
+def check_split(lines: pd.DataFrame, source: str, split: str = SPLIT) -> None:
+    """Refuse tout autre jeu que la validation (F12, décision 39), ou que le test interne
+    en mode exploratoire."""
     splits = set(lines["split"])
-    if splits != {SPLIT}:
-        raise ValueError(f"{source} : jeu {sorted(splits)}. F12 ne travaille que sur la validation ; "
-                         f"le test interne est clos (décision 39).")
+    if splits != {split}:
+        if split == SPLIT:
+            raise ValueError(f"{source} : jeu {sorted(splits)}. F12 ne travaille que sur la validation ; "
+                             f"le test interne est clos (décision 39).")
+        raise ValueError(f"{source} : jeu {sorted(splits)}, attendu {split} (mode exploratoire, décision 39).")
+
+
+def check_exploratory(reference_dir: Path, model_dir: Path, output_dir: Path) -> None:
+    """Garde-fous du mode exploratoire, avant toute lecture : sortie sous reports/f13/,
+    entrées = les deux dossiers de F9, empreintes SHA-256 conformes."""
+    if not output_dir.resolve().is_relative_to(EXPLORATORY_ROOT.resolve()):
+        raise ValueError(f"{output_dir} : le mode exploratoire n'écrit que sous {EXPLORATORY_ROOT} (décision 39).")
+    inputs = {d.resolve(): sha for d, sha in EXPLORATORY_INPUTS.items()}
+    if [reference_dir.resolve(), model_dir.resolve()] != list(inputs):
+        raise ValueError("Mode exploratoire : seules les prédictions sauvegardées de F9 sont lues "
+                         f"(référence {list(EXPLORATORY_INPUTS)[0]}, modèle {list(EXPLORATORY_INPUTS)[1]}).")
+    for directory, expected in inputs.items():
+        digest = hashlib.sha256((directory / "lignes.parquet").read_bytes()).hexdigest()
+        if digest != expected:
+            raise ValueError(f"{directory / 'lignes.parquet'} : SHA-256 {digest}, attendu {expected} "
+                             "(fichier de F9 modifié ; lecture refusée).")
 
 
 def error_table(lines: pd.DataFrame) -> pd.DataFrame:
@@ -176,10 +212,11 @@ def _shares(counts: pd.DataFrame, errors_total, chars) -> pd.DataFrame:
     return out
 
 
-def tables(reference: pd.DataFrame, model: pd.DataFrame, names: tuple[str, str]) -> dict[str, pd.DataFrame]:
+def tables(reference: pd.DataFrame, model: pd.DataFrame, names: tuple[str, str],
+           split: str = SPLIT) -> dict[str, pd.DataFrame]:
     """Tous les tableaux de l'analyse, à partir des lignes évaluées des deux modèles."""
-    check_split(reference, names[0])
-    check_split(model, names[1])
+    check_split(reference, names[0], split)
+    check_split(model, names[1], split)
     paired = pair(reference, model)  # mêmes lignes, même vérité terrain, sinon erreur
     lines = {names[0]: reference.set_index("line_id").loc[paired["line_id"]].reset_index(),
              names[1]: model.set_index("line_id").loc[paired["line_id"]].reset_index()}
@@ -353,13 +390,20 @@ def write_tables(out: dict[str, pd.DataFrame], output_dir: Path) -> None:
         table.to_csv(output_dir / f"{name}.csv", index=index, lineterminator="\n", float_format="%.6f")
 
 
-def analyse(reference_dir: Path, model_dir: Path, output_dir: Path) -> dict[str, pd.DataFrame]:
-    """Calcule et écrit les tableaux et la page des pires lignes dans `output_dir`."""
+def analyse(reference_dir: Path, model_dir: Path, output_dir: Path,
+            exploratory: bool = False) -> dict[str, pd.DataFrame]:
+    """Calcule et écrit les tableaux et la page des pires lignes dans `output_dir`.
+    En mode exploratoire : tableaux seulement, avec la colonne `mention`."""
+    if exploratory:
+        check_exploratory(reference_dir, model_dir, output_dir)
     names = (reference_dir.parent.name, model_dir.parent.name)
     out = tables(pd.read_parquet(reference_dir / "lignes.parquet"), pd.read_parquet(model_dir / "lignes.parquet"),
-                 names)
+                 names, EXPLORATORY_SPLIT if exploratory else SPLIT)
+    if exploratory:
+        out = {name: table.assign(mention=MENTION) for name, table in out.items()}
     write_tables(out, output_dir)
-    write_html(out["pires_lignes"], names, output_dir)
+    if not exploratory:
+        write_html(out["pires_lignes"], names, output_dir)
 
     pd.set_option("display.width", 220)
     pd.set_option("display.max_columns", 30)
@@ -378,11 +422,18 @@ def analyse(reference_dir: Path, model_dir: Path, output_dir: Path) -> dict[str,
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--reference", type=Path, required=True, help="dossier d'evaluate de la référence")
-    parser.add_argument("--model", type=Path, required=True, help="dossier d'evaluate du modèle")
+    parser.add_argument("--reference", type=Path, help="dossier d'evaluate de la référence")
+    parser.add_argument("--model", type=Path, help="dossier d'evaluate du modèle")
     parser.add_argument("--output-dir", type=Path, required=True)
+    parser.add_argument("--exploratoire-test-interne", action="store_true",
+                        help="mode exploratoire du test interne (F13, décision 39) : prédictions sauvegardées de F9")
     args = parser.parse_args()
-    analyse(args.reference.resolve(), args.model.resolve(), args.output_dir.resolve())
+    if args.exploratoire_test_interne:
+        default_reference, default_model = EXPLORATORY_INPUTS
+        args.reference, args.model = args.reference or default_reference, args.model or default_model
+    elif not (args.reference and args.model):
+        parser.error("--reference et --model sont requis hors du mode exploratoire")
+    analyse(args.reference.resolve(), args.model.resolve(), args.output_dir.resolve(), args.exploratoire_test_interne)
 
 
 if __name__ == "__main__":
