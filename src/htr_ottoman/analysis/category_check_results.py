@@ -18,11 +18,16 @@ faite, aucun modèle. Comptes et taux seulement : ni IC, ni verdict.
   catégorie ventilés selon le commentaire, par simple présence d'un libellé fixé avant
   la lecture (COMMENT_TYPES ; casse ignorée) ; un « non » peut porter plusieurs
   libellés (compté dans chacun) ; sans aucun libellé : « autre / sans commentaire »,
-  dont les commentaires bruts sont listés à part.
+  dont les commentaires bruts sont listés à part. Variante de sensibilité (marquée comme
+  telle, la version stricte gardée à côté) : un commentaire contenant à la fois
+  « espace » et « supprim » compte aussi comme « signe supprimé avec un espace ».
+  Le commentaire de q1_097 a été écrit avant la vérification du point (5) du
+  complément 7c2a99d (vérité terrain non vide).
 
 Sorties (reports/f13/q1_conventions/, mention « exploratoire, décision 39 ») :
 accord_par_categorie.csv, accord_par_modele.csv, accord_global.csv, regroupements.csv ;
-annexe_non_par_commentaire.csv et annexe_commentaires_autre.csv (tableau 5).
+annexe_non_par_commentaire.csv et annexe_commentaires_autre.csv (tableau 5, strict) ;
+annexe_non_par_commentaire_variante.csv et annexe_commentaires_autre_variante.csv.
 
 Usage : uv run python -m htr_ottoman.analysis.category_check_results
 """
@@ -41,6 +46,9 @@ MODELS = ("baseline", "f8_finetune")
 COMMENT_TYPES = ("décalage", "zone brouillée", "petite marque", "signe supprimé avec un espace")
 OTHER = "autre / sans commentaire"
 ANNEX_NOTE = "ajouté après avoir vu les tableaux 1 à 4"
+VARIANT_NOTE = "variante de sensibilité : « espace » et « supprim » = signe supprimé avec un espace"
+REMARKS = {"q1_097": "commentaire écrit avant la vérification du point (5) du complément 7c2a99d "
+                     "(vérité terrain non vide)"}
 GROUPINGS = {
     "plan (124a7c8)": {
         "conventions": ["espace", "séparateur .", "ي / ى", "ئ", "chiffre", "ponctuation"],
@@ -108,11 +116,15 @@ def groupings(categories: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-def non_by_comment(table: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """Tableau 5 : « non » par catégorie et par libellé présent dans le commentaire, et commentaires « autre »."""
+def non_by_comment(table: pd.DataFrame, variant: bool = False) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Tableau 5 : « non » par catégorie et par libellé présent dans le commentaire, et commentaires « autre ».
+    `variant` : « espace » et « supprim » dans le commentaire comptent aussi comme le quatrième libellé."""
     non = table[table["réponse"] == "non"].copy()
     comments = non["commentaire"].str.lower()
     found = pd.DataFrame({t: comments.str.contains(t, regex=False) for t in COMMENT_TYPES}, index=non.index)
+    if variant:
+        found[COMMENT_TYPES[3]] |= comments.str.contains("espace", regex=False) & comments.str.contains(
+            "supprim", regex=False)
     found[OTHER] = ~found.any(axis=1)
     counts = found.groupby(non["categorie"]).sum().reindex(CATEGORIES, fill_value=0).astype(int)
     counts.insert(0, "non", non.groupby("categorie").size().reindex(CATEGORIES, fill_value=0))
@@ -140,9 +152,16 @@ def main() -> None:
                                                           lineterminator="\n")
     other.assign(note=ANNEX_NOTE, mention=MENTION).to_csv(Q1 / "annexe_commentaires_autre.csv", index=False,
                                                           lineterminator="\n")
+    annex_v, other_v = non_by_comment(table, variant=True)
+    annex_v.assign(note=VARIANT_NOTE, mention=MENTION).to_csv(Q1 / "annexe_non_par_commentaire_variante.csv",
+                                                              lineterminator="\n")
+    other_v.assign(remarque=other_v["identifiant"].map(REMARKS).fillna(""), note=VARIANT_NOTE, mention=MENTION).to_csv(
+        Q1 / "annexe_commentaires_autre_variante.csv", index=False, lineterminator="\n")
     with pd.option_context("display.width", 250, "display.max_columns", 30):
         print(annex.to_string(), "\n")
         print(other.to_string(index=False), "\n")
+        print(annex_v.to_string(), "\n")
+        print(other_v.to_string(index=False), "\n")
     print(f"-> {Q1.relative_to(ROOT)}")
 
 
