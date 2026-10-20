@@ -13,16 +13,23 @@ kraken 7.1.1 perd ce drapeau en convertissant le checkpoint en .safetensors (dé
 Aucun modèle chargé, kraken n'est pas importé. La preuve que la copie prédit comme le
 modèle évalué est faite à part, sur la validation (scripts/f14_preuve_validation.py).
 
-Usage : uv run python -m htr_ottoman.publish
+`validate_card` vérifie la carte du modèle (MODEL_CARD.md) comme le fait htrmopo avant
+une publication (schéma v1, licences, codes de langue et d'écriture), sans réseau ; l'identifiant,
+attribué par Zenodo au dépôt, est remplacé par une valeur provisoire.
+
+Usage : uv run python -m htr_ottoman.publish             (écrit la copie)
+        uv run python -m htr_ottoman.publish --carte     (valide MODEL_CARD.md seulement)
 """
+import argparse
 import hashlib
 import json
 import struct
 
-from htr_ottoman.config import PUBLISHED_MODEL, PUBLISHED_SOURCE, ROOT
+from htr_ottoman.config import MODEL_CARD, PUBLISHED_MODEL, PUBLISHED_SOURCE, ROOT
 
 SOURCE_SHA256 = "3709c4f3b5600db2399ebd2260feba7c5fcf8999afaf71a9cb9a0bab9847f8dd"  # décision 37
 FLAG = "legacy_polygons"
+PLACEHOLDER_ID = "10.5281/zenodo.0"  # remplacé par le DOI réservé par Zenodo au dépôt (htrmopo.publish_model)
 
 
 def sha256sum(path) -> str:
@@ -100,7 +107,27 @@ def write_copy() -> dict:
     }
 
 
+def validate_card(text: str) -> dict:
+    """En-tête YAML de la carte, validé comme dans htrmopo.publish_model ; lève une erreur sinon."""
+    import yaml
+    from htrmopo.util import _v1_schema, _yaml_regex, format_checker
+    from jsonschema import validate
+
+    match = _yaml_regex.match(text)
+    if match is None:
+        raise ValueError("Carte sans en-tête YAML")
+    header = yaml.safe_load(match.group(1))
+    validate(dict(header, id=PLACEHOLDER_ID), _v1_schema, format_checker=format_checker)
+    return header
+
+
 def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser.add_argument("--carte", action="store_true", help="valide MODEL_CARD.md sans écrire la copie")
+    if parser.parse_args().carte:
+        header = validate_card(MODEL_CARD.read_text(encoding="utf-8"))
+        print(f"{MODEL_CARD.relative_to(ROOT)} : valide (schéma v1 de htrmopo), champs {sorted(header)}")
+        return
     result = write_copy()
     for k, v in result.items():
         print(f"  {k} : {v}")

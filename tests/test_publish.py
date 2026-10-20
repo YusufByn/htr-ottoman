@@ -37,3 +37,21 @@ def test_refuses_a_flag_already_true(tmp_path):
     raw, _ = split_safetensors(fake_model(tmp_path, flag=True).read_bytes())
     with pytest.raises(ValueError, match="attendu false"):
         with_legacy_flag(raw)
+
+
+def test_card_validation_rejects_an_unknown_licence():
+    from htr_ottoman.publish import validate_card
+
+    card = "---\nsummary: s\nauthors: [{name: a}]\nlicense: LIC\nsoftware_name: kraken\nlanguage: [ota]\nscript: [Arab]\nmodel_type: [recognition]\n---\ntext\n"
+    assert validate_card(card.replace("LIC", "CC-BY-NC-SA-4.0"))["license"] == "CC-BY-NC-SA-4.0"
+    with pytest.raises(Exception):
+        validate_card(card.replace("LIC", "CC-BY-NC-SA-9.9"))
+
+
+def test_model_card_is_valid():
+    from htr_ottoman.config import MODEL_CARD
+    from htr_ottoman.publish import validate_card
+
+    header = validate_card(MODEL_CARD.read_text(encoding="utf-8"))
+    assert header["license"] == "CC-BY-NC-SA-4.0" and header["language"] == ["ota"] and header["script"] == ["Arab"]
+    assert header["summary"] == "Ottoman Turkish handwritten naskh, fine-tuned on MAKHZAN (v0.1.0)"

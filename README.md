@@ -1,6 +1,27 @@
 # htr-ottoman
 
-Reconnaissance d'écriture manuscrite (HTR) sur des manuscrits ottomans avec [kraken](https://kraken.re).
+Reconnaissance d'écriture manuscrite (HTR) sur des manuscrits en turc ottoman avec [kraken](https://kraken.re) : le modèle OpenITI d'ottoman **imprimé** est affiné sur les manuscrits ottomans d'OpenITI MAKHZAN, puis sa généralisation est mesurée sur des manuscrits jamais vus. Projet de recherche et portfolio.
+
+## Résultats
+
+CER (taux d'erreur par caractère) calculé après la même fonction `normalize` sur la vérité terrain et les prédictions, sur la segmentation des annotateurs (reconnaissance seule). Intervalles à 95 % par bootstrap sur les manuscrits.
+
+| Jeu | Modèle de départ | Modèle affiné (F8) |
+|-----|-----------------:|-------------------:|
+| Validation (2 manuscrits, 412 lignes) | 27,76 % | **16,32 %** |
+| Test interne (ACDC-Evaluation, 17 manuscrits, 544 lignes) | 37,03 % [33,4 ; 41,8] | **26,33 % [22,9 ; 31,1]** |
+| dont naskh (7 manuscrits) | 35,16 % | 23,70 % |
+| dont autres écritures (10 manuscrits) | 38,41 % | 28,26 % |
+
+Sur le test interne, évalué une seule fois avec un protocole pré-enregistré puis clos (décisions 37 et 39), le gain est de 10,7 points [9,6 ; 11,7] et les 17 manuscrits progressent. Le résultat principal de généralisation est ce test interne : aucun jeu externe ne remplit les critères (décision 41, [DATASETS.md](DATASETS.md)). Détails : [PROJECT.md](PROJECT.md), [EXPERIMENTS.md](EXPERIMENTS.md), synthèses [SYNTHESE_F12.md](SYNTHESE_F12.md) et [SYNTHESE_F13.md](SYNTHESE_F13.md).
+
+## Modèle publié
+
+`ota_naskh_makhzan_v0.1.0.safetensors` (CC BY-NC-SA 4.0), carte du modèle : [MODEL_CARD.md](MODEL_CARD.md). C'est F8 (décision 44), dont seul le drapeau « anciens polygones » a été corrigé dans l'en-tête ; poids identiques à l'octet au modèle évalué, prédictions de la validation identiques à l'octet sans aucun forçage (décision 45). Le modèle n'est pas versionné ici (`models/` hors git) : il est déposé sur Zenodo.
+
+## Limites principales
+
+Entraînement 100 % naskh ; aucun test d'une autre provenance (le test interne vient de MAKHZAN, comme l'entraînement) ; 2 757 lignes d'entraînement ; CER non comparable sans `normalize` ; sortie texte de `kraken ocr` 7.1.1 inversée sur nos ALTO (prédictions par l'API Python). Liste complète : [PROJECT.md](PROJECT.md), section 7, et [MODEL_CARD.md](MODEL_CARD.md).
 
 ## Environnement
 
@@ -14,14 +35,16 @@ uv run python scripts/check_mps.py   # vérifie le backend MPS
 uv run pytest                        # lance les tests
 ```
 
-Les traitements sont des modules du package `htr_ottoman` :
+Les traitements sont des modules du package `htr_ottoman`, lancés par `uv run python -m htr_ottoman.<module>`. Chaîne complète (données, préparation, baseline, affinage, évaluation, analyses, publication) : [ARCHITECTURE.md](ARCHITECTURE.md), section 8. Par exemple :
 
 ```bash
-uv run python -m htr_ottoman.analysis.inventory_ottoman        # -> reports/ottoman_inventory.csv
-uv run python -m htr_ottoman.analysis.compare_ottoman_sources  # Research vs ACDC-Evaluation
+uv run python -m htr_ottoman.data.makhzan                      # téléchargement de MAKHZAN (6,1 Go), table des lignes
+uv run python -m htr_ottoman.prepare                           # jeux compilés pour kraken
+uv run python -m htr_ottoman.train configs/f8_finetune.yml     # affinage F8 (4 h 38 sur MacBook Air, MPS)
+uv run python -m htr_ottoman.evaluate reports/f8_finetune/val/predictions.parquet --split val --output-dir reports/f8_finetune/val
 ```
 
-Documentation du projet : [PROJECT.md](PROJECT.md) (résumé, protocole), [ROADMAP.md](ROADMAP.md) (tickets, avancement), [ARCHITECTURE.md](ARCHITECTURE.md) (code, flux des données), [DECISIONS.md](DECISIONS.md) (décisions méthodologiques), [EXPERIMENTS.md](EXPERIMENTS.md) (expériences), [DATASETS.md](DATASETS.md) (données ouvertes pour l'HTR ottoman manuscrit, recherche d'un test externe).
+Documentation du projet : [PROJECT.md](PROJECT.md) (résumé, protocole, limites), [ROADMAP.md](ROADMAP.md) (tickets, avancement), [ARCHITECTURE.md](ARCHITECTURE.md) (code, flux des données), [DECISIONS.md](DECISIONS.md) (décisions méthodologiques), [EXPERIMENTS.md](EXPERIMENTS.md) (expériences), [DATASETS.md](DATASETS.md) (données ouvertes pour l'HTR ottoman manuscrit, recherche d'un test externe).
 
 ## Données
 

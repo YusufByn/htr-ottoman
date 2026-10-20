@@ -41,3 +41,4 @@ BASE_MODEL_CODEC = REPORTS / "codec_modele_depart.json"  # codec du modèle de d
 PUBLISHED_SOURCE = MODELS / "f8_finetune" / "best_0.8365.safetensors"
 PUBLICATION_DIR = MODELS / "f14_publication"
 PUBLISHED_MODEL = PUBLICATION_DIR / "ota_naskh_makhzan_v0.1.0.safetensors"  # nom fixé le 2026-10-20 (décision 45, complément)
+MODEL_CARD = ROOT / "MODEL_CARD.md"  # carte du modèle publié (en-tête YAML au schéma v1 de htrmopo)
