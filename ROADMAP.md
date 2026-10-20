@@ -426,3 +426,57 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
     - *Constat (2026-10-20)* : `ketos publish` (kraken 7.1.1) plante avec ce modèle avant tout appel réseau : il recalcule `metrics` à partir des métadonnées du modèle, où `accuracy` vaut une liste vide (`TypeError: unsupported operand type(s) for -: 'int' and 'list'`, `kraken/ketos/repo.py`, ligne 223 ; vérifié avec une adresse Zenodo locale injoignable et un jeton factice). Il remplacerait aussi les `metrics` de la carte par le CER de kraken, calculé sans `normalize`. Les métadonnées du modèle ne sont pas modifiées (décision 45) : la publication passera par `htrmopo.publish_model`, qui garde la carte telle quelle (à décider à l'arrêt C).
   - [x] Audit avant publication (2026-10-20), qui signale seulement : e-mail dans l'historique, CLAUDE.md, `.claude/`, images MAKHZAN dans `reports/f13/`, notebooks, fichiers lourds, secrets.
     - *Résultat (2026-10-20, rien de réécrit dans l'historique)* : 115 commits sur une seule branche (`main`), tous avec la même identité d'auteur, dont l'adresse e-mail personnelle, qui deviendra publique avec l'historique ; aucun chemin local ni e-mail dans les fichiers versionnés, binaires compris, ni dans les versions passées ; aucun secret (jetons, clés, mots de passe) dans l'historique, les seules correspondances étant des faux positifs dans des images en base64 ; `.claude/` ne contient que `skills/kraken/SKILL.md` (référence kraken, rien de local ni de personnel : il reste versionné, comme prévu) ; CLAUDE.md public (consignes de travail, dont « l'utilisateur débute en ML ») ; notebooks : `.gitkeep` seulement ; plus gros fichiers : pages de lecture de F13 (1,7 à 5,8 Mo), dépôt de 9,2 Mo compressé ; images de lignes de MAKHZAN : 226 dans les pages de F13 (dont 26 de Doc 3179, test interne) et 8 dans `pires_lignes.html`, absente de `reports/LICENCE.md`, ajoutée.
+  - **Arrêt C** : liste de ce qui sera publié et marche à suivre.
+  - [x] Commande de dépôt Zenodo (2026-10-20, accord de l'utilisateur à l'arrêt C) : `htr_ottoman.publish --zenodo [--sandbox] [--private] [--dry-run]`, par `htrmopo.publish_model` et non `ketos publish` ; dossier de dépôt `models/f14_publication/depot/` (modèle publié, SHA-256 de la décision 45 vérifié, et `metadata.json` au format v0, dont la précision vaut 100 − CER de la carte, après `normalize`, jamais un CER recalculé par kraken) ; carte envoyée telle quelle ; jeton lu dans `ZENODO_TOKEN`, jamais affiché ; confirmation « publier » exigée hors bac à sable ; `--dry-run` affiche tout l'envoi sans réseau ; tests sans réseau (`tests/test_publish.py`).
+  - [ ] Actions de l'utilisateur (publiques, un DOI est irréversible) : dépôt GitHub et push ; Zenodo, essai sur le bac à sable puis vrai DOI ; HTR-United (à vérifier : catalogue surtout de jeux de vérité terrain).
+  - [ ] Après publication : DOI et URL reportés (carte, README, PROJECT.md), clôture de F14.
+- **Contributions kraken prévues** (à signaler au projet kraken, sans urgence ; rien n'en dépend dans ce projet) :
+  - `ketos publish` (kraken 7.1.1) plante quand `accuracy` vaut une liste vide dans les métadonnées du modèle : `metrics['cer'] = 100 - accuracy` lève `TypeError: unsupported operand type(s) for -: 'int' and 'list'` (`kraken/ketos/repo.py`, ligne 223). Cas de notre modèle, converti par kraken 7.1.1 depuis un checkpoint (constat du 2026-10-20, vérifié sans réseau). Contourné ici par `htrmopo.publish_model` (`htr_ottoman.publish --zenodo`).
+- **Zenodo, bac à sable** (vérifié le 2026-10-20 dans le code de htrmopo 0.6, utilisé par `ketos publish`) : l'adresse du dépôt est lue dans la variable d'environnement `MODEL_REPO_URL` (par défaut `https://zenodo.org/api/`) ; `MODEL_REPO_URL=https://sandbox.zenodo.org/api/`, avec un jeton créé sur le bac à sable, permet un essai. `ketos publish` crée le dépôt et le publie aussitôt, sans brouillon ; la carte n'est validée contre le schéma qu'après la création du dépôt, d'où la validation locale avant ; `--private` évite la demande d'inclusion à la communauté `ocr_models` (sans doute absente du bac à sable). La licence `CC-BY-NC-SA-4.0` figure dans la liste de htrmopo.
+- **Critères d'acceptation** : modèle publié prouvé identique au modèle évalué (tenseurs, prédictions de la validation, CER) ; aucun chiffre de F7 à F13 modifié ; `uv run pytest` passe ; licences et source mentionnées ; DOI reporté.
+- **Points de décision** : nom du modèle (arrêt B) ; contenu public après l'audit, dont `.claude/` (arrêt C).
+- **Concept à expliquer** : ce que contient une carte de modèle, et comment les licences des données se transmettent au modèle.
+- **Statut** : en cours (2026-10-20).
+
+---
+
+## F15 · v1.0 : modèle naskh utilisable
+
+- **Objectif** : un modèle naskh utilisable en pratique, avec un CER inférieur à 10 % sur un nouveau jeu de test réservé.
+- **Dépend de** : F14. À ne pas commencer avant F14.
+- **Tâches** :
+  - Constituer d'abord le nouveau jeu de test réservé, avant tout entraînement de F15 : manuscrits naskh, ni la validation (*Manāfi' al-nās*) ni ACDC, aucune œuvre en commun avec les données d'entraînement (décision 6). Le figer dans `splits/` avec la seed, et ne le consulter qu'une fois, pour le modèle final.
+  - Ajouter les leviers dans cet ordre, un à la fois, en mesurant l'effet de chacun sur la validation :
+    1. données ouvertes : ACDC-Training (arabe et persan, voir F12), RASAM, TariMa ;
+    2. transcriptions de l'utilisateur, corrigées dans eScriptorium ;
+    3. meilleurs réglages trouvés en F12.
+  - Consigner chaque expérience dans EXPERIMENTS.md.
+  - Publier le modèle sous CC BY-NC-SA (hérité de MAKHZAN), avec une fiche : données et licences, protocole, CER par écriture, limites, citation.
+- **Pistes issues de F13** (reportées le 2026-10-20, à la fin de F13 ; hypothèses non testées, rien n'est appliqué ; toute règle de normalisation ou de données serait une nouvelle décision, jamais appliquée aux chiffres de F9) :
+  - *Données* :
+    - chiffres : sur le test interne, F8 (lag 5) en lit moins que la baseline (6 sur 43 contre 18) ; chiffres rares dans le train (4) ; hypothèse non établie d'un oubli par l'affinage ; données ou exemples synthétiques contenant des chiffres (proposition ajoutée au report, absente de la conclusion de Q7) (Q7, 5a91fec) ;
+    - séparateurs « . » : peu d'exemples dans le train (329, dont 236 dans Doc 3262) ; sur la validation, les « . » visibles sont souvent non écrits ou lus ه ; ressemblance entre un rond rouge et un ه final (Q3, 04f9e98 ; Q5, 013367f) ;
+    - virgule ، : souvent lue ه (9 sur 36), lien possible avec les séparateurs (Q7, 5a91fec) ;
+    - yāʾ final : train à 82 % de ى en fin de mot (3 037 contre 668 ; 7 manuscrits sur 11), F8 écrit ى pour des yāʾ finaux aux points visibles (Q4, 6736239) ;
+    - écriture mêlée naskh et chikasté (entraînement 100 % naskh) ; pages à l'encre dégradée dans l'entraînement (Q6, 6c08707).
+  - *Conventions et normalisation* :
+    - ي / ى en fin de mot : une règle les fusionnant dans l'évaluation masquerait des erreurs de lecture ; toute règle serait une nouvelle décision (Q4, 6736239) ;
+    - ە presque toujours supprimée (10 sur 11) : convention de transcription possible ; règle de normalisation éventuelle, par décision, jamais rétroactive (Q7, 5a91fec).
+  - *Alignement et catégories* :
+    - un alignement qui traite un signe et son espace collé ensemble ; une catégorie ئ distinguant la hamza seule de la lettre entière (Q1, d1d9526) ;
+    - ه / ة : à examiner, Q1 n'apporte rien de plus (Q1, d1d9526 ; piste non définie dans une conclusion antérieure ; origine : remarque faite dans le chat pendant la lecture de Q1 ; le commentaire de q1_064 est vide, 85ecff7).
+  - *Relecture avec un lecteur de l'ottoman* :
+    - relecture ciblée de la vérité terrain de Doc 2937 (ى aux points visibles) ; place des points du yāʾ final (Q4, 6736239) ;
+    - espaces de Doc 3179 (Q6, 6c08707).
+- **Pistes issues de F12** : SYNTHESE_F12.md, section 7 (e3424f6) : plafond d'époques, taux 3e-4, augmentation, témoin pour les pages gen2, validation plus large et plusieurs seeds.
+- **Critères d'acceptation** :
+  - CER inférieur à 10 % (`evaluate`) sur le nouveau jeu de test réservé, mesuré une seule fois.
+  - Modèle publié sous CC BY-NC-SA, avec sa fiche.
+  - Expériences consignées dans EXPERIMENTS.md.
+- **Points de décision** :
+  - Composition du nouveau jeu de test (source, manuscrits, taille), à trancher avant tout entraînement.
+  - Licences de RASAM, de TariMa et des transcriptions de l'utilisateur : vérifier qu'elles permettent une publication sous CC BY-NC-SA.
+  - Conventions de transcription de chaque nouvelle source : règles à ajouter à `normalize` (toute règle ajoutée change le CER de toutes les expériences, voir F10).
+  - Si le seuil n'est pas atteint après les trois leviers : ne pas régler sur le test réservé, revenir à la validation et consigner la décision.
+- **Concept à expliquer** : pourquoi un jeu de test déjà consulté ne peut plus servir de mesure finale, et ce qu'apportent des données d'autres langues ou d'autres mains (transfert).
+- **Statut** : à faire (pas avant F14).
