@@ -45,8 +45,12 @@ ALTO_DIR = MAKHZAN_PROCESSED / "alto"
 REPORT = REPORTS / "processed_datasets.csv"
 
 
-def select_lines() -> pd.DataFrame:
-    """Table des lignes avec jeu, texte normalisé et motif d'exclusion éventuel."""
+def select_lines(with_codec: bool = True) -> pd.DataFrame:
+    """Table des lignes avec jeu, texte normalisé et motif d'exclusion éventuel.
+
+    `with_codec=False` : sans la règle « hors codec » (train seulement), donc sans charger
+    le modèle de départ pour lire son codec ; pour la validation et le test interne, le
+    résultat est le même (F13, Q6 : aucun modèle chargé, décision 39)."""
     lines = pd.read_parquet(MAKHZAN_LINES)
     split_of = {pid: name for name in SPLIT_NAMES for pid in load_split(name)["part_id"]}
     lines["split"] = lines["part_id"].map(split_of)
@@ -59,9 +63,10 @@ def select_lines() -> pd.DataFrame:
     lines.loc[lines["exclusion"].isna() & (lines["norm"] == ""), "exclusion"] = "vide après normalisation"
     # Train seulement : le codec reste celui du modèle de départ (décision 33).
     # Validation et test gardent ces lignes : un caractère inconnu y est une erreur réelle (décision 24).
-    codec = codec_chars()
-    outside = lines["norm"].map(lambda t: not set(t) <= codec)
-    lines.loc[lines["exclusion"].isna() & (lines["split"] == "train") & outside, "exclusion"] = "hors codec"
+    if with_codec:
+        codec = codec_chars()
+        outside = lines["norm"].map(lambda t: not set(t) <= codec)
+        lines.loc[lines["exclusion"].isna() & (lines["split"] == "train") & outside, "exclusion"] = "hors codec"
     return lines
 
 
