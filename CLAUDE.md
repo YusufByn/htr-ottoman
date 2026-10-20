@@ -31,6 +31,7 @@ Affiner le modèle kraken ottoman imprimé d'OpenITI sur la partie ottomane de M
 - Toute décision méthodologique est consignée dans DECISIONS.md (date, décision, justification).
 - ARCHITECTURE.md et PROJECT.md sont mis à jour à chaque étape terminée.
 - Tout traitement passe par un module du package src/htr_ottoman/, aucune manipulation manuelle non tracée. Lancement : `uv run python -m htr_ottoman.<module>`.
+- Avant chaque commit, lire `git diff --stat` (fichiers indexés) ; toute suppression de lignes non prévue arrête le commit.
 - src/htr_ottoman/ contient les traitements de données, scripts/ les utilitaires (vérification d'environnement, etc.).
 - notebooks/ sert uniquement à l'exploration visuelle : aucun code du pipeline n'en dépend.
 - Les chemins du projet sont définis une seule fois dans src/htr_ottoman/config.py.

@@ -22,7 +22,8 @@ attribué par Zenodo au dépôt, est remplacé par une valeur provisoire.
 métadonnées) et remplacerait le CER de la carte par celui de kraken, calculé sans `normalize`.
 Le dépôt contient le modèle publié (SHA-256 de la décision 45 vérifié), un `metadata.json`
 (ancien format v0 de kraken) dont la précision vient du CER de la carte (après `normalize`),
-et la carte elle-même, envoyée telle quelle sous le nom README.md par htrmopo.
+et la carte, envoyée sous le nom README.md par htrmopo, identique à MODEL_CARD.md sauf les
+auteurs, au format « Nom, Prénom » attendu par Zenodo (ZENODO_CREATOR_NAMES).
 `--dry-run` prépare et affiche tout ce qui serait envoyé, sans aucun appel réseau.
 Le jeton Zenodo est lu dans la variable d'environnement ZENODO_TOKEN, jamais affiché.
 La publication est immédiate et le DOI définitif : sans `--sandbox`, une confirmation est demandée.
@@ -49,6 +50,8 @@ PUBLISHED_SHA256 = "4d96d85f2f93fd9008f4d48bbcfbfc87aefe0c698ce5cf1dd3310e761ecd
 ZENODO_API = "https://zenodo.org/api/"
 SANDBOX_API = "https://sandbox.zenodo.org/api/"
 TOKEN_ENV = "ZENODO_TOKEN"
+# Zenodo attend « Nom, Prénom » ; MODEL_CARD.md et LICENSE gardent « Prénom Nom » (choix de l'utilisateur, F14)
+ZENODO_CREATOR_NAMES = {"Yusuf Buyukaydin": "Buyukaydin, Yusuf"}
 
 
 def sha256sum(path) -> str:
@@ -172,6 +175,20 @@ def v0_metadata(card: dict, content: str, model_path) -> dict:
     return data
 
 
+def zenodo_card(card: dict, content: str) -> tuple[dict, str]:
+    """Carte envoyée à Zenodo : celle de MODEL_CARD.md, auteurs au format « Nom, Prénom »
+    (htrmopo en tire les `creators` de Zenodo). Tout auteur absent de la table est refusé."""
+    import yaml
+
+    missing = [a["name"] for a in card["authors"] if a["name"] not in ZENODO_CREATOR_NAMES]
+    if missing:
+        raise ValueError(f"Auteurs sans nom au format Zenodo (ZENODO_CREATOR_NAMES) : {missing}")
+    sent = dict(card, authors=[dict(a, name=ZENODO_CREATOR_NAMES[a["name"]]) for a in card["authors"]])
+    text = f"---\n{yaml.dump(sent, allow_unicode=True, sort_keys=False)}---\n{content}"
+    validate_card(text)
+    return sent, text
+
+
 def prepare_deposit(sandbox: bool, private: bool, model_path=None, card_path=None, deposit_dir=None) -> dict:
     """Prépare le dossier envoyé à Zenodo et décrit tout l'envoi. Aucun appel réseau."""
     from htrmopo.publish import _build_zenodo_metadata
@@ -184,8 +201,8 @@ def prepare_deposit(sandbox: bool, private: bool, model_path=None, card_path=Non
     raw, _ = split_safetensors(model_path.read_bytes())
     if next(iter(kraken_meta(json.loads(raw)).values())).get(FLAG) is not True:
         raise ValueError(f"{FLAG} n'est pas vrai dans {model_path.name} (décision 45)")
-    text = card_path.read_text(encoding="utf-8")
-    card, content = split_card(text)
+    card, content = split_card(card_path.read_text(encoding="utf-8"))
+    sent_card, text = zenodo_card(card, content)
     private = private or sandbox  # pas de communauté ocr_models sur le bac à sable
 
     if deposit_dir.exists():
@@ -207,7 +224,7 @@ def prepare_deposit(sandbox: bool, private: bool, model_path=None, card_path=Non
         "fichiers": files,
         "carte": text,
         "metadata_v0": metadata,
-        "zenodo": _build_zenodo_metadata(dict(card, id="(DOI réservé par Zenodo)"), content, private),
+        "zenodo": _build_zenodo_metadata(dict(sent_card, id="(DOI réservé par Zenodo)"), content, private),
     }
 
 
@@ -222,7 +239,7 @@ def describe(plan: dict) -> str:
         f"Dossier préparé : {plan['dossier']}",
         "Fichiers envoyés :",
         *[f"  {f['fichier']} : {f['octets']} octets, SHA-256 {f['sha256']}" for f in plan["fichiers"]],
-        f"  README.md : carte {MODEL_CARD.name} ({len(plan['carte'])} caractères), id remplacé par le DOI réservé",
+        f"  README.md : carte {MODEL_CARD.name} ({len(plan['carte'])} caractères), auteurs au format Zenodo, id remplacé par le DOI réservé",
         "metadata.json :",
         json.dumps(v0, ensure_ascii=False, indent=1),
         "Métadonnées Zenodo :",

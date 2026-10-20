@@ -101,6 +101,7 @@ def test_sandbox_plan(tmp_path):
     assert len(plan["metadata_v0"]["graphemes"]) == 196
     assert "communities" not in plan["zenodo"]["metadata"]
     assert plan["zenodo"]["metadata"]["license"] == "CC-BY-NC-SA-4.0"
+    assert plan["zenodo"]["metadata"]["creators"] == [{"name": "Buyukaydin, Yusuf"}]
     assert "Adresse : https://sandbox.zenodo.org/api/" in publish.describe(plan)
 
 
@@ -155,4 +156,16 @@ def test_deposit_calls_htrmopo_with_the_sandbox_address(monkeypatch, tmp_path):
     plan = publish.prepare_deposit(sandbox=True, private=False, deposit_dir=tmp_path / "depot")
     assert publish.deposit(plan, "jeton_factice") == "10.5072/zenodo.1"
     assert seen["url"] == publish.SANDBOX_API and seen["private"] and seen["token"] == "jeton_factice"
-    assert seen["model"] == tmp_path / "depot" and seen["card"] == MODEL_CARD.read_text(encoding="utf-8")
+    assert seen["model"] == tmp_path / "depot" and seen["card"] == plan["carte"]
+    sent, content = publish.split_card(seen["card"])
+    card, original_content = publish.split_card(MODEL_CARD.read_text(encoding="utf-8"))
+    assert sent == dict(card, authors=[{"name": "Buyukaydin, Yusuf"}]) and content == original_content
+
+
+def test_zenodo_creators_use_family_name_first(tmp_path):
+    card = {"summary": "s", "authors": [{"name": "Yusuf Buyukaydin"}], "license": "CC-BY-NC-SA-4.0",
+            "software_name": "kraken", "language": ["ota"], "script": ["Arab"], "model_type": ["recognition"]}
+    sent, text = publish.zenodo_card(card, "texte")
+    assert sent["authors"] == [{"name": "Buyukaydin, Yusuf"}] and card["authors"] == [{"name": "Yusuf Buyukaydin"}]
+    with pytest.raises(ValueError, match="ZENODO_CREATOR_NAMES"):
+        publish.zenodo_card(dict(card, authors=[{"name": "Autre Auteur"}]), "texte")
