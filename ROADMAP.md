@@ -21,7 +21,7 @@ Statuts : à faire, en cours, en attente, fait. Dernière mise à jour : 2026-09
 | F11 | Évaluation externe | F7, F9, F10 | clos le 2026-10-20 sans jeu externe |
 | F12 | Expériences complémentaires | F9 | fait |
 | F13 | Analyse d'erreurs | F9 | fait |
-| F14 | Publication | F9 (F11 s'il est rouvert) | à faire |
+| F14 | Publication | F9 | à faire |
 | F15 | v1.0 : modèle naskh utilisable | F14 | à faire |
 
 Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), généralisation externe (F10, F11), approfondissement et publication (F12 à F14), v1.0 (F15, pas avant F14).
@@ -405,7 +405,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
   - dépôt du modèle sous CC BY-NC-SA (hérité de MAKHZAN), avec le drapeau `use_legacy_polygons` corrigé (décision 36) ;
   - référencement sur HTR-United.
   - lire le codec du modèle de départ sans le charger, dans tous les modules : `prepare.select_lines` le charge via `base_model.codec_chars` (écarts de Q2, 11b9416, et de Q6, 5236bc4 ; option `with_codec=False` ajoutée en Q6 ; source possible : `reports/codec_coverage.csv`).
-- **Dépend de** : F9 ; F11 s'il est rouvert (décision 41).
+- **Dépend de** : F9.
 - **Tâches, critères, points de décision** : à préciser selon les résultats. Il faudra au moins choisir le lieu du dépôt (Zenodo, par exemple) et la licence du code.
 - **Concept à expliquer** : ce que contient une carte de modèle, et comment les licences des données se transmettent au modèle.
 - **Statut** : à faire.

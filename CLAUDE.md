@@ -1,7 +1,7 @@
 # Projet HTR ottoman
 
 ## Objectif
-Affiner le modèle kraken ottoman imprimé d'OpenITI sur la partie ottomane de MAKHZAN, puis mesurer sa généralisation. Le test interne (ACDC-Evaluation de MAKHZAN, F9) est le résultat principal de généralisation : aucun jeu externe ne remplit les critères à ce jour (décision 41, DATASETS.md) ; Akis est écarté (décision 40). F11 (test externe) est en attente de réponses. Projet de recherche et portfolio.
+Affiner le modèle kraken ottoman imprimé d'OpenITI sur la partie ottomane de MAKHZAN, puis mesurer sa généralisation. Le test interne (ACDC-Evaluation de MAKHZAN, F9) est le résultat principal de généralisation : aucun jeu externe ne remplit les critères à ce jour (décision 41, DATASETS.md) ; Akis est écarté (décision 40). F11 (test externe) est clos le 2026-10-20 sans jeu externe : il ne sera pas rouvert ; une réponse tardive alimenterait F15, avec un pré-enregistrement committé avant toute utilisation. Projet de recherche et portfolio.
 
 ## Façon de travailler
 - L'utilisateur débute en ML : expliquer brièvement chaque concept et chaque commande avant de l'exécuter.
