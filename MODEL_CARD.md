@@ -36,6 +36,7 @@ A kraken text recognition model for **Ottoman Turkish manuscripts in naskh**, ob
 
 ## Model
 
+- **DOI**: [10.5281/zenodo.23502722](https://doi.org/10.5281/zenodo.23502722) (Zenodo).
 - **File**: `ota_naskh_makhzan_v0.1.0.safetensors`, SHA-256 `4d96d85f2f93fd9008f4d48bbcfbfc87aefe0c698ce5cf1dd3310e761ecd022e`.
 - **Base model**: *Printed Ottoman Base Model Trained on the OpenITI Corpus* (B. Kiessling, 2022, CC0), DOI [10.5281/zenodo.7050342](https://doi.org/10.5281/zenodo.7050342). Input lines of 120 px, grayscale, baseline segmentation, NFD text; codec of 196 characters, kept unchanged.
 - **Fine-tuning**: kraken 7.1.1, Adam, constant learning rate 1e-4, batch size 16, seed 42, early stopping on validation character accuracy after 5 epochs without improvement (91 epochs run); the model is the best epoch (86). Text settings of the base model: NFD, whitespace normalisation, BiDi reordering.
@@ -101,6 +102,6 @@ The model is distributed under **CC BY-NC-SA 4.0**, inherited from MAKHZAN: attr
 
 - the training data: Parkes Allen, J., Mullan, J., Nigst, L., Barber, M., Shahid Khan, T., Seydi, M., Chen, D., Weng, Y., Vogler, N., Murel, J., Eshera, O., Berg-Kirkpatrick, T., Smith, D., Bowen Savant, S., Thomas Miller, M., Verkinderen, P. *OpenITI MAKHZAN*, version 2026.1.2, Zenodo, 2026, DOI 10.5281/zenodo.19861912;
 - the base model: Kiessling, B. *Printed Ottoman Base Model Trained on the OpenITI Corpus*, Zenodo, 2022, DOI 10.5281/zenodo.7050342;
-- this model, by its DOI.
+- this model: Buyukaydin, Y. *Ottoman Turkish handwritten naskh, fine-tuned on MAKHZAN (v0.1.0)*, Zenodo, 2026, DOI [10.5281/zenodo.23502722](https://doi.org/10.5281/zenodo.23502722).
 
 Training and evaluation code (MIT), protocol, decisions and experiment log: the project repository (`htr-ottoman`).

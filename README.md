@@ -1,5 +1,7 @@
 # htr-ottoman
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23502722.svg)](https://doi.org/10.5281/zenodo.23502722)
+
 Reconnaissance d'écriture manuscrite (HTR) sur des manuscrits en turc ottoman avec [kraken](https://kraken.re) : le modèle OpenITI d'ottoman **imprimé** est affiné sur les manuscrits ottomans d'OpenITI MAKHZAN, puis sa généralisation est mesurée sur des manuscrits jamais vus. Projet de recherche et portfolio.
 
 ## Résultats
@@ -17,7 +19,7 @@ Sur le test interne, évalué une seule fois avec un protocole pré-enregistré 
 
 ## Modèle publié
 
-`ota_naskh_makhzan_v0.1.0.safetensors` (CC BY-NC-SA 4.0), carte du modèle : [MODEL_CARD.md](MODEL_CARD.md). C'est F8 (décision 44), dont seul le drapeau « anciens polygones » a été corrigé dans l'en-tête ; poids identiques à l'octet au modèle évalué, prédictions de la validation identiques à l'octet sans aucun forçage (décision 45). Le modèle n'est pas versionné ici (`models/` hors git) : il est déposé sur Zenodo.
+`ota_naskh_makhzan_v0.1.0.safetensors` (CC BY-NC-SA 4.0), carte du modèle : [MODEL_CARD.md](MODEL_CARD.md). C'est F8 (décision 44), dont seul le drapeau « anciens polygones » a été corrigé dans l'en-tête ; poids identiques à l'octet au modèle évalué, prédictions de la validation identiques à l'octet sans aucun forçage (décision 45). Le modèle n'est pas versionné ici (`models/` hors git) : il est déposé sur Zenodo, DOI [10.5281/zenodo.23502722](https://doi.org/10.5281/zenodo.23502722).
 
 ## Limites principales
 
