@@ -55,3 +55,104 @@ def test_model_card_is_valid():
     header = validate_card(MODEL_CARD.read_text(encoding="utf-8"))
     assert header["license"] == "CC-BY-NC-SA-4.0" and header["language"] == ["ota"] and header["script"] == ["Arab"]
     assert header["summary"] == "Ottoman Turkish handwritten naskh, fine-tuned on MAKHZAN (v0.1.0)"
+
+
+# --- dépôt Zenodo (htrmopo.publish_model), sans aucun appel réseau ---
+
+import requests  # noqa: E402
+
+from htr_ottoman import publish  # noqa: E402
+from htr_ottoman.config import MODEL_CARD, PUBLISHED_MODEL  # noqa: E402
+
+needs_model = pytest.mark.skipif(not PUBLISHED_MODEL.exists(), reason="modèle publié absent : uv run python -m htr_ottoman.publish")
+
+
+@pytest.fixture(autouse=True)
+def no_network(monkeypatch):
+    def refuse(*args, **kwargs):
+        raise AssertionError("appel réseau interdit dans les tests")
+    for name in ["request", "get", "post", "put"]:
+        monkeypatch.setattr(requests, name, refuse)
+    monkeypatch.setattr(requests.Session, "request", refuse)
+
+
+def test_v0_metadata_uses_the_card_cer(tmp_path):
+    card = {"summary": "s", "license": "CC-BY-NC-SA-4.0", "script": ["Arab"], "metrics": {"cer": 26.33}}
+    model = fake_model(tmp_path, flag=True)
+    data = publish.v0_metadata(card, "texte", model)
+    assert data["accuracy"] == 73.67  # 100 − CER de la carte, pas de CER kraken
+    assert data["graphemes"] == ["ا", " "] and data["name"] == "best.safetensors" and "authors" not in data
+
+
+def test_prepare_refuses_another_model(tmp_path):
+    with pytest.raises(ValueError, match="décision 45"):
+        publish.prepare_deposit(True, False, model_path=fake_model(tmp_path, flag=True), deposit_dir=tmp_path / "depot")
+
+
+@needs_model
+def test_sandbox_plan(tmp_path):
+    plan = publish.prepare_deposit(sandbox=True, private=False, deposit_dir=tmp_path / "depot")
+    assert plan["adresse"] == publish.SANDBOX_API and plan["prive"]  # pas de communauté sur le bac à sable
+    files = {f["fichier"]: f for f in plan["fichiers"]}
+    assert set(files) == {PUBLISHED_MODEL.name, "metadata.json"}
+    assert files[PUBLISHED_MODEL.name]["sha256"] == publish.PUBLISHED_SHA256
+    card, _ = publish.split_card(MODEL_CARD.read_text(encoding="utf-8"))
+    assert plan["metadata_v0"]["accuracy"] == round(100 - card["metrics"]["cer"], 2)
+    assert len(plan["metadata_v0"]["graphemes"]) == 196
+    assert "communities" not in plan["zenodo"]["metadata"]
+    assert plan["zenodo"]["metadata"]["license"] == "CC-BY-NC-SA-4.0"
+    assert "Adresse : https://sandbox.zenodo.org/api/" in publish.describe(plan)
+
+
+@needs_model
+def test_real_plan_requests_the_kraken_community(tmp_path):
+    plan = publish.prepare_deposit(sandbox=False, private=False, deposit_dir=tmp_path / "depot")
+    assert plan["adresse"] == publish.ZENODO_API and not plan["prive"]
+    assert plan["zenodo"]["metadata"]["communities"] == [{"identifier": "ocr_models"}]
+
+
+def run_main(monkeypatch, tmp_path, *argv):
+    monkeypatch.setattr(publish, "DEPOSIT_DIR", tmp_path / "depot")
+    monkeypatch.setattr("sys.argv", ["publish", *argv])
+    publish.main()
+
+
+@needs_model
+def test_dry_run_needs_no_token(monkeypatch, tmp_path, capsys):
+    monkeypatch.delenv(publish.TOKEN_ENV, raising=False)
+    run_main(monkeypatch, tmp_path, "--zenodo", "--sandbox", "--dry-run")
+    assert "aucun appel réseau" in capsys.readouterr().out
+
+
+@needs_model
+def test_missing_token_stops_before_any_upload(monkeypatch, tmp_path):
+    monkeypatch.delenv(publish.TOKEN_ENV, raising=False)
+    with pytest.raises(SystemExit, match="ZENODO_TOKEN"):
+        run_main(monkeypatch, tmp_path, "--zenodo", "--sandbox")
+
+
+@needs_model
+def test_real_deposit_requires_confirmation(monkeypatch, tmp_path):
+    monkeypatch.setenv(publish.TOKEN_ENV, "jeton_factice")
+    monkeypatch.setattr("builtins.input", lambda prompt: "non")
+    with pytest.raises(SystemExit, match="Annulé"):
+        run_main(monkeypatch, tmp_path, "--zenodo")
+
+
+@needs_model
+def test_deposit_calls_htrmopo_with_the_sandbox_address(monkeypatch, tmp_path):
+    import htrmopo
+
+    seen = {}
+
+    def fake_publish_model(model, model_card, access_token, private=False, **kwargs):
+        from htrmopo.util import get_repo_url
+        seen.update(model=model, card=model_card, token=access_token, private=private, url=get_repo_url())
+        return "10.5072/zenodo.1"
+
+    monkeypatch.setattr(htrmopo, "publish_model", fake_publish_model)
+    monkeypatch.setenv("MODEL_REPO_URL", "http://127.0.0.1:9/api/")  # remis à l'état initial après le test
+    plan = publish.prepare_deposit(sandbox=True, private=False, deposit_dir=tmp_path / "depot")
+    assert publish.deposit(plan, "jeton_factice") == "10.5072/zenodo.1"
+    assert seen["url"] == publish.SANDBOX_API and seen["private"] and seen["token"] == "jeton_factice"
+    assert seen["model"] == tmp_path / "depot" and seen["card"] == MODEL_CARD.read_text(encoding="utf-8")

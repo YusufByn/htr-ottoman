@@ -17,19 +17,38 @@ modèle évalué est faite à part, sur la validation (scripts/f14_preuve_valida
 une publication (schéma v1, licences, codes de langue et d'écriture), sans réseau ; l'identifiant,
 attribué par Zenodo au dépôt, est remplacé par une valeur provisoire.
 
+`--zenodo` dépose le modèle publié sur Zenodo par `htrmopo.publish_model`, sans passer par
+`ketos publish` : celui-ci plante avec ce modèle (`accuracy` vaut une liste vide dans ses
+métadonnées) et remplacerait le CER de la carte par celui de kraken, calculé sans `normalize`.
+Le dépôt contient le modèle publié (SHA-256 de la décision 45 vérifié), un `metadata.json`
+(ancien format v0 de kraken) dont la précision vient du CER de la carte (après `normalize`),
+et la carte elle-même, envoyée telle quelle sous le nom README.md par htrmopo.
+`--dry-run` prépare et affiche tout ce qui serait envoyé, sans aucun appel réseau.
+Le jeton Zenodo est lu dans la variable d'environnement ZENODO_TOKEN, jamais affiché.
+La publication est immédiate et le DOI définitif : sans `--sandbox`, une confirmation est demandée.
+
 Usage : uv run python -m htr_ottoman.publish             (écrit la copie)
         uv run python -m htr_ottoman.publish --carte     (valide MODEL_CARD.md seulement)
+        uv run python -m htr_ottoman.publish --zenodo --sandbox --dry-run
+        ZENODO_TOKEN=... uv run python -m htr_ottoman.publish --zenodo --sandbox
+        ZENODO_TOKEN=... uv run python -m htr_ottoman.publish --zenodo
 """
 import argparse
 import hashlib
 import json
+import os
+import shutil
 import struct
 
-from htr_ottoman.config import MODEL_CARD, PUBLISHED_MODEL, PUBLISHED_SOURCE, ROOT
+from htr_ottoman.config import DEPOSIT_DIR, MODEL_CARD, PUBLISHED_MODEL, PUBLISHED_SOURCE, ROOT
 
 SOURCE_SHA256 = "3709c4f3b5600db2399ebd2260feba7c5fcf8999afaf71a9cb9a0bab9847f8dd"  # décision 37
 FLAG = "legacy_polygons"
 PLACEHOLDER_ID = "10.5281/zenodo.0"  # remplacé par le DOI réservé par Zenodo au dépôt (htrmopo.publish_model)
+PUBLISHED_SHA256 = "4d96d85f2f93fd9008f4d48bbcfbfc87aefe0c698ce5cf1dd3310e761ecd022e"  # décision 45
+ZENODO_API = "https://zenodo.org/api/"
+SANDBOX_API = "https://sandbox.zenodo.org/api/"
+TOKEN_ENV = "ZENODO_TOKEN"
 
 
 def sha256sum(path) -> str:
@@ -121,12 +140,129 @@ def validate_card(text: str) -> dict:
     return header
 
 
+def split_card(text: str) -> tuple[dict, str]:
+    """En-tête YAML validé et texte de la carte, découpés comme dans htrmopo."""
+    from htrmopo.util import _yaml_regex
+
+    header = validate_card(text)
+    return header, _yaml_regex.match(text).group(2)
+
+
+def v0_metadata(card: dict, content: str, model_path) -> dict:
+    """metadata.json au format v0 de kraken, mêmes champs que `ketos publish` (sans `authors`,
+    que le schéma v0 veut avec une affiliation), sauf la précision : 100 − CER de la carte
+    (après `normalize`), jamais un CER recalculé par kraken. Graphèmes lus dans l'en-tête du
+    modèle, sans le charger. Validé contre le schéma v0, `authors` mis à part."""
+    from htrmopo.util import _v0_schema, format_checker
+    from jsonschema import validate
+
+    raw, _ = split_safetensors(model_path.read_bytes())
+    (model,) = kraken_meta(json.loads(raw)).values()
+    data = {
+        "summary": card["summary"],
+        "description": content,
+        "accuracy": round(100 - card["metrics"]["cer"], 2),
+        "license": card["license"],
+        "script": card["script"],
+        "name": model_path.name,
+        "graphemes": list("".join(model["codec"])),
+    }
+    schema = dict(_v0_schema, required=[k for k in _v0_schema["required"] if k != "authors"])
+    validate(data, schema, format_checker=format_checker)
+    return data
+
+
+def prepare_deposit(sandbox: bool, private: bool, model_path=None, card_path=None, deposit_dir=None) -> dict:
+    """Prépare le dossier envoyé à Zenodo et décrit tout l'envoi. Aucun appel réseau."""
+    from htrmopo.publish import _build_zenodo_metadata
+
+    model_path, card_path = model_path or PUBLISHED_MODEL, card_path or MODEL_CARD
+    deposit_dir = deposit_dir or DEPOSIT_DIR
+
+    if (sha := sha256sum(model_path)) != PUBLISHED_SHA256:
+        raise ValueError(f"SHA-256 de {model_path.name} : {sha}, attendu {PUBLISHED_SHA256} (décision 45)")
+    raw, _ = split_safetensors(model_path.read_bytes())
+    if next(iter(kraken_meta(json.loads(raw)).values())).get(FLAG) is not True:
+        raise ValueError(f"{FLAG} n'est pas vrai dans {model_path.name} (décision 45)")
+    text = card_path.read_text(encoding="utf-8")
+    card, content = split_card(text)
+    private = private or sandbox  # pas de communauté ocr_models sur le bac à sable
+
+    if deposit_dir.exists():
+        shutil.rmtree(deposit_dir)
+    deposit_dir.mkdir(parents=True)
+    shutil.copyfile(model_path, deposit_dir / model_path.name)
+    metadata = v0_metadata(card, content, model_path)
+    with open(deposit_dir / "metadata.json", "w") as fo:
+        json.dump(metadata, fo)  # comme ketos publish
+    files = [{"fichier": f.name, "octets": f.stat().st_size, "sha256": sha256sum(f)}
+             for f in sorted(deposit_dir.iterdir())]
+    if next(f["sha256"] for f in files if f["fichier"] == model_path.name) != PUBLISHED_SHA256:
+        raise ValueError("Copie du modèle dans le dossier de dépôt différente de l'original")
+    return {
+        "adresse": SANDBOX_API if sandbox else ZENODO_API,
+        "bac_a_sable": sandbox,
+        "prive": private,
+        "dossier": deposit_dir,
+        "fichiers": files,
+        "carte": text,
+        "metadata_v0": metadata,
+        "zenodo": _build_zenodo_metadata(dict(card, id="(DOI réservé par Zenodo)"), content, private),
+    }
+
+
+def describe(plan: dict) -> str:
+    v0 = dict(plan["metadata_v0"], description=f"(texte de la carte, {len(plan['metadata_v0']['description'])} caractères)",
+              graphemes=f"({len(plan['metadata_v0']['graphemes'])} graphèmes)")
+    zen = json.loads(json.dumps(plan["zenodo"]))
+    zen["metadata"]["description"] = f"(carte en HTML, {len(zen['metadata']['description'])} caractères)"
+    lines = [
+        f"Adresse : {plan['adresse']} ({'bac à sable' if plan['bac_a_sable'] else 'Zenodo réel, DOI définitif'})",
+        f"Communauté ocr_models : {'non (dépôt privé de la liste kraken)' if plan['prive'] else 'demande d’inclusion envoyée'}",
+        f"Dossier préparé : {plan['dossier']}",
+        "Fichiers envoyés :",
+        *[f"  {f['fichier']} : {f['octets']} octets, SHA-256 {f['sha256']}" for f in plan["fichiers"]],
+        f"  README.md : carte {MODEL_CARD.name} ({len(plan['carte'])} caractères), id remplacé par le DOI réservé",
+        "metadata.json :",
+        json.dumps(v0, ensure_ascii=False, indent=1),
+        "Métadonnées Zenodo :",
+        json.dumps(zen, ensure_ascii=False, indent=1),
+    ]
+    return "\n".join(lines)
+
+
+def deposit(plan: dict, token: str) -> str:
+    """Dépôt réel par htrmopo (création, envoi des fichiers, publication immédiate). Renvoie le DOI."""
+    os.environ["MODEL_REPO_URL"] = plan["adresse"]  # lue par htrmopo.util.get_repo_url à chaque appel
+    from htrmopo import publish_model
+
+    return publish_model(plan["dossier"], plan["carte"], token, private=plan["prive"])
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--carte", action="store_true", help="valide MODEL_CARD.md sans écrire la copie")
-    if parser.parse_args().carte:
+    parser.add_argument("--zenodo", action="store_true", help="dépose le modèle publié sur Zenodo")
+    parser.add_argument("--sandbox", action="store_true", help="avec --zenodo : bac à sable (sandbox.zenodo.org)")
+    parser.add_argument("--private", action="store_true", help="avec --zenodo : sans demande d'inclusion à ocr_models")
+    parser.add_argument("--dry-run", action="store_true", help="avec --zenodo : prépare et affiche, sans réseau")
+    args = parser.parse_args()
+    if args.carte:
         header = validate_card(MODEL_CARD.read_text(encoding="utf-8"))
         print(f"{MODEL_CARD.relative_to(ROOT)} : valide (schéma v1 de htrmopo), champs {sorted(header)}")
+        return
+    if args.zenodo:
+        plan = prepare_deposit(args.sandbox, args.private)
+        print(describe(plan))
+        if args.dry_run:
+            print("\n--dry-run : aucun appel réseau, rien n'a été envoyé.")
+            return
+        token = os.environ.get(TOKEN_ENV)
+        if not token:
+            raise SystemExit(f"Jeton absent : définir la variable d'environnement {TOKEN_ENV}")
+        if not args.sandbox and input("\nPublication réelle, immédiate, DOI définitif. Taper « publier » pour confirmer : ") != "publier":
+            raise SystemExit("Annulé : rien n'a été envoyé.")
+        print(f"DOI : {deposit(plan, token)}")
         return
     result = write_copy()
     for k, v in result.items():
