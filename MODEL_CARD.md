@@ -104,4 +104,4 @@ The model is distributed under **CC BY-NC-SA 4.0**, inherited from MAKHZAN: attr
 - the base model: Kiessling, B. *Printed Ottoman Base Model Trained on the OpenITI Corpus*, Zenodo, 2022, DOI 10.5281/zenodo.7050342;
 - this model: Buyukaydin, Y. *Ottoman Turkish handwritten naskh, fine-tuned on MAKHZAN (v0.1.0)*, Zenodo, 2026, DOI [10.5281/zenodo.23502722](https://doi.org/10.5281/zenodo.23502722).
 
-Training and evaluation code (MIT), protocol, decisions and experiment log: the project repository (`htr-ottoman`).
+Training and evaluation code (MIT), protocol, decisions and experiment log: the project repository, [https://github.com/YusufByn/htr-ottoman](https://github.com/YusufByn/htr-ottoman).

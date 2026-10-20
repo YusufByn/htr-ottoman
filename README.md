@@ -46,6 +46,8 @@ uv run python -m htr_ottoman.train configs/f8_finetune.yml     # affinage F8 (4 
 uv run python -m htr_ottoman.evaluate reports/f8_finetune/val/predictions.parquet --split val --output-dir reports/f8_finetune/val
 ```
 
+Dépôt du code : [https://github.com/YusufByn/htr-ottoman](https://github.com/YusufByn/htr-ottoman).
+
 Documentation du projet : [PROJECT.md](PROJECT.md) (résumé, protocole, limites), [ROADMAP.md](ROADMAP.md) (tickets, avancement), [ARCHITECTURE.md](ARCHITECTURE.md) (code, flux des données), [DECISIONS.md](DECISIONS.md) (décisions méthodologiques), [EXPERIMENTS.md](EXPERIMENTS.md) (expériences), [DATASETS.md](DATASETS.md) (données ouvertes pour l'HTR ottoman manuscrit, recherche d'un test externe).
 
 ## Données
