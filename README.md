@@ -63,4 +63,14 @@ Détail dans [ARCHITECTURE.md](ARCHITECTURE.md).
 - `scripts/` : utilitaires (vérification d'environnement, etc.)
 - `notebooks/` : exploration visuelle uniquement
 - `tests/` : tests automatiques
-- `reports/` : métadonnées dérivées de MAKHZAN (inventaires, statistiques), sous licence CC BY-NC-SA 4.0 comme la source
+- `reports/` : contenus dérivés de MAKHZAN (vérité terrain normalisée, prédictions, images de lignes de F13, statistiques), sous licence CC BY-NC-SA 4.0 comme la source ; détail et exceptions dans [reports/LICENCE.md](reports/LICENCE.md)
+
+## Licences
+
+| Contenu | Licence |
+|---------|---------|
+| Code (`src/`, `scripts/`, `tests/`, `configs/`) | MIT ([LICENSE](LICENSE)) |
+| Contenus dérivés de MAKHZAN (`reports/`, `splits/`) | CC BY-NC-SA 4.0, comme MAKHZAN ; source, détail et exceptions dans [reports/LICENCE.md](reports/LICENCE.md) |
+| Modèle publié `ota_naskh_makhzan_v0.1.0` (affiné sur MAKHZAN) | CC BY-NC-SA 4.0 ([MODEL_CARD.md](MODEL_CARD.md)) |
+| Modèle de départ OpenITI ottoman imprimé (non redistribué, téléchargé par `htr_ottoman.base_model`) | CC0 1.0 |
+| Données brutes MAKHZAN et Akis | non redistribuées (`data/` hors git) ; licences dans la section Données |

@@ -67,7 +67,7 @@ htr-ottoman/
 │   └── processed/        makhzan/alto/ (ALTO normalisés), makhzan/<jeu>.arrow et <jeu>.lst
 ├── models/               modèle de départ (openiti_ottoman_print/) et modèles entraînés (hors git)
 ├── notebooks/            exploration visuelle uniquement, aucun code du pipeline n'en dépend
-├── reports/              inventaires, métriques (versionné, CC BY-NC-SA)
+├── reports/              inventaires, métriques (versionné, CC BY-NC-SA ; source et exceptions : reports/LICENCE.md)
 │   ├── baseline/         F7 : prédictions et CER du modèle de départ, un dossier par jeu (val/, test_interne/)
 │   ├── f8_finetune/      prédictions et CER du modèle F8 : validation (val/, F8) et test interne (test_interne/, F9, avec run.json et ketos_test.txt)
 │   ├── f8_finetune_seed<N>/  prédictions et CER des répétitions de F8 sur la validation (val/, F12, décision 42)
@@ -96,7 +96,7 @@ htr-ottoman/
 │   ├── ketos_capped.py   lance `ketos train` avec l'arrêt anticipé et un plafond d'époques (F12, décision 43)
 │   └── train.py          fine-tuning kraken piloté par une config de configs/
 ├── tests/                tests automatiques (pytest)
-└── pyproject.toml, uv.lock, README.md, CLAUDE.md, DECISIONS.md, EXPERIMENTS.md, ARCHITECTURE.md, PROJECT.md, DATASETS.md
+└── pyproject.toml, uv.lock, LICENSE (MIT, code), README.md, CLAUDE.md, DECISIONS.md, EXPERIMENTS.md, ARCHITECTURE.md, PROJECT.md, DATASETS.md
 ```
 
 ## 3. Flux des données
