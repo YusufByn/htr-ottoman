@@ -36,3 +36,8 @@ AKIS_LINES = AKIS_INTERIM / "akis_lines.parquet"  # une ligne par image de ligne
 BASE_MODEL_DIR = MODELS / "openiti_ottoman_print"
 BASE_MODEL = BASE_MODEL_DIR / "ottoman_best.mlmodel"
 BASE_MODEL_CODEC = REPORTS / "codec_modele_depart.json"  # codec du modèle de départ, lu sans charger le modèle (F14)
+
+# F14 : modèle publié (décision 44), copie de F8 (lag 5) au drapeau « anciens polygones » corrigé (décisions 36 et 45)
+PUBLISHED_SOURCE = MODELS / "f8_finetune" / "best_0.8365.safetensors"
+PUBLICATION_DIR = MODELS / "f14_publication"
+PUBLISHED_MODEL = PUBLICATION_DIR / "f8_finetune_legacy_polygons.safetensors"  # nom provisoire (arrêt B)
