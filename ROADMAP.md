@@ -20,7 +20,7 @@ Statuts : à faire, en cours, en attente, fait. Dernière mise à jour : 2026-09
 | F10 | Jeu de test externe (aucun retenu, décisions 40 et 41) | F1, F5 | fait |
 | F11 | Évaluation externe | F7, F9, F10 | en attente |
 | F12 | Expériences complémentaires | F9 | fait |
-| F13 | Analyse d'erreurs | F9 | en cours |
+| F13 | Analyse d'erreurs | F9 | fait |
 | F14 | Publication | F9 (F11 s'il est rouvert) | à faire |
 | F15 | v1.0 : modèle naskh utilisable | F14 | à faire |
 
@@ -391,7 +391,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
 - **Critères d'acceptation** : pour chaque question, tableaux et CSV de jugement versionnés, ligne dans EXPERIMENTS.md, lecture descriptive sans conclusion au-delà des chiffres et des jugements.
 - **Points de décision** : interprétation de chaque question après la lecture de l'utilisateur ; toute règle de normalisation ou de données suggérée est renvoyée à F15 (nouvelle décision).
 - **Concept à expliquer** : l'alignement de deux chaînes et la matrice de confusion au niveau des caractères (au début de Q1).
-- **Statut** : en cours (cadrage, Q2, Q7, Q5, Q3 et Q4 faits le 2026-10-19, Q1 et Q6 le 2026-10-20). Pistes F15 reportées le 2026-10-20. Reste : synthèse et clôture de F13, avec l'accord de l'utilisateur.
+- **Statut** : fait (clos le 2026-10-20). Q2, Q7, Q5, Q3 et Q4 faits le 2026-10-19, Q1 et Q6 le 2026-10-20 ; pistes reportées dans le ticket F15 (398beb2) ; synthèse : [SYNTHESE_F13.md](SYNTHESE_F13.md) (7883afb). Prochain ticket : F14.
 
 ---
 
