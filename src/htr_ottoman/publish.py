@@ -256,6 +256,22 @@ def deposit(plan: dict, token: str) -> str:
     return publish_model(plan["dossier"], plan["carte"], token, private=plan["prive"])
 
 
+def token_status(environ=None) -> tuple[str | None, str]:
+    """Jeton lu dans ZENODO_TOKEN (espaces de bord retirés) et constat affichable.
+    Le constat ne donne jamais la valeur : longueur, ou absence, et noms des variables voisines."""
+    environ = os.environ if environ is None else environ
+    raw = environ.get(TOKEN_ENV)
+    if raw is None:
+        similar = sorted(k for k in environ if "ZENODO" in k.upper() and k != TOKEN_ENV)
+        return None, (f"{TOKEN_ENV} absente de l'environnement de ce processus"
+                      + (f" ; variables voisines : {', '.join(similar)}" if similar else ""))
+    token = raw.strip()
+    if not token:
+        return None, f"{TOKEN_ENV} présente mais vide"
+    note = ", espaces ou retours à la ligne de bord retirés" if token != raw else ""
+    return token, f"{TOKEN_ENV} vue par ce processus : {len(token)} caractères{note}"
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--carte", action="store_true", help="valide MODEL_CARD.md sans écrire la copie")
@@ -271,12 +287,15 @@ def main() -> None:
     if args.zenodo:
         plan = prepare_deposit(args.sandbox, args.private)
         print(describe(plan))
+        token, status = token_status()
+        print(f"Jeton : {status}")
         if args.dry_run:
             print("\n--dry-run : aucun appel réseau, rien n'a été envoyé.")
             return
-        token = os.environ.get(TOKEN_ENV)
         if not token:
-            raise SystemExit(f"Jeton absent : définir la variable d'environnement {TOKEN_ENV}")
+            raise SystemExit(f"Jeton absent ({status}). Une variable définie dans le terminal mais non exportée "
+                             f"n'est pas transmise aux commandes : sh -c 'echo ${{#{TOKEN_ENV}}}' doit afficher "
+                             f"sa longueur et non 0 ; sinon, export {TOKEN_ENV} dans le même terminal.")
         if not args.sandbox and input("\nPublication réelle, immédiate, DOI définitif. Taper « publier » pour confirmer : ") != "publier":
             raise SystemExit("Annulé : rien n'a été envoyé.")
         print(f"DOI : {deposit(plan, token)}")

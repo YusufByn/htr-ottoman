@@ -62,7 +62,7 @@ def test_model_card_is_valid():
 import requests  # noqa: E402
 
 from htr_ottoman import publish  # noqa: E402
-from htr_ottoman.config import MODEL_CARD, PUBLISHED_MODEL  # noqa: E402
+from htr_ottoman.config import MODEL_CARD, PUBLISHED_MODEL, ROOT  # noqa: E402
 
 needs_model = pytest.mark.skipif(not PUBLISHED_MODEL.exists(), reason="modèle publié absent : uv run python -m htr_ottoman.publish")
 
@@ -169,3 +169,34 @@ def test_zenodo_creators_use_family_name_first(tmp_path):
     assert sent["authors"] == [{"name": "Buyukaydin, Yusuf"}] and card["authors"] == [{"name": "Yusuf Buyukaydin"}]
     with pytest.raises(ValueError, match="ZENODO_CREATOR_NAMES"):
         publish.zenodo_card(dict(card, authors=[{"name": "Autre Auteur"}]), "texte")
+
+
+def test_token_status_never_shows_the_value():
+    secret = "valeur_secrete_de_test"
+    token, status = publish.token_status({publish.TOKEN_ENV: f"  {secret}\n"})
+    assert token == secret and secret not in status and str(len(secret)) in status and "retirés" in status
+    assert publish.token_status({})[0] is None
+    token, status = publish.token_status({"Zenodo_Token": secret})  # mauvaise casse : nom signalé, valeur jamais
+    assert token is None and "Zenodo_Token" in status and secret not in status
+    assert publish.token_status({publish.TOKEN_ENV: " \n"})[0] is None
+
+
+@needs_model
+@pytest.mark.parametrize("launcher", ["python", "uv"])
+def test_exported_token_reaches_the_command(launcher):
+    # cas signalé le 2026-10-20 : variable exportée, la commande doit la voir (--dry-run : aucun réseau)
+    import os
+    import shutil
+    import subprocess
+    import sys
+
+    if launcher == "uv" and shutil.which("uv") is None:
+        pytest.skip("uv absent")
+    secret = "valeur_factice_de_test"
+    cmd = [sys.executable] if launcher == "python" else ["uv", "run", "python"]
+    env = dict(os.environ, **{publish.TOKEN_ENV: secret})
+    result = subprocess.run([*cmd, "-m", "htr_ottoman.publish", "--zenodo", "--sandbox", "--dry-run"],
+                            capture_output=True, text=True, env=env, cwd=ROOT)
+    assert result.returncode == 0, result.stderr[-2000:]
+    assert f"vue par ce processus : {len(secret)} caractères" in result.stdout
+    assert secret not in result.stdout + result.stderr
