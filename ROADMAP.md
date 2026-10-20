@@ -1,7 +1,7 @@
 # Feuille de route
 
 Liste des tickets du projet. Pour lancer un ticket : « fais Fx ».
-Statuts : à faire, en cours, en attente, fait. Dernière mise à jour : 2026-09-29.
+Statuts : à faire, en cours, en attente, fait. Dernière mise à jour : 2026-10-20.
 
 ## Vue d'ensemble
 
@@ -21,7 +21,7 @@ Statuts : à faire, en cours, en attente, fait. Dernière mise à jour : 2026-09
 | F11 | Évaluation externe | F7, F9, F10 | clos le 2026-10-20 sans jeu externe |
 | F12 | Expériences complémentaires | F9 | fait |
 | F13 | Analyse d'erreurs | F9 | fait |
-| F14 | Publication | F9 | à faire |
+| F14 | Publication | F9 | en cours |
 | F15 | v1.0 : modèle naskh utilisable | F14 | à faire |
 
 Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), généralisation externe (F10, F11), approfondissement et publication (F12 à F14), v1.0 (F15, pas avant F14).
@@ -407,9 +407,31 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
   - lire le codec du modèle de départ sans le charger, dans tous les modules : `prepare.select_lines` le charge via `base_model.codec_chars` (écarts de Q2, 11b9416, et de Q6, 5236bc4 ; option `with_codec=False` ajoutée en Q6 ; source possible : `reports/codec_coverage.csv`).
     - *Complément (2026-10-20), effet sur les chiffres de F7 à F9* : raisonnement : lire le codec ne produit aucune prédiction et renvoie toujours le même ensemble de caractères ; la règle « hors codec » ne touche que le train et fait partie du protocole (décision 33) ; sur la validation et le test, `select_lines(with_codec=False)` donne le même résultat. Vérification (`scripts/check_codec_rule.py`, lignes du test interne retirées avant l'appel, le modèle chargé ne voit jamais le test interne ; aucune prédiction) : validation, 523 lignes, tables identiques avec et sans codec (412 gardées) ; train, 6 exclusions « hors codec » de plus avec codec (2 757 gardées contre 2 763), égales aux 6 de `reports/processed_datasets.csv`. Limite : la validation n'a aucun caractère hors codec, la règle n'y aurait donc rien retiré même si elle s'y appliquait. Test interne, sans charger de modèle (chargement interdit, `kraken.models` jamais importé) : `select_lines(with_codec=False)` garde 544 lignes, autant que les lignes compilées de `reports/processed_datasets.csv` (0 exclusion « hors codec », alors que le test contient ڡ, ٮ et ZWNJ hors codec) ; l'absence de la règle sur le test repose aussi sur le code (condition `split == "train"`). Conclusion : aucun effet sur les chiffres de F7 à F9, écart de méthode seulement. Pour information, `evaluate` et `final_eval` appellent aussi `select_lines()` avec le codec.
 - **Dépend de** : F9.
-- **Tâches, critères, points de décision** : à préciser selon les résultats. Il faudra au moins choisir le lieu du dépôt (Zenodo, par exemple) et la licence du code.
+- **Tâches, critères, points de décision** : à préciser selon les résultats. Il faudra au moins choisir le lieu du dépôt (Zenodo, par exemple) et la licence du code. Précisés le 2026-10-20 ci-dessous.
+- **Plan fixé le 2026-10-20** (choix de l'utilisateur) :
+  - Licences : modèle sous CC BY-NC-SA 4.0 (affiné sur MAKHZAN) ; code sous MIT ; contenus dérivés de MAKHZAN dans `reports/` sous CC BY-NC-SA 4.0, avec mention de la source.
+  - Version v0.1.0 (F15 visera v1.0) ; nom du modèle proposé à l'arrêt B.
+  - Historique git jamais réécrit, quel que soit le résultat de l'audit (des centaines de hash sont cités dans les documents) : l'audit signale seulement.
+  - CLAUDE.md reste public ; `.claude/` exclu, sauf si l'audit n'y montre rien de local ni de personnel.
+  - Décision 36 inchangée : `predict` impose toujours l'ancien extracteur.
+  - Test interne : aucune prédiction, aucun modèle chargé (décision 39).
+- **Tâches**, dans cet ordre, un commit par point :
+  - [ ] Comparaison des tenseurs : module `analysis.same_tensors` (repris du script ponctuel de la vérification de C ; celui de A est perdu, limite écrite), avec un test ; relancé sur F8, A, B et C. Contrôle : les résultats consignés dans EXPERIMENTS.md sont reproduits (F8 : `best_0.8365` identique à `checkpoint_85`, époque 86 ; A : époque 72 ; B : 147 ; C : 145), aucun chiffre recalculé.
+  - [ ] Codec lu sans charger le modèle : codec du modèle de départ écrit une seule fois dans un fichier versionné (`reports/codec_modele_depart.json`, avec le SHA-256 du `.mlmodel`), lu par `base_model.codec_chars` ; concerne `select_lines`, `evaluate`, `final_eval` et les modules de F13. Contrôle : même ensemble de caractères que le modèle chargé ; `scripts/check_codec_rule.py` (train 2 757 / 2 763, validation 412) ; test : kraken jamais importé ; `evaluate` sur la validation, CSV identiques à l'octet ; `uv run pytest`.
+  - **Arrêt A** : résultats des deux contrôles.
+  - [ ] Copie du modèle et drapeau : copie de `best_0.8365.safetensors` dans `models/f14_publication/` (SHA-256 de l'original vérifié avant et après) ; en-tête de la copie réécrit (`legacy_polygons: true`) par `htr_ottoman.publish` ; tenseurs identiques à l'octet, métadonnées identiques sauf ce drapeau ; nouvelle décision pour le SHA-256 de la copie. Preuve par un script ponctuel versionné : prédiction de la validation par le chemin normal de kraken, sans forçage, avec la copie ; `predictions.parquet` identique à l'octet à `b6b4517e…`, CER 0,163184. Rien sur le test interne.
+  - **Arrêt B** : preuve d'identité, nom du modèle proposé.
+  - [ ] Licences : `LICENSE` (MIT, code), `reports/LICENCE.md` (source MAKHZAN, CC BY-NC-SA 4.0, fichiers dérivés), section Licences du README.
+  - [ ] Carte du modèle (`MODEL_CARD.md`, en-tête YAML au schéma v1 de htrmopo, validé localement) et README final : CER mesuré après `normalize()` (validation 16,3 % ; test interne 26,3 % [22,9 ; 31,1] contre 37,0 % pour le modèle de départ) ; F8 lag 15 seed 42 (15,60 % en validation) cité comme résultat descriptif et point de départ de F15 ; limites (naskh seulement, pas de test d'une autre provenance, test interne clos, texte inversé de `kraken ocr` 7.1.1 sur les ALTO). Chaque chiffre avec sa source et son commit ; tableau de recoupement remis à l'utilisateur.
+  - [ ] Audit avant publication, qui signale seulement : e-mail dans l'historique, CLAUDE.md, `.claude/`, images MAKHZAN dans `reports/f13/`, notebooks, fichiers lourds, secrets.
+  - **Arrêt C** : liste de ce qui sera publié et marche à suivre.
+  - [ ] Actions de l'utilisateur (publiques, un DOI est irréversible) : dépôt GitHub et push ; Zenodo, essai sur le bac à sable puis vrai DOI ; HTR-United (à vérifier : catalogue surtout de jeux de vérité terrain).
+  - [ ] Après publication : DOI et URL reportés (carte, README, PROJECT.md), clôture de F14.
+- **Zenodo, bac à sable** (vérifié le 2026-10-20 dans le code de htrmopo 0.6, utilisé par `ketos publish`) : l'adresse du dépôt est lue dans la variable d'environnement `MODEL_REPO_URL` (par défaut `https://zenodo.org/api/`) ; `MODEL_REPO_URL=https://sandbox.zenodo.org/api/`, avec un jeton créé sur le bac à sable, permet un essai. `ketos publish` crée le dépôt et le publie aussitôt, sans brouillon ; la carte n'est validée contre le schéma qu'après la création du dépôt, d'où la validation locale avant ; `--private` évite la demande d'inclusion à la communauté `ocr_models` (sans doute absente du bac à sable). La licence `CC-BY-NC-SA-4.0` figure dans la liste de htrmopo.
+- **Critères d'acceptation** : modèle publié prouvé identique au modèle évalué (tenseurs, prédictions de la validation, CER) ; aucun chiffre de F7 à F13 modifié ; `uv run pytest` passe ; licences et source mentionnées ; DOI reporté.
+- **Points de décision** : nom du modèle (arrêt B) ; contenu public après l'audit, dont `.claude/` (arrêt C).
 - **Concept à expliquer** : ce que contient une carte de modèle, et comment les licences des données se transmettent au modèle.
-- **Statut** : à faire.
+- **Statut** : en cours (2026-10-20).
 
 ---
 
