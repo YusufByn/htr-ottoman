@@ -454,6 +454,11 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
     3. meilleurs réglages trouvés en F12.
   - Consigner chaque expérience dans EXPERIMENTS.md.
   - Publier le modèle sous CC BY-NC-SA (hérité de MAKHZAN), avec une fiche : données et licences, protocole, CER par écriture, limites, citation.
+  - Test externe RiqaTestset (Osmanlica.com, rik'a ; décision 46 ; DATASETS.md, section 3.3) : jamais d'entraînement ni de réglage sur ce jeu.
+    1. Inventaire : téléchargement (9,8 Mo) et description du jeu (documents, lignes, encodage, conventions), sans aucune prédiction.
+    2. Pré-enregistrement committé avant toute prédiction : découpe des lignes, normalisation, critère principal, intervalle de confiance, règle d'interprétation ; modèles testés : baseline et v0.1.0 (F8 lag 5). Origine de la vérité terrain : réponse attendue jusqu'au 2026-11-19, sinon limite écrite.
+    3. Test : une seule prédiction par modèle, rapport dans EXPERIMENTS.md (chiffres agrégés seulement, ni images ni transcriptions, y compris dans `reports/`), citation des publications d'Osmanlica.com, résultats envoyés à Osmanlica.com avant publication.
+    4. v1.0, à la fin de F15 : une seule consultation, avec son propre pré-enregistrement.
 - **Pistes issues de F13** (reportées le 2026-10-20, à la fin de F13 ; hypothèses non testées, rien n'est appliqué ; toute règle de normalisation ou de données serait une nouvelle décision, jamais appliquée aux chiffres de F9) :
   - *Données* :
     - chiffres : sur le test interne, F8 (lag 5) en lit moins que la baseline (6 sur 43 contre 18) ; chiffres rares dans le train (4) ; hypothèse non établie d'un oubli par l'affinage ; données ou exemples synthétiques contenant des chiffres (proposition ajoutée au report, absente de la conclusion de Q7) (Q7, 5a91fec) ;
