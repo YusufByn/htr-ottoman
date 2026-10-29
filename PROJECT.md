@@ -30,6 +30,7 @@ Tout modèle dérivé de MAKHZAN est sous CC BY-NC-SA. Détails et MD5 : [README
 | Validation | *Manāfi' al-nās fī al-ṭibb* (Doc 2937, 2939) | 2 | 19 | 436 | 7 |
 | Test interne | ACDC-Evaluation ottoman, jamais utilisé pour le réglage ; 7 pages multilingues marquées ; clos depuis F9 | 17 | 30 | 555 | 1, 19, 39 |
 | Test externe | Aucun jeu ne remplit les critères (DATASETS.md) ; Akis écarté. F11 clos le 2026-10-20 sans jeu externe (aucune réponse d'Osmanlica.com ni des auteurs de CHURRO), il ne sera pas rouvert ; une réponse tardive éventuelle alimenterait F15, avec un pré-enregistrement committé avant toute utilisation | aucun | aucune | aucune | 40, 41 |
+| Test externe de F15 | RiqaTestset (Osmanlica.com, rik'a), usage académique autorisé le 2026-10-23 ; jamais d'entraînement, une consultation par version publiée, pré-enregistrement avant toute prédiction. Inventaire fait le 2026-10-29 (`reports/riqa/inventaire.md`) ; aucune prédiction | inconnu (85 unités, documents non indiqués) | 85 | 1 575 | 46 |
 
 - Découpage par œuvre : toutes les copies d'une œuvre sont dans le même jeu (décision 6).
 - Les lignes sans transcription sont exclues de l'entraînement.

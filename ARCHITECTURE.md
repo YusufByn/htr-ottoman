@@ -52,6 +52,10 @@ data/raw/makhzan/  (zip + TSV, lecture seule)
 data/raw/akis/  (zip git LFS, lecture seule) ──> data.akis ──> data/interim/akis/  (lignes découpées, table des lignes)
                                                                    │
                                   analysis.akis_inventory ──> reports/akis_*.csv  (vérification F10 ; Akis écarté, décision 40)
+
+data/raw/riqa/  (zip déposé par l'utilisateur, lecture seule) ──> data.riqa ──> data/interim/riqa/  (lignes découpées, table des lignes)
+                                                                   │
+                                  analysis.riqa_inventory ──> reports/riqa/  (inventaire F15, chiffres agrégés seulement, décision 46)
 ```
 
 Le pipeline part toujours de `data/raw/`, qui n'est jamais modifié. Chaque étape lit la sortie de la précédente et écrit dans son propre dossier.
@@ -142,6 +146,8 @@ htr-ottoman/
 | Téléchargement d'Akis | `data.akis` (`download`, `extract`) | pointeur git LFS du dépôt `verimsu/Akis-Ottoman-Dataset` au commit `c7a6e5b`, serveur LFS de GitHub | `data/raw/akis/` (zip, README, LICENSE, SHA-256 vérifiés, lecture seule), `data/interim/akis/` (images/, annotations/, files.txt) | fait (F10) |
 | Table des lignes d'Akis | `data.akis` (`build_lines`, `check_lines`) | `data/interim/akis/` | `data/interim/akis/akis_lines.parquet` (8 036 lignes, 13 sources) | fait (F10) |
 | Inventaire d'Akis | `analysis.akis_inventory` | table des lignes d'Akis, codec du modèle de départ | `reports/akis_sources.csv`, `reports/akis_characters.csv` | fait (F10) ; Akis écarté comme test (décision 40) |
+| Table des lignes de RiqaTestset | `data.riqa` (`check_zip`, `extract`, `build_lines`, `check_lines`) | `data/raw/riqa/RiqaTestset.zip` (SHA-256 `73680105…` vérifié, mis en lecture seule) | `data/interim/riqa/` (images, transcriptions ottomanes et turques, `metrics.json`), `data/interim/riqa/riqa_lines.parquet` (1 575 lignes, 85 unités) | fait (F15, inventaire) |
+| Inventaire de RiqaTestset | `analysis.riqa_inventory` | table des lignes de RiqaTestset, `reports/codec_modele_depart.json` (sans charger le modèle), `reports/codec_coverage.csv` (caractères du train) | `reports/riqa/` : `inventaire.md`, `unites.csv`, `caracteres.csv`, `resume.json` (chiffres agrégés, ni image ni transcription) | fait (F15, inventaire) ; aucune prédiction (décision 46) |
 | Évaluation finale | `final_eval` | `configs/f9_test_interne.yml` (modèle, empreintes, effectifs attendus), modèles, prédictions de la baseline | contrôles bloquants, puis `reports/f8_finetune/test_interne/` (prédictions, CER, `ketos_test.txt`, `run.json`) et la comparaison | fait, lancé une seule fois (F9, 1,8 min) ; test interne clos (décision 39) |
 
 ## 4. Modules du package
@@ -157,6 +163,8 @@ htr-ottoman/
 | `data.makhzan` | Constantes MAKHZAN (version, `LANGUAGE`, `MODEL_LAYERS`, `KNOWN_LAYERS`) ; `download`, `extract` (dossier temporaire puis renommage, noms de fichiers contrôlés), `build_lines`, `check_lines` (effectifs par page égaux au TSV). | `uv run python -m htr_ottoman.data.makhzan` | fait |
 | `data.akis` | Constantes du dépôt Akis (commit figé, SHA-256 et taille du zip, SHA-256 du README et de la licence) ; `read_pointer` (pointeur git LFS), `download` (serveur LFS de GitHub, sans git-lfs ; pointeur, SHA-256 et taille vérifiés), `extract` (dossier temporaire puis renommage), `build_lines` (une ligne par image : source, année, page, numéro de ligne, texte brut, taille et mode de l'image), `check_lines` (`files.txt` couvre exactement les deux dossiers). Akis écarté comme test (décision 40). | `uv run python -m htr_ottoman.data.akis` | fait (F10) |
 | `analysis.akis_inventory` | Par source : année, pages, lignes, caractères, formes Unicode (NFC, NFD, mixte), taille des images. Par caractère (après NFD) : écriture Unicode (arabe, latin, autre), fréquences, présence dans le codec du modèle de départ. | `uv run python -m htr_ottoman.analysis.akis_inventory` | fait (F10) |
+| `data.riqa` | SHA-256 et taille du zip, `check_zip` (vérification puis lecture seule de `data/raw/riqa/`), `extract` (noms contrôlés, dossier temporaire puis renommage, dossier racine `riqa/` retiré), `build_lines` (une ligne par image : unité UUID, numéro, texte ottoman brut, BOM, `\r`, taille et mode de l'image), `check_lines` (images, `ottoman/` et `turkish/` en correspondance exacte). | `config` | fait |
+| `analysis.riqa_inventory` | Par unité : lignes, numérotation, caractères, formes Unicode, images. Par caractère : texte brut et après `normalize`, codec du modèle de départ (lu dans le JSON), occurrences dans le train ; images en gris de fait et nombre de niveaux. N'importe jamais kraken. | `base_model.codec_chars`, `normalize`, `data.annotations`, `analysis.akis_inventory` | fait |
 | `normalize` | `normalize(text)` : applique dans l'ordre les règles de `RULES` (1 NFD, 2 marques de direction, 3 voyelles, 4 ک→ك, 5 ی selon la position, 8 séparateurs de vers → ".", 9 ڛ→س, 6 ZWNJ répétés, 7 espaces), puis NFD. Sortie toujours NFD, idempotente. Une fonction par règle, docstring et décision associées (5, 9 à 14, 21, 22). Le numéro d'une règle est un identifiant, pas son rang. | import `from htr_ottoman.normalize import normalize` | fait |
 | `base_model` | `download` (Zenodo, `ensure_file`), `load` (kraken `load_models`, lit l'ancien `.mlmodel` ; avertissements bénins de coremltools masqués), `codec_labels`, `write_codec` (écrit le codec du modèle chargé dans `reports/codec_modele_depart.json`, avec le SHA-256 du `.mlmodel`), `codec_chars` (ensemble des caractères du codec, lu dans ce fichier sans charger le modèle ni importer kraken, SHA-256 vérifié si le modèle est présent ; F14). Modèle : lignes de 120 px, niveaux de gris, lignes de base, anciens polygones, NFD. | `uv run python -m htr_ottoman.base_model` | fait |
 | `analysis.codec_coverage` | Caractères des lignes transcrites après `normalize`, par jeu, comparés au codec ; lignes annotées comptées à part. | `uv run python -m htr_ottoman.analysis.codec_coverage` | fait |
@@ -220,6 +228,7 @@ Les évaluations finales ont aussi leur fichier, lu par `final_eval` : `configs/
 | `tests/test_alto.py` | Lecture d'un ALTO minimal écrit à la main : texte, ligne vide, ligne de base, polygone. | fait (3 tests) |
 | `tests/test_download.py` | Les quatre cas du téléchargement, le dossier en lecture seule restauré et l'empreinte SHA-256, sans réseau (URL `file://`). | fait (6 tests) |
 | `tests/test_akis.py` | Lecture des noms de lignes (pages -A / -B), formes Unicode et écritures ; table d'Akis (8 036 lignes, 13 sources, 64 px, `files.txt` cohérent), aucune lettre arabe (décision 40), inventaires versionnés redonnés (sauté si la table ou le modèle de départ sont absents). | fait (8 tests) |
+| `tests/test_riqa.py` | Noms de lignes, kraken jamais importé par l'inventaire (sous-processus), table (1 575 lignes, 85 unités, aucune vide), aucun extrait de transcription dans `reports/riqa/` (décision 46). | fait (4 tests) |
 | `tests/test_makhzan.py` | Table des lignes : 248 pages, 30 manuscrits, effectifs identiques au TSV, `check_lines` détecte une incohérence, 18 pages en couche modèle, aucune métadonnée vide (sauté si la table est absente). | fait (4 tests) |
 | `tests/test_splits.py` | Fichiers identiques à une régénération, étanchéité (œuvre, Doc ID, cote), Doc 86 et 89 ensemble, chaque page une fois, effectifs, pages multilingues, `validate` détecte une fuite. | fait (16 tests) |
 | `tests/test_annotations.py` | `has_annotation` sur des cas réels (illisible, restitution, note, incertitude) et des lignes ordinaires. | fait (8 tests) |
@@ -311,5 +320,8 @@ uv run python -m htr_ottoman.compare --reference reports/baseline/test_interne -
 # F10 : vérification d'Akis (584 Mo, SHA-256 vérifié), écarté comme test (décision 40)
 uv run python -m htr_ottoman.data.akis
 uv run python -m htr_ottoman.analysis.akis_inventory
+# F15 : inventaire de RiqaTestset (zip déposé dans data/raw/riqa/), sans prédiction (décision 46)
+uv run python -I -m htr_ottoman.data.riqa
+uv run python -I -m htr_ottoman.analysis.riqa_inventory
 uv run pytest
 ```

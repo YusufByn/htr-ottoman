@@ -32,6 +32,13 @@ AKIS_ZIP = AKIS_RAW / "akis_dataset_test.zip"
 AKIS_INTERIM = DATA_INTERIM / "akis"  # contenu du zip (images/, annotations/, files.txt)
 AKIS_LINES = AKIS_INTERIM / "akis_lines.parquet"  # une ligne par image de ligne
 
+# RiqaTestset (Osmanlica.com, rik'a) : test externe de F15 (décision 46), jamais d'entraînement ni de réglage
+RIQA_RAW = DATA_RAW / "riqa"
+RIQA_ZIP = RIQA_RAW / "RiqaTestset.zip"  # déposé par l'utilisateur le 2026-10-29
+RIQA_INTERIM = DATA_INTERIM / "riqa"  # contenu du dossier riqa/ du zip (images/, ottoman/, turkish/, metrics.json)
+RIQA_LINES = RIQA_INTERIM / "riqa_lines.parquet"  # une ligne par image de ligne
+RIQA_REPORTS = REPORTS / "riqa"  # chiffres agrégés seulement : ni image ni transcription (décision 46)
+
 # Modèle de départ : OpenITI ottoman imprimé (DOI 10.5281/zenodo.7050342, CC0)
 BASE_MODEL_DIR = MODELS / "openiti_ottoman_print"
 BASE_MODEL = BASE_MODEL_DIR / "ottoman_best.mlmodel"

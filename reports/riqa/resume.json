@@ -1,0 +1,58 @@
+{
+ "lignes": 1575,
+ "unites": 85,
+ "lignes_par_unite": {
+  "min": 2.0,
+  "50%": 20.0,
+  "max": 62.0
+ },
+ "transcriptions_turques": 1575,
+ "lignes_vides": 0,
+ "lignes_annotees": 0,
+ "fichiers_avec_bom": 0,
+ "fichiers_avec_cr": 0,
+ "fichiers_avec_saut_final": 0,
+ "formes_unicode": {
+  "sans_composition": 1557,
+  "NFC": 18
+ },
+ "lignes_changees_par_normalize": 1549,
+ "caracteres_bruts": 141792,
+ "caracteres_normalises": 141497,
+ "types_bruts": 71,
+ "types_normalises": 69,
+ "hors_codec_brut": {
+  "types": 4,
+  "occurrences": 27
+ },
+ "hors_codec_normalise": {
+  "types": 1,
+  "occurrences": 8,
+  "part": 6e-05,
+  "lignes_touchees": 8
+ },
+ "absents_du_train_normalise": {
+  "types": 24,
+  "occurrences": 950,
+  "part": 0.00671
+ },
+ "images": {
+  "modes": {
+   "L": 1575
+  },
+  "gris_de_fait": 1575,
+  "deux_niveaux_ou_moins": 1575,
+  "niveaux_median": 2.0,
+  "hauteur": {
+   "min": 18.0,
+   "50%": 84.0,
+   "max": 403.0
+  },
+  "largeur": {
+   "min": 46.0,
+   "50%": 1477.0,
+   "max": 5068.0
+  }
+ },
+ "codec_modele_depart": 196
+}
