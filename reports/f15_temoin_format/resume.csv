@@ -1,0 +1,19 @@
+condition,role,modele,cer,difference_c0_points,ic95_bas_points,ic95_haut_points
+c0_controle,contrôle bloquant,baseline,0.277567,0.0,0.0,0.0
+c0_controle,contrôle bloquant,f8_lag5,0.163184,0.0,0.0,0.0
+c1_rectangle,principal,baseline,0.277006,-0.06,-0.58,0.44
+c1_rectangle,principal,f8_lag5,0.163371,0.02,-0.31,0.37
+c2_rectangle_otsu,principal,baseline,0.285748,0.82,0.07,1.5
+c2_rectangle_otsu,principal,f8_lag5,0.176366,1.32,0.84,1.79
+c3_rectangle_hauteur,principal,baseline,0.279764,0.22,-0.31,0.8
+c3_rectangle_hauteur,principal,f8_lag5,0.163184,0.0,-0.46,0.46
+c4_format_riqa,principal,baseline,0.281915,0.43,-0.36,1.15
+c4_format_riqa,principal,f8_lag5,0.174309,1.11,0.64,1.62
+v2_rectangle_nlbin,variante nlbin,baseline,0.284439,0.69,-0.16,1.52
+v2_rectangle_nlbin,variante nlbin,f8_lag5,0.177909,1.47,0.85,2.07
+v4_format_riqa_nlbin,variante nlbin,baseline,0.284719,0.72,-0.29,1.64
+v4_format_riqa_nlbin,variante nlbin,f8_lag5,0.173047,0.99,0.37,1.62
+v1_rectangle_bbox,"variante mode bbox, descriptive",baseline,0.598327,32.08,29.65,34.27
+v1_rectangle_bbox,"variante mode bbox, descriptive",f8_lag5,0.502174,33.9,30.12,37.29
+v4_format_riqa_bbox,"variante mode bbox, descriptive",baseline,0.320853,4.33,2.9,6.11
+v4_format_riqa_bbox,"variante mode bbox, descriptive",f8_lag5,0.203711,4.05,2.33,6.26

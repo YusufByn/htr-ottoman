@@ -58,6 +58,34 @@ def predict_split(model_path: Path, split: str) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def predict_line_images(model, segmentation, images: list) -> list:
+    """Reconnaissance d'images de lignes déjà découpées (F15 : expérience témoin, RiqaTestset).
+
+    Option (b) du plan de l'expérience témoin : tout le traitement de kraken après la découpe est
+    gardé (transformations de l'entraînement, sans redressement puisque la segmentation est de type
+    « baselines », lots de 1, BiDi du projet) ; seule la découpe de la ligne dans la page
+    (`kraken.models.ctc._extract_line`, kraken 7.1.1) est remplacée par l'image fournie.
+    `images[i]` est l'image de `segmentation.lines[i]`. Le modèle doit être utilisé sans processus
+    de découpe (`num_line_workers=0`) : on refuse un modèle déjà préparé avec des processus.
+    """
+    import kraken.models.ctc as ctc
+    from kraken.configs import RecognitionInferenceConfig
+    from PIL import Image
+
+    if segmentation.type != "baselines" or len(images) != len(segmentation.lines):
+        raise ValueError("Une image par ligne d'une segmentation de type « baselines » est exigée")
+    pool = getattr(model.net, "_line_extraction_pool", None)
+    if pool is not None and type(pool).__name__ != "_InProcessPool":
+        raise ValueError("Modèle déjà préparé avec des processus de découpe : en charger un nouveau")
+    config = RecognitionInferenceConfig(bidi_reordering=KRAKEN_TEXT_OPTIONS["bidi_reordering"], num_line_workers=0)
+    original = ctc._extract_line
+    ctc._extract_line = lambda im, seg, line_idx, legacy=False: (images[line_idx], line_idx)
+    try:
+        return list(model.predict(im=Image.new("L", (1, 1)), segmentation=segmentation, config=config))
+    finally:
+        ctc._extract_line = original
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--model", type=Path, required=True)

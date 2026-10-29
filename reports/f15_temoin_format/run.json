@@ -1,0 +1,37 @@
+{
+ "environnement": {
+  "macos": "27.0.1",
+  "python": "3.13.15",
+  "kraken": "7.1.1",
+  "torch": "2.14.0",
+  "scipy": "1.17.1",
+  "numpy": "2.4.6",
+  "scikit-image": "0.25.2",
+  "pillow": "12.3.0"
+ },
+ "facteur_echelle": 1.0769230769230769,
+ "controle": {
+  "baseline": {
+   "sha256": "e72b186386e932a059069641886a76d6daa13d111c14a3efe2906f76e2ea3dd2",
+   "reference": "e72b186386e932a059069641886a76d6daa13d111c14a3efe2906f76e2ea3dd2",
+   "identique": true
+  },
+  "f8_lag5": {
+   "sha256": "b6b4517ec0e81b51837a6b0efddeb84ab2bfa8e1a045321a4426a09658f453ee",
+   "reference": "b6b4517ec0e81b51837a6b0efddeb84ab2bfa8e1a045321a4426a09658f453ee",
+   "identique": true
+  }
+ },
+ "conditions": [
+  "c0_controle",
+  "c1_rectangle",
+  "c2_rectangle_otsu",
+  "c3_rectangle_hauteur",
+  "c4_format_riqa",
+  "v2_rectangle_nlbin",
+  "v4_format_riqa_nlbin",
+  "v1_rectangle_bbox",
+  "v4_format_riqa_bbox"
+ ],
+ "duree_min": 9.55
+}
