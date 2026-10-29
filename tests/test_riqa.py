@@ -63,3 +63,16 @@ def test_reading_items():
     assert list(table["identifiant"]) == [f"riqa_{i:02d}" for i in range(1, len(table) + 1)]
     assert set(table["famille"]) <= set(FAMILIES) and (table["occurrences"] > 0).all()
     assert not table.duplicated(["line_id", "famille"]).any()
+
+
+def test_exclusions():
+    """Décision 49 : une ligne par réponse « non », identifiants seulement (décision 46)."""
+    from htr_ottoman.analysis.riqa_exclusions import COLUMNS
+    from htr_ottoman.analysis.riqa_reading import OUTPUT
+
+    exclusions = pd.read_csv(OUTPUT / "exclusions.csv", dtype=str)
+    judgements = pd.read_csv(OUTPUT / "jugements.csv", dtype=str, keep_default_na=False)
+    assert tuple(exclusions.columns) == COLUMNS == ("identifiant", "line_id", "unite", "famille")
+    assert len(exclusions) == 18 and exclusions["line_id"].is_unique
+    assert set(exclusions["identifiant"]) == set(judgements.loc[judgements["réponse"] == "non", "identifiant"])
+    assert not {"text", "texte", "transcription", "commentaire"} & set(exclusions.columns)
