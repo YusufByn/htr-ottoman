@@ -32,6 +32,7 @@ Affiner le modèle kraken ottoman imprimé d'OpenITI sur la partie ottomane de M
 - ARCHITECTURE.md et PROJECT.md sont mis à jour à chaque étape terminée.
 - Tout traitement passe par un module du package src/htr_ottoman/, aucune manipulation manuelle non tracée. Lancement : `uv run python -m htr_ottoman.<module>`.
 - Avant chaque commit, lire `git diff --stat` (fichiers indexés) ; toute suppression de lignes non prévue arrête le commit.
+- Ne jamais contourner le contrôle d'arbre propre de `train` (`git stash` ou autre) sans l'accord de l'utilisateur : commiter d'abord.
 - src/htr_ottoman/ contient les traitements de données, scripts/ les utilitaires (vérification d'environnement, etc.).
 - notebooks/ sert uniquement à l'exploration visuelle : aucun code du pipeline n'en dépend.
 - Les chemins du projet sont définis une seule fois dans src/htr_ottoman/config.py.

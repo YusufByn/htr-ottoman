@@ -433,6 +433,7 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
   - [x] Après publication (2026-10-20) : DOI reporté dans MODEL_CARD.md, README.md (badge), PROJECT.md et la décision 45 (complément) ; enregistrement public vérifié (fichiers déposés aux mêmes MD5 que les fichiers locaux) ; clôture de F14.
 - **Contributions kraken prévues** (à signaler au projet kraken, sans urgence ; rien n'en dépend dans ce projet) :
   - `ketos publish` (kraken 7.1.1) plante quand `accuracy` vaut une liste vide dans les métadonnées du modèle : `metrics['cer'] = 100 - accuracy` lève `TypeError: unsupported operand type(s) for -: 'int' and 'list'` (`kraken/ketos/repo.py`, ligne 223). Cas de notre modèle, converti par kraken 7.1.1 depuis un checkpoint (constat du 2026-10-20, vérifié sans réseau). Contourné ici par `htrmopo.publish_model` (`htr_ottoman.publish --zenodo`).
+  - kraken 7.1.1 impose `scipy~=1.15.3` (scipy < 1.16), qui ne se charge plus sur macOS 27 : 8 modules Fortran du wheel scipy refusés par le chargeur (section `__DATA/__thread_bss`, scipy/scipy#25635). Corrigé dans scipy 1.17.1 (PROPACK en C). Contourné ici par `override-dependencies = ["scipy==1.17.1"]` (décision 47, 2026-10-29) ; inférence identique à l'octet sur la validation.
 - **Zenodo, bac à sable** (vérifié le 2026-10-20 dans le code de htrmopo 0.6, utilisé par `ketos publish`) : l'adresse du dépôt est lue dans la variable d'environnement `MODEL_REPO_URL` (par défaut `https://zenodo.org/api/`) ; `MODEL_REPO_URL=https://sandbox.zenodo.org/api/`, avec un jeton créé sur le bac à sable, permet un essai. `ketos publish` crée le dépôt et le publie aussitôt, sans brouillon ; la carte n'est validée contre le schéma qu'après la création du dépôt, d'où la validation locale avant ; `--private` évite la demande d'inclusion à la communauté `ocr_models` (sans doute absente du bac à sable). La licence `CC-BY-NC-SA-4.0` figure dans la liste de htrmopo.
 - **Critères d'acceptation** : modèle publié prouvé identique au modèle évalué (tenseurs, prédictions de la validation, CER) ; aucun chiffre de F7 à F13 modifié ; `uv run pytest` passe ; licences et source mentionnées ; DOI reporté.
 - **Points de décision** : nom du modèle (arrêt B) ; contenu public après l'audit, dont `.claude/` (arrêt C).
@@ -492,3 +493,10 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
   - Si le seuil n'est pas atteint après les trois leviers : ne pas régler sur le test réservé, revenir à la validation et consigner la décision.
 - **Concept à expliquer** : pourquoi un jeu de test déjà consulté ne peut plus servir de mesure finale, et ce qu'apportent des données d'autres langues ou d'autres mains (transfert).
 - **Statut** : à faire (pas avant F14).
+
+---
+
+## À faire plus tard (hors tickets)
+
+- **Option `--output` pour `train` (essais)**, étape séparée (notée le 2026-10-29) : choisir le dossier de sortie d'un essai (`--trial`) sans renommer un essai existant. Seulement avec `--trial`, seulement sous `models/` ; protection contre l'écrasement inchangée ; test dans `tests/test_train.py` ; ARCHITECTURE.md à mettre à jour. Origine : l'essai de vérification de scipy 1.17.1 (décision 47) a demandé de renommer `models/f8_finetune_essai/` en `models/f8_finetune_essai_2026-09-28/`.
+- **Environnement dans chaque `run.json`** (noté le 2026-10-29) : enregistrer macOS (version et build), Python, torch, kraken et scipy dans le `run.json` de chaque entraînement et de chaque évaluation. Origine : la décision 47 n'a pas pu dater le changement de macOS, faute de version consignée au 2026-10-20.
