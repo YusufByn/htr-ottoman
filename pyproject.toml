@@ -17,3 +17,8 @@ build-backend = "uv_build"
 dev = [
     "pytest>=9.1.1",
 ]
+
+[tool.uv]
+# Décision 47 : scipy 1.15.3 (exigé par kraken 7.1.1, scipy~=1.15.3) ne se charge plus sous macOS 27
+# (section __thread_bss des modules Fortran refusée par dyld) ; 1.17.1 réécrit PROPACK en C (scipy#25635).
+override-dependencies = ["scipy==1.17.1"]
