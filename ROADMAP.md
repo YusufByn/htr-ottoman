@@ -457,6 +457,11 @@ Phases : données (F1 à F4), référence (F5 à F7), affinage (F8, F9), génér
   - Test externe RiqaTestset (Osmanlica.com, rik'a ; décision 46 ; DATASETS.md, section 3.3) : jamais d'entraînement ni de réglage sur ce jeu.
     1. Inventaire : téléchargement (9,8 Mo) et description du jeu (documents, lignes, encodage, conventions), sans aucune prédiction.
     2. Pré-enregistrement committé avant toute prédiction : découpe des lignes, normalisation, critère principal, intervalle de confiance, règle d'interprétation ; modèles testés : baseline et v0.1.0 (F8 lag 5). Origine de la vérité terrain : réponse attendue jusqu'au 2026-11-19, sinon limite écrite.
+       Points à fixer, issus de l'inventaire du 2026-10-29 (`reports/riqa/inventaire.md`) :
+       - conversion ۔ → . propre à ce jeu, appliquée avant `normalize` (qui reste inchangé), CER rapporté avec et sans cette conversion ;
+       - vérification visuelle des crochets, parenthèses et `_` sur les images, sous forme de questions oui/non posées à l'utilisateur, avant de décider s'ils restent dans le texte ;
+       - intervalle de confiance par unité (85 unités), faute de documents connus ; l'indépendance des unités n'est pas vérifiable (limite écrite) ;
+       - expérience témoin sur la validation de MAKHZAN : lignes découpées en rectangles et binarisées, pour séparer l'effet du format d'image de celui de l'écriture.
     3. Test : une seule prédiction par modèle, rapport dans EXPERIMENTS.md (chiffres agrégés seulement, ni images ni transcriptions, y compris dans `reports/`), citation des publications d'Osmanlica.com, résultats envoyés à Osmanlica.com avant publication.
     4. v1.0, à la fin de F15 : une seule consultation, avec son propre pré-enregistrement.
 - **Pistes issues de F13** (reportées le 2026-10-20, à la fin de F13 ; hypothèses non testées, rien n'est appliqué ; toute règle de normalisation ou de données serait une nouvelle décision, jamais appliquée aux chiffres de F9) :
