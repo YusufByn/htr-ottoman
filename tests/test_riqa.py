@@ -9,7 +9,7 @@ import sys
 import pandas as pd
 import pytest
 
-from htr_ottoman.config import RIQA_LINES, RIQA_REPORTS
+from htr_ottoman.config import RIQA_LINES, RIQA_REPORTS, ROOT
 from htr_ottoman.data.riqa import LINE_NAME
 
 needs_table = pytest.mark.skipif(
@@ -38,9 +38,28 @@ def test_line_table():
 
 @needs_table
 def test_reports_contain_no_transcription():
-    """Décision 46 : aucune ligne de transcription (ni un extrait de 20 caractères) dans reports/riqa/."""
+    """Décision 46 : aucune ligne de transcription (ni un extrait de 20 caractères) ni image dans reports/riqa/."""
     texts = [t.strip() for t in pd.read_parquet(RIQA_LINES)["text"]]
     extracts = {t[i : i + 20] for t in texts for i in range(0, max(len(t) - 19, 1), 20)}
-    for path in RIQA_REPORTS.iterdir():
+    for path in (p for p in RIQA_REPORTS.rglob("*") if p.is_file()):
         content = path.read_text(encoding="utf-8")
         assert not any(e in content for e in extracts), path.name
+        assert "data:image" not in content and path.suffix in (".csv", ".json", ".md"), path.name
+
+
+def test_reading_page_outside_reports():
+    """Décision 46 : la page de lecture, qui contient les images, est hors de reports/ et hors git."""
+    from htr_ottoman.analysis.riqa_reading import OUTPUT, PAGE
+
+    assert not PAGE.is_relative_to(ROOT / "reports") and PAGE.is_relative_to(ROOT / "data")
+    assert OUTPUT.is_relative_to(RIQA_REPORTS)
+
+
+@needs_table
+def test_reading_items():
+    from htr_ottoman.analysis.riqa_reading import FAMILIES, items
+
+    table = items(pd.read_parquet(RIQA_LINES))
+    assert list(table["identifiant"]) == [f"riqa_{i:02d}" for i in range(1, len(table) + 1)]
+    assert set(table["famille"]) <= set(FAMILIES) and (table["occurrences"] > 0).all()
+    assert not table.duplicated(["line_id", "famille"]).any()
